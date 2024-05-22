@@ -142,6 +142,19 @@
     width: max-content;
 }
 
+.volume {
+    &__range
+    {
+        width: 10px;
+        direction: rtl;
+
+        writing-mode: vertical-lr;
+        -webkit-writing-mode: vertical-lr;
+        -ms-writing-mode: vertical-lr;
+
+    }
+}
+
 
 
 // .capitalize

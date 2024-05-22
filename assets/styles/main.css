@@ -105,6 +105,14 @@
   width: max-content;
 }
 
+.volume__range {
+  width: 10px;
+  direction: rtl;
+  writing-mode: vertical-lr;
+  -webkit-writing-mode: vertical-lr;
+  -ms-writing-mode: vertical-lr;
+}
+
 .video__container {
   background-color: black;
   overflow: hidden;
