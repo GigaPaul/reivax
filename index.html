@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reivax</title>
+    <link rel="stylesheet" href="./assets/styles/bootstrap.min.css">
+    <link href="./assets/fontawesome/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="./assets/fontawesome/css/solid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles/main.css">
+</head>
+<body class="text-bg-dark">
+
+
+
+    <div class="container">
+        <section>
+            <div>
+                <h1 class="text-center">Reivax</h1>
+                <p class="text-center">
+                    <a href="display.html" target="_blank" class="text-center">Ouvrir le display</a>
+                </p>
+                
+            </div>
+
+
+            <article class="mb-5">
+                <h2 class="text-center">Landscapes</h2>
+                <div class="row" id="landscapeOutput"></div>
+            </article>
+    
+    
+    
+    
+    
+            <article id="ambienceSelector" class="mb-5">
+                <h2 class="text-center">Ambiance</h2>
+                <div class="ambience_btns d-flex justify-content-center">
+                    <article class="ambience_art">
+                        <button data-url="AMB_ForestCleansed_Day04.ogg" class="btn btn-primary">Forêt</button>
+                    </article>
+                    <article class="ambience_art">
+                        <button data-url="AMB_TKRaid_Subterranean.ogg" class="btn btn-primary">Caverne</button>
+                    </article>
+                    <article class="ambience_art">
+                        <button data-url="StormwindDay.ogg" class="btn btn-primary">Village</button>
+                    </article>
+                    <article class="ambience_art">
+                        <button data-url="Tavern.ogg" class="btn btn-primary">Taverne</button>
+                    </article>
+                </div>   
+            </article>
+    
+    
+    
+    
+    
+            <article class="mb-5">
+                <div class="container">
+                    <div class="row">
+                        <h2 class="text-center">Sons</h2>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="sounds__container col-3" data-name="Pluie" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="RainLightLoop.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Pic vert" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="AMB_Drustvar_WoodPecker_FlavorKit_01.ogg"></li>
+                                        <li data-url="AMB_Drustvar_WoodPecker_FlavorKit_02.ogg"></li>
+                                        <li data-url="AMB_Drustvar_WoodPecker_FlavorKit_03.ogg"></li>
+                                        <li data-url="AMB_Drustvar_WoodPecker_FlavorKit_04.ogg"></li>
+                                        <li data-url="AMB_Drustvar_WoodPecker_FlavorKit_05.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Loup" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="fx_fw_wolfhowl_dry_01.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_02.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_03.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_04.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_05.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_06.ogg"></li>
+                                        <li data-url="fx_fw_wolfhowl_dry_07.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Chouette" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="FX_Owl01.ogg"></li>
+                                        <li data-url="FX_Owl02.ogg"></li>
+                                        <li data-url="FX_Owl03.ogg"></li>
+                                        <li data-url="FX_Owl04.ogg"></li>
+                                        <li data-url="FX_Owl05.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Feu de camp" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="FX_PA_Fire_Small_Loop.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Criquets" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="AMB_Drustvar_Crickets_Loop_FlavorKit_01.ogg"></li>
+                                        <li data-url="AMB_Drustvar_Crickets_Loop_FlavorKit_02.ogg"></li>
+                                        <li data-url="AMB_Drustvar_Crickets_Loop_FlavorKit_03.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Bataille" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="AMB_shadowmoonironhordebattle_loop.ogg"></li>
+                                    </ul>
+                                </div>
+
+                                <div class="sounds__container col-3" data-name="Cloche" >
+                                    <ul class="sounds__playlist d-none">
+                                        <li data-url="FX_DarkmoonFaire_Bell.ogg"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                    
+                        </div>
+            
+                        <output id="activeSounds" class="col-6 d-flex flex-column"></output>                        
+                    </div>
+                </div>
+
+
+            </article>
+        
+
+
+
+
+            <article class="mb-5">
+                <h2 class="text-center">Musique</h2>
+
+                <output id="musicOutput"></output>
+
+                <div id="musicAudios">
+                    <audio src=""></audio>
+                    <audio src=""></audio>
+                </div>
+            </article>
+        </section>
+    </div>
+
+
+
+</body>
+<script src="assets/js/jquery.js" type="module"></script>
+<script src="assets/js/bootstrap.min.js" type="module"></script>
+<script src="assets/js/index.js" type="module"></script>
+</html>
