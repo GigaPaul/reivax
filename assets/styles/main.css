@@ -113,6 +113,10 @@
   -ms-writing-mode: vertical-lr;
 }
 
+.progressbar input[type="range"] {
+  pointer-events: none;
+}
+
 .video__container {
   background-color: black;
   overflow: hidden;

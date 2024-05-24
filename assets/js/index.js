@@ -1,6 +1,12 @@
 const XHTTP = new XMLHttpRequest();
 
-const AMBIENCE_MAX_VOLUME = 0.1;
+const GENERAL_VOLUME = 1;
+const AMBIENCE_REL_VOL = 0.75;
+const SOUND_REL_VOL = 0.15;
+const MUSIC_REL_VOL = 0.3;
+
+
+// const AMBIENCE_MAX_VOLUME = 0.1;
 const AMBIENCE_FADE_TIME = 5000;
 const AMBIENCE_URL = "./assets/audio/ambiance/";
 
@@ -8,12 +14,13 @@ const LANDSCAPE_TRANSITION_TIME = 1000;
 const LANDSCAPE_PATH = "./assets/landscapes/";
 const LANDSCAPE_OUTPUT = $("#landscapeOutput")[0];
 
-const MUSIC_MAX_VOLUME = 0.05;
+// const MUSIC_MAX_VOLUME = 0.05;
 const MUSIC_FADE_TIME = 3000;
 const MUSIC_URL = "./assets/audio/musics/";
 const MUSIC_AUDIOS = $("#musicAudios");
 
-const SOUND_MAX_VOLUME = 0.1;
+// const SOUND_MAX_VOLUME = 0.1;
+const SOUND_FADE_TIME = 1000;
 const SOUND_URL = "./assets/audio/sounds/";
 
 
@@ -22,9 +29,11 @@ let CURRENT_MUSIC = null;
 $(MUSIC_AUDIOS).children().each(function() {
     $(this).prop("volume", 0);
     $(this).on("timeupdate", FadeTransition);    
+    $(this).on("loadedmetadata", InitAudioPlay)
 })
 
 
+InitVolume();
 InitLandscape();
 InitAmbience();
 InitSounds();
@@ -51,6 +60,22 @@ function IsVideo(filename)
     let video = ["mp4"];
     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
     return video.includes(extension);
+}
+
+
+function SecondsToMinutes(time) {
+    time = parseFloat(time);
+
+    let minutes = Math.floor(time / 60);
+    let seconds = Math.floor(time - minutes * 60) + '';
+
+    if(seconds.length < 2) {
+        seconds = "0" + seconds;
+    }
+
+    let result = `${minutes}:${seconds}`;
+
+    return result;
 }
 
 
@@ -250,7 +275,8 @@ function SetAmbienceAs(element)
         {
             if(this.paused)
             {
-                PlayAudio(this)
+                let volume = $("#AmbianceVolume").val() / 100;
+                PlayAudio(this, volume, AMBIENCE_FADE_TIME);
             }            
         }
         // Si une autre ambiance est jouée, la mettre sur pause
@@ -265,10 +291,10 @@ function SetAmbienceAs(element)
 
 
 
-function PlayAudio(audioElt)
+function PlayAudio(audioElt, volume, fadetime)
 {
     audioElt.play();
-    $(audioElt).animate({volume: AMBIENCE_MAX_VOLUME}, AMBIENCE_FADE_TIME)
+    $(audioElt).animate({volume: volume}, fadetime)
 }
 
 
@@ -340,7 +366,7 @@ function CreateSound()
     let playlistLi = $(this).siblings(".sounds__playlist").children("li");
 
     let article = document.createElement("article");
-    $(article).addClass("sounds__article card w-max-content shadow mb-4");
+    $(article).addClass("sounds__article card w-max-content shadow mb-4 mt-0");
     $(article).css("margin", "auto");
     $("#activeSounds").append(article);
 
@@ -406,7 +432,7 @@ function CreateSound()
 
 
     let inputFrequency = document.createElement("input");
-    $(inputFrequency).addClass("form-range");
+    $(inputFrequency).addClass("form-control-range");
     $(inputFrequency).css("width", "100px")
     $(inputFrequency).prop("type", "range");
     $(inputFrequency).prop("min", "0");
@@ -492,12 +518,14 @@ function PlaylistNext()
     let url = $(playlistLi[current]).data("url");
     $(this).prop("src", SOUND_URL + url);
 
+    // Conversion en ms
     let frequency = parseInt($(parent).find(".sounds__frequency input").val()) * 1000;
 
     if(frequency > 0)
     {
+        let volume = $("#SonsVolume").val() / 100;
         Wait(frequency).then(() => { 
-            PlayAudio(this, SOUND_MAX_VOLUME, 1000)
+            PlayAudio(this, volume, SOUND_FADE_TIME)
         });        
     }
     else
@@ -518,18 +546,22 @@ function HandlePlaylistPlay()
     let audio = $(parent).find("audio")[0];
     let playlist = $(parent).find(".sounds__activePlaylist")
     let playlistLi = $(playlist).children("li");
+    let icon = $(this).children("i");
+
+    $(icon).toggleClass("fa-play fa-pause");
+    $(this).toggleClass("btn-warning btn-success");
 
     if(audio.paused)
     {
         let order = $(playlist).data("order");
         let url = $(playlistLi[order]).data("url");
         $(audio).prop("src", SOUND_URL + url);
-
-        PlayAudio(audio, SOUND_MAX_VOLUME, 1000)
+        let volume = $("#SonsVolume").val() / 100;
+        PlayAudio(audio, volume, SOUND_FADE_TIME)
     }
     else
     {
-        $(audio).animate({volume: 0}, 1000, function()
+        $(audio).animate({volume: 0}, SOUND_FADE_TIME, function()
         {
             audio.pause();
             $(audio).prop("currentTime", 0);
@@ -568,7 +600,7 @@ function InitMusic(){
         {
             let folder = this;
             
-            let folderContainer = document.createElement("div");
+            let folderContainer = document.createElement("article");
             let folderTitle = document.createElement("h3");
             $(folderTitle).addClass("text-capitalize");
             $(folderTitle).text(folder.name);
@@ -585,26 +617,91 @@ function InitMusic(){
                 }
                 
                 let categoryContainer = document.createElement("article");
-                folderContainer.appendChild(categoryContainer);
                 $(categoryContainer).data("url", `${folder.name}/${category.name}/`);
-                $(categoryContainer).addClass("music__type");
+                $(categoryContainer).addClass("card w-max-content");
+                // $(categoryContainer).addClass("music__type");
+                folderContainer.appendChild(categoryContainer);
+
+
+                // HEADER
+                let categoryHeader = document.createElement("div");
+                $(categoryHeader).addClass("card-header");
+                categoryContainer.appendChild(categoryHeader);
 
                 let categoryTitle = document.createElement("h4");
-                categoryContainer.appendChild(categoryTitle);
-                $(categoryTitle).addClass("text-capitalize");
+                $(categoryTitle).addClass("text-capitalize m-0");
                 $(categoryTitle).text(category.name);
+                categoryHeader.appendChild(categoryTitle);
+
+
+                // BODY
+                let categoryBody = document.createElement("div");
+                $(categoryBody).addClass("card-body d-flex");
+                categoryContainer.appendChild(categoryBody);
 
                 let songControls = document.createElement("div");
-                categoryContainer.appendChild(songControls);
+                $(songControls).addClass("d-flex flex-column justify-content-between me-3");
+                categoryBody.appendChild(songControls);
 
+                // TOGGLE BUTTON
                 let toggleButton = document.createElement("button");
+                $(toggleButton).addClass("music__toggle btn btn-success mb-1");
                 songControls.appendChild(toggleButton);
-                $(toggleButton).text("Toggle");
-                $(toggleButton).addClass("music__toggle btn btn-primary");
+
+                let toggleIcon = document.createElement("i");
+                $(toggleIcon).addClass("fa-solid fa-play");
+                toggleButton.appendChild(toggleIcon);
+
+                // SHUFFLE BUTTON
+                let shuffleButton = document.createElement("button");
+                $(shuffleButton).addClass("music__shuffle btn");
+                songControls.appendChild(shuffleButton);
+
+                let shuffleIcon = document.createElement("i");
+                $(shuffleIcon).addClass("fa-solid fa-shuffle");
+                shuffleButton.appendChild(shuffleIcon);
+
+
+                // CURRENT SONG
+                let currentSong = document.createElement("div");
+                categoryBody.appendChild(currentSong);
+
+                let songTitle = document.createElement("h5");
+                $(songTitle).text(category.children[0]);
+                $(songTitle).addClass("music__songTitle");
+                currentSong.appendChild(songTitle);
+
+                let progressBarContainer = document.createElement("div");
+                $(progressBarContainer).addClass("progressbar");
+                currentSong.appendChild(progressBarContainer);
+
+                let progressbar = document.createElement("input");
+                $(progressbar)
+                    .prop("type", "range")
+                    .val("0")
+                    .prop("min", "0")
+                    .prop("max", "100")
+                    .prop("step", "any")
+                    .addClass("w-100");
+                progressBarContainer.appendChild(progressbar);
+
+                let timestamps = document.createElement("div");
+                $(timestamps).addClass("timestamp d-flex justify-content-between");
+                progressBarContainer.appendChild(timestamps);
+
+                let timestampCurrent = document.createElement("p");
+                $(timestampCurrent).addClass("timestamp__current m-0");
+                timestamps.appendChild(timestampCurrent);
+
+                let timestampEnd = document.createElement("p");
+                $(timestampEnd).addClass("timestamp__end m-0");
+                timestamps.appendChild(timestampEnd);
+
 
                 
+                // HIDDEN PLAYLIST
                 let playlist = document.createElement("ul");
-                categoryContainer.appendChild(playlist);
+                categoryBody.appendChild(playlist);
                 $(playlist).addClass("music__playlist d-none");
 
                 $(category.children).each(function()
@@ -619,15 +716,43 @@ function InitMusic(){
             
                 let music = new Playlist(categoryContainer);
 
+                if(music.isShuffled) {
+                    $(shuffleButton).addClass("btn-info");
+                }
+                else {
+                    $(shuffleButton).addClass("btn-outline-info");
+                }
+
+
+
+                // EVENTS
+                // Toggle
                 $(toggleButton).on("click", function() {
+                    let icon = $(this).children("i");
                     if(CURRENT_MUSIC === music) {
-                        music.stop();                      
+                        music.stop();
+                        $(this).addClass("btn-success").removeClass("btn-danger");
+                        $(icon).addClass("fa-play").removeClass("fa-stop");
                     }
                     // If this is not the current music
                     else {
                         music.start();
+                        $(this).addClass("btn-danger").removeClass("btn-success");
+                        $(icon).addClass("fa-stop").removeClass("fa-play");
                     }
-                });                    
+                });
+
+                // Shuffle
+                $(shuffleButton).on("click", function() {
+                    music.isShuffled = !music.isShuffled;
+
+                    if(music.isShuffled) {
+                        $(this).addClass("btn-info").removeClass("btn-outline-info");
+                    }
+                    else {
+                        $(this).addClass("btn-outline-info").removeClass("btn-info");
+                    }
+                })
 
             });
         });
@@ -644,6 +769,7 @@ class Playlist {
     constructor(article, isShuffled = true)
     {
         let that = this;
+        this.element = article;
         this.url = MUSIC_URL + $(article).data("url");
         this.index = 0;
         this.songs = [];
@@ -735,17 +861,16 @@ class Playlist {
     start()
     {
         CURRENT_MUSIC = this;
+        let songPlayed = this.songs[0];
 
         if(this.isShuffled)
         {
             let length = this.songs.length;
             let randomIndex = Math.floor(Math.random() * length);
-            this.play(this.songs[randomIndex]);
+            songPlayed = this.songs[randomIndex];
         }
-        else
-        {
-            this.play(this.songs[0]);
-        }
+
+        this.play(songPlayed);
     }
 
 
@@ -808,7 +933,12 @@ class Playlist {
         
 
         pausedAudio.play();
-        $(pausedAudio).animate({volume: MUSIC_MAX_VOLUME}, MUSIC_FADE_TIME);
+        let volume = $("#MusicVolume").val() / 100;
+        $(pausedAudio).animate({volume: volume}, MUSIC_FADE_TIME);
+        
+        let title = $(this.element).find(".music__songTitle");
+        $(title).text(songName);
+
         console.log(`${songName} en cours d'écoute.`);
     }
 }
@@ -838,6 +968,15 @@ function FadeTransition() {
         return;
     }
 
+    // Update timestamp from modals
+    let timestamp = $(CURRENT_MUSIC.element).find(".timestamp__current");
+    timestamp.text(SecondsToMinutes(this.currentTime));
+
+    let range = $(CURRENT_MUSIC.element).find(".progressbar input[type='range']");
+    let relativeVal = (this.currentTime / this.duration) * 100;
+    $(range).val(relativeVal);
+    //
+
     let buffer = MUSIC_FADE_TIME / 1000;
 
     if(this.currentTime <= this.duration - buffer)
@@ -850,18 +989,29 @@ function FadeTransition() {
 
 
 
+function InitAudioPlay() {
+    let timestampEnd = $(CURRENT_MUSIC.element).find(".timestamp__end");
+    $(timestampEnd).text(SecondsToMinutes(this.duration));
+}
+
+
+
 
 
 
 
 
 // VOLUME, à retravailler
-InitVolume();
-
 function InitVolume() {
     $(".MuteVolumeBtn").on("click", MuteEvent);
     $(".volume__range").on("input", VolumeEvent);
     $("#GeneralVolume").on("input", GeneralVolumeEvent);
+
+    let generalVolumeVal = GENERAL_VOLUME * 100;
+    $("#GeneralVolume").val(generalVolumeVal);
+    $("#AmbianceVolume").val(AMBIENCE_REL_VOL * generalVolumeVal).trigger("input");
+    $("#SonsVolume").val(SOUND_REL_VOL * generalVolumeVal).trigger("input");
+    $("#MusicVolume").val(MUSIC_REL_VOL * generalVolumeVal).trigger("input");
 }
 
 

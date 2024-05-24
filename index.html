@@ -10,93 +10,109 @@
     <link rel="stylesheet" href="./assets/styles/main.css">
 </head>
 <body class="text-bg-dark">
-    <section class="card w-max-content">
-        <div class="card-body d-flex">
-            <!-- Général -->
-            <article data-tag="general" class="d-flex justify-content-center flex-column me-5">
 
-                <h3 class="mb-3">
-                    <label for="GeneralVolume">Général</label>
-                </h3>
 
-                <div class="mb-3">
-                    <input type="range" name="" id="GeneralVolume" class="volume__range d-block m-auto" value="100">
-                    <input type="hidden" name="RelativeValue" value="100">
+    <!-- Button trigger modal -->
+    <div class="sticky-top pt-5 ps-5">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#volumeModal">
+            <i class="fa-solid fa-volume-high"></i>
+        </button>        
+    </div>
+
+    
+    <!-- Modal -->
+    <div class="modal fade" id="volumeModal" tabindex="-1" aria-labelledby="volumeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg w-max-content">
+            <div class="modal-content text-dark">
+                <div class="modal-body d-flex">
+                    <!-- Général -->
+                    <article data-tag="general" class="d-flex justify-content-center flex-column me-5">
+        
+                        <h3 class="mb-3">
+                            <label for="GeneralVolume">Général</label>
+                        </h3>
+        
+                        <div class="mb-3">
+                            <input type="range" name="" id="GeneralVolume" class="volume__range d-block m-auto" value="100">
+                            <input type="hidden" name="RelativeValue" value="100">
+                        </div>
+        
+        
+                        <div>
+                            <button id="GeneralMute" class="MuteVolumeBtn d-block m-auto btn btn-link">
+                                <i class="fa-solid fa-volume-low"></i>
+                            </button>
+                        </div>
+        
+                    </article>
+        
+        
+        
+                    <!-- Ambiance -->
+                    <article data-tag="ambiance" class="d-flex justify-content-center flex-column me-5">
+                        <h3 class="mb-3">
+                            <label for="AmbianceVolume">Ambiance</label>
+                        </h3>
+        
+                        <div class="mb-3">
+                            <input type="range" name="" id="AmbianceVolume" class="volume__range d-block m-auto">
+                            <input type="hidden" name="RelativeValue">
+                        </div>
+        
+        
+                        <div>
+                            <button class="MuteVolumeBtn d-block m-auto btn btn-link">
+                                <i class="fa-solid fa-volume-low"></i>
+                            </button>
+                        </div>
+                    </article>
+                    
+        
+        
+                    <!-- Sons -->
+                    <article data-tag="sons" class="d-flex justify-content-center flex-column me-5">
+                        <h3 class="mb-3">
+                            <label for="SonsVolume">Sons</label>
+                        </h3>
+        
+                        <div class="mb-3">
+                            <input type="range" name="" id="SonsVolume" class="volume__range d-block m-auto">
+                            <input type="hidden" name="RelativeValue">
+                        </div>
+        
+        
+                        <div>
+                            <button class="MuteVolumeBtn d-block m-auto btn btn-link">
+                                <i class="fa-solid fa-volume-low"></i>
+                            </button>
+                        </div>
+                    </article>
+        
+        
+        
+                    <!-- Musique -->
+                    <article data-tag="musique" class="d-flex justify-content-center flex-column">
+                        <h3 class="mb-3">
+                            <label for="MusicVolume">Musiques</label>
+                        </h3>
+        
+                        <div class="mb-3">
+                            <input type="range" name="" id="MusicVolume" class="volume__range d-block m-auto">
+                            <input type="hidden" name="RelativeValue">
+                        </div>
+        
+        
+                        <div>
+                            <button class="MuteVolumeBtn d-block m-auto btn btn-link">
+                                <i class="fa-solid fa-volume-low"></i>
+                            </button>
+                        </div>
+                    </article>
                 </div>
-
-
-                <div>
-                    <button id="GeneralMute" class="MuteVolumeBtn d-block m-auto btn btn-link">
-                        <i class="fa-solid fa-volume-low"></i>
-                    </button>
-                </div>
-
-            </article>
-
-
-
-            <!-- Ambiance -->
-            <article data-tag="ambiance" class="d-flex justify-content-center flex-column me-5">
-                <h3 class="mb-3">
-                    <label for="AmbianceVolume">Ambiance</label>
-                </h3>
-
-                <div class="mb-3">
-                    <input type="range" name="" id="AmbianceVolume" class="volume__range d-block m-auto" value="50">
-                    <input type="hidden" name="RelativeValue" value="50">
-                </div>
-
-
-                <div>
-                    <button class="MuteVolumeBtn d-block m-auto btn btn-link">
-                        <i class="fa-solid fa-volume-low"></i>
-                    </button>
-                </div>
-            </article>
-            
-
-
-            <!-- Sons -->
-            <article data-tag="sons" class="d-flex justify-content-center flex-column me-5">
-                <h3 class="mb-3">
-                    <label for="SonsVolume">Sons</label>
-                </h3>
-
-                <div class="mb-3">
-                    <input type="range" name="" id="SonsVolume" class="volume__range d-block m-auto" value="33">
-                    <input type="hidden" name="RelativeValue" value="33">
-                </div>
-
-
-                <div>
-                    <button class="MuteVolumeBtn d-block m-auto btn btn-link">
-                        <i class="fa-solid fa-volume-low"></i>
-                    </button>
-                </div>
-            </article>
-
-
-
-            <!-- Musique -->
-            <article data-tag="musique" class="d-flex justify-content-center flex-column">
-                <h3 class="mb-3">
-                    <label for="MusicVolume">Musiques</label>
-                </h3>
-
-                <div class="mb-3">
-                    <input type="range" name="" id="MusicVolume" class="volume__range d-block m-auto" value="25">
-                    <input type="hidden" name="RelativeValue" value="25">
-                </div>
-
-
-                <div>
-                    <button class="MuteVolumeBtn d-block m-auto btn btn-link">
-                        <i class="fa-solid fa-volume-low"></i>
-                    </button>
-                </div>
-            </article>
+            </div>
         </div>
-    </section>
+    </div>
+  
 
 
     <div class="container">
@@ -122,13 +138,13 @@
             <article id="ambienceSelector" class="mb-5">
                 <h2 class="text-center">Ambiance</h2>
                 <div class="ambience_btns d-flex justify-content-center">
-                    <article class="ambience_art">
+                    <article class="ambience_art me-2">
                         <button data-url="AMB_ForestCleansed_Day04.ogg" class="btn btn-primary">Forêt</button>
                     </article>
-                    <article class="ambience_art">
+                    <article class="ambience_art me-2">
                         <button data-url="AMB_TKRaid_Subterranean.ogg" class="btn btn-primary">Caverne</button>
                     </article>
-                    <article class="ambience_art">
+                    <article class="ambience_art me-2">
                         <button data-url="StormwindDay.ogg" class="btn btn-primary">Village</button>
                     </article>
                     <article class="ambience_art">
@@ -231,7 +247,6 @@
 
             </article>
 
-            <audio src="" data-volume="sons" controls></audio>
         
 
 
@@ -243,8 +258,8 @@
                 <output id="musicOutput"></output>
 
                 <div id="musicAudios">
-                    <audio data-volume="musique" src=""></audio>
-                    <audio data-volume="musique" src=""></audio>
+                    <audio data-volume="musique" preload="metadata" src=""></audio>
+                    <audio data-volume="musique" preload="metadata" src=""></audio>
                 </div>
             </article>
         </section>

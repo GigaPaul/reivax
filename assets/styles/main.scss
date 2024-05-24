@@ -155,6 +155,11 @@
     }
 }
 
+.progressbar {
+    & input[type="range"] {
+        pointer-events: none;
+    }
+}
 
 
 // .capitalize
