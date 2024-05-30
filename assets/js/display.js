@@ -1,10 +1,13 @@
+import {LANDSCAPE_TRANSITION_TIME, LANDSCAPE_PATH} from './globals/const.js';
+import * as FUNC from './globals/func.js';
+
 const CURRENTSCENE = {
     background_url: null
 };
 
-const INTERVAL = window.setInterval(Update, 30);
-const LANDSCAPE_PATH = "./assets/landscapes/";
-const LANDSCAPE_TRANSITION_TIME = 1000;
+const INTERVAL = window.setInterval(Update, 1000);
+// const LANDSCAPE_PATH = "./assets/landscapes/";
+// const LANDSCAPE_TRANSITION_TIME = 1000;
 
 
 
@@ -54,19 +57,19 @@ function BackgroundUpdate()
 
 
 
-function IsImage(filename)
-{
-    let image = ["jpg", "png"];
-    let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
-    return image.includes(extension);
-}
+// function FUNC.IsImage(filename)
+// {
+//     let image = ["jpg", "png"];
+//     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
+//     return image.includes(extension);
+// }
 
-function IsVideo(filename)
-{
-    let video = ["mp4"];
-    let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
-    return video.includes(extension);
-}
+// function FUNC.IsVideo(filename)
+// {
+//     let video = ["mp4"];
+//     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
+//     return video.includes(extension);
+// }
 
 
 
@@ -80,12 +83,12 @@ function SetBackgroundAs(backgroundUrl)
     let path = LANDSCAPE_PATH + backgroundUrl;
 
     // Image
-    if(IsImage(backgroundUrl)) {
+    if(FUNC.IsImage(backgroundUrl)) {
         $(newLandscape).css("background-image", `url("${path}")`);
         $(newLandscape).addClass("background");
     }
     // Video
-    else if(IsVideo(backgroundUrl)) {
+    else if(FUNC.IsVideo(backgroundUrl)) {
         $(parent).addClass("video__container");
 
         let video = document.createElement("video");
