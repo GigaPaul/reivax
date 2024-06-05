@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 $type = $_POST["type"];
 $for = $_POST["for"];
 
@@ -18,16 +16,7 @@ $config = array(
 
 $pdo = new PDO($config['driver'].':host='.$config['host'].';dbname='.$config['dbname'].';charset=utf8', $config['user'], $config['mdp']);
 
-class Folder
-{
-    public string $name;
-    public $children = array();
 
-    function __construct(string $name)
-    {
-        $this->name = $name;
-    }
-}
 
 
 

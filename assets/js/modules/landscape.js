@@ -8,12 +8,11 @@ import { LANDSCAPE_OUTPUT } from "./../index.js";
 
 export default function InitLandscape() {
     let send = {
-        type: "retrieve",
-        for: "landscape"
+        type: "landscape"
     }
 
 
-    $.post("controller.php", send, function(data)
+    $.post("retriever.php", send, function(data)
     {
         let result = jQuery.parseJSON(data);
 

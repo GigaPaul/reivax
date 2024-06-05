@@ -15,12 +15,11 @@ export default function InitMusic(){
 
 
     let send = {
-        type: "retrieve",
-        for: "music"
+        type: "music"
     }
 
 
-    $.post("controller.php", send, function(data)
+    $.post("retriever.php", send, function(data)
     {
         let result = jQuery.parseJSON(data);
         let container = document.createElement("div");

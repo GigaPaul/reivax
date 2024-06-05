@@ -5,12 +5,11 @@ InitAventures();
 
 function InitAventures() {
     let send = {
-        type: "retrieve",
-        for: "aventure"
+        type: "aventure"
     }
 
 
-    $.post("controller.php", send, function(data)
+    $.post("retriever.php", send, function(data)
     {
         let result = jQuery.parseJSON(data);
 
