@@ -6,10 +6,6 @@ const CURRENTSCENE = {
 };
 
 const INTERVAL = window.setInterval(Update, 1000);
-// const LANDSCAPE_PATH = "./assets/landscapes/";
-// const LANDSCAPE_TRANSITION_TIME = 1000;
-
-
 
 
 
@@ -52,24 +48,6 @@ function BackgroundUpdate()
         }        
     })
 }
-
-
-
-
-
-// function FUNC.IsImage(filename)
-// {
-//     let image = ["jpg", "png"];
-//     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
-//     return image.includes(extension);
-// }
-
-// function FUNC.IsVideo(filename)
-// {
-//     let video = ["mp4"];
-//     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
-//     return video.includes(extension);
-// }
 
 
 
@@ -131,6 +109,8 @@ function SetBackgroundAs(backgroundUrl)
     }
     //
 }
+
+
 
 
 

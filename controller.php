@@ -110,12 +110,33 @@ switch($type)
 
                 break;
 
+
+
+
+
             case "landscape":
                 $landscapeIndex = glob("./assets/landscapes/*");
                 $result = array();
                 
                 foreach($landscapeIndex as $landscape) {
                     array_push($result, basename($landscape));
+                }
+
+
+
+                echo json_encode($result);
+                break;
+
+
+
+
+
+            case "aventure":
+                $aventureIndex = glob("./aventures/*");
+                $result = array();
+                
+                foreach($aventureIndex as $aventure) {
+                    array_push($result, basename($aventure));
                 }
 
 
