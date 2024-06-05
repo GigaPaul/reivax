@@ -2,10 +2,10 @@
     include "./header.php";
 ?>
 
+<div class="container">
+    <ouput id="outputAventures" class="row"></ouput>
+</div>
 
-<ouput id="outputAventures">
-
-</ouput>
 
 
 </body>

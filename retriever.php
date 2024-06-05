@@ -26,7 +26,6 @@ switch($type)
 
             $categoryIndex = glob("./assets/audio/musics/$folderName/*");
             
-            // $categoryArray = array();
             foreach($categoryIndex as $category)
             {
                 $categoryName = basename($category);
@@ -37,15 +36,12 @@ switch($type)
                 $musicArray = array();
                 foreach($musicIndex as $music)
                 {
-                    // array_push($musicArray, basename($music));
                     array_push($categoryClass->children, basename($music));
                 }
                 array_push($folderClass->children, $categoryClass);
-                // $categoryArray[$categoryName] = $musicArray;
             }
 
             array_push($result, $folderClass);
-            // $result[$folderName] = $categoryArray;
         }
 
         echo json_encode($result);
