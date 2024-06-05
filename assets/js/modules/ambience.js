@@ -2,8 +2,54 @@ import * as GLOBALS from "../globals/const.js";
 import * as FUNC from "../globals/func.js";
 
 
+export class Ambience {
+    constructor(obj) {
+        this.id_ambience = obj.id_ambience;
+        this.name = obj.name;
+        this.url = obj.url;
+        this.element;
+    }
 
+    Load() {
+        let article = document.createElement("article");
+        $(article).addClass("ambience_art me-2");
+        this.element = article;
+    
+        let button = document.createElement("button");
+        $(button).text(this.name);
+        $(button).addClass("btn btn-primary");
+        article.appendChild(button);
+    
+        let audio = document.createElement("audio");
+        $(audio)
+            .prop("src", this.url)
+            .attr("data-volume", "ambiance")
+            .prop("loop", true)
+            .prop("volume", 0);
+            // .prop("id", `ambience_${url}`);
+        article.appendChild(audio);
 
+        let that = this;
+    
+        $(button).on("click", function() {
+            // Si le bouton est cliqué alors que le son n'était pas joué
+            if(audio.paused) {
+                if(!$(this).hasClass("active"))
+                {
+                    $(that.element.parentNode).find("button").removeClass("active");
+                    $(this).addClass("active");
+                }
+    
+                SetAmbienceAs(audio);
+            }
+            // Si le bouton est cliqué alors que le son est en train d'être joué
+            else {
+                $(btn).removeClass("active");
+                ResetAmbience();
+            }
+        });
+    }
+}
 
 export default function InitAmbience()
 {
