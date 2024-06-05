@@ -1,7 +1,7 @@
 const OUTPUT = $("#outputAventures")[0];
-console.log(OUTPUT);
 
 InitAventures();
+LoadAdventure();
 
 function InitAventures() {
     let send = {
@@ -42,5 +42,22 @@ function InitAventures() {
             // $(desc).text(this.description);
             // body.appendChild(desc);
         });
+    });
+}
+
+function LoadAdventure() {
+    let send = {
+        type: "load",
+        for: "aventure",
+        id_aventure: 2
+    };
+
+    $.post("controller.php", send, function(data) {
+        let result = jQuery.parseJSON(data);
+        // console.log(result);
+
+        $(result.playlists).each(function() {
+            console.log(this);
+        })
     });
 }

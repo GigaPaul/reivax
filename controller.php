@@ -79,6 +79,106 @@ switch($type)
                 break;
         }
         break;
+
+    case "load":
+        switch($for) {
+            case "aventure":
+                $sqlAmbiences = "SELECT ambiences.name, ambiences.url FROM aventures_ambiences 
+                INNER JOIN ambiences ON ambiences.id_ambience = aventures_ambiences.id_ambience
+                WHERE aventures_ambiences.id_aventure = :id_aventure";
+
+                $queryAmbiences = $pdo->prepare($sqlAmbiences);
+                $queryAmbiences->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $queryAmbiences->execute();
+
+                if($queryAmbiences->errorCode() == '00000')
+                {
+                    $queryAmbiences->setFetchMode(PDO::FETCH_ASSOC);
+                    $ambiences = $queryAmbiences->fetchALL();
+                }
+
+
+
+
+                $sqlLandscapes = "SELECT landscapes.name, landscapes.url FROM aventures_landscapes
+                INNER JOIN landscapes ON landscapes.id_landscape = aventures_landscapes.id_landscape
+                WHERE aventures_landscapes.id_aventure = :id_aventure";
+
+                $queryLandscapes = $pdo->prepare($sqlLandscapes);
+                $queryLandscapes->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $queryLandscapes->execute();
+
+                if($queryLandscapes->errorCode() == '00000')
+                {
+                    $queryLandscapes->setFetchMode(PDO::FETCH_ASSOC);
+                    $landscapes = $queryLandscapes->fetchALL();
+                }
+
+
+
+
+                $sqlPlaylists = "SELECT playlists.* FROM aventures_playlists 
+                INNER JOIN playlists ON playlists.id_playlist = aventures_playlists.id_playlist
+                WHERE aventures_playlists.id_aventure = :id_aventure";
+
+                $queryPlaylists = $pdo->prepare($sqlPlaylists);
+                $queryPlaylists->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $queryPlaylists->execute();
+
+                if($queryPlaylists->errorCode() == '00000') {
+                    $queryPlaylists->setFetchMode(PDO::FETCH_ASSOC);
+                    $playlists = $queryPlaylists->fetchALL();
+
+
+
+                    for($i = 0; $i < count($playlists); $i++) {
+                        $playlists[$i]["musics"] = array();
+                        $playlists[$i]["id_playlist"] = intval($playlists[$i]["id_playlist"]);
+                        $playlists[$i]["is_shuffle"] = filter_var($playlists[$i]["is_shuffle"], FILTER_VALIDATE_BOOLEAN);
+
+                        $sqlMusic = "SELECT musics.name, musics.url FROM playlists_musics 
+                        INNER JOIN musics ON playlists_musics.id_music = musics.id_music
+                        WHERE playlists_musics.id_playlist = :id_playlist";
+
+                        $queryMusic = $pdo->prepare($sqlMusic);
+                        $queryMusic->bindValue(':id_playlist', $playlists[$i]["id_playlist"], PDO::PARAM_INT);
+                        $queryMusic->execute();
+
+                        if($queryMusic->errorCode() == '00000') {
+                            $queryMusic->setFetchMode(PDO::FETCH_ASSOC);
+                            $musics = $queryMusic->fetchALL();
+
+                            $playlists[$i]["musics"] = $musics;
+                        }
+                    }
+                }
+
+
+
+
+                $sqlSounds = "SELECT sounds.name, sounds.frequency, sounds.is_loop, sounds.url FROM aventures_sounds
+                INNER JOIN sounds ON sounds.id_sound = aventures_sounds.id_sound
+                WHERE aventures_sounds.id_aventure = :id_aventure";
+
+                $querySounds = $pdo->prepare($sqlSounds);
+                $querySounds->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $querySounds->execute();
+
+                if($querySounds->errorCode() == '00000')
+                {
+                    $querySounds->setFetchMode(PDO::FETCH_ASSOC);
+                    $sounds = $querySounds->fetchALL();
+                }
+
+                $result = array();
+                $result["ambiences"] = $ambiences;
+                $result["landscapes"] = $landscapes;
+                $result["playlists"] = $playlists;
+                $result["sounds"] = $sounds;
+                
+                echo json_encode($result);
+                break;
+        }
 }
 
 ?>
