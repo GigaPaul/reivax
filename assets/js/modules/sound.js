@@ -269,23 +269,3 @@ class Sound {
         }
     }
 }
-
-
-
-
-
-export default function InitSounds()
-{
-    let container = $(".sounds__container");
-    $(container).each(function()
-    {
-        let btn = document.createElement("button");
-        $(btn).addClass("btn btn-primary w-100 mb-3")
-        let name = $(this).data("name");
-        $(btn).text(name);
-        $(btn).on("click", CreateSound);
-        $(this).append(btn);
-    })
-    
-    console.log("Module Sound initialisé.")
-}

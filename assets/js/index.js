@@ -1,7 +1,4 @@
 import InitVolume from "./modules/volume.js";
-// import InitLandscape from "./modules/landscape.js";
-// import InitAmbience from "./modules/ambience.js";
-// import InitSounds from "./modules/sound.js";
 import InitMusic from "./modules/music.js";
 
 import { Adventure } from "./modules/adventure.js";
@@ -38,7 +35,3 @@ function LoadAdventure(id_aventure) {
 InitVolume();
 InitMusic();
 LoadAdventure(2);
-
-// InitLandscape();
-// InitAmbience();
-// InitSounds();

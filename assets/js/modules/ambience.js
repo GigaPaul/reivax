@@ -51,48 +51,7 @@ export class Ambience {
     }
 }
 
-export default function InitAmbience()
-{
-    $(".ambience_art").each(function()
-    {
-        let btn = $(this).find("button")
-        let url = btn.data("url");
 
-        let audio = document.createElement("audio");
-        $(audio)
-            .prop("src", GLOBALS.AMBIENCE_URL + url)
-            .attr("data-volume", "ambiance")
-            .prop("loop", true)
-            .prop("volume", 0)
-            .prop("id", `ambience_${url}`);
-        this.appendChild(audio);
-
-
-
-        btn.on("click", function()
-        {
-            // Si le bouton est cliqué alors que le son n'était pas joué
-            if(audio.paused)
-            {
-                if(!$(this).hasClass("active"))
-                {
-                    $(".ambience_btns").find("button").removeClass("active");
-                    $(this).addClass("active");
-                }
-
-                SetAmbienceAs(audio);
-            }
-            // Si le bouton est cliqué alors que le son est en train d'être joué
-            else
-            {
-                $(btn).removeClass("active");
-                ResetAmbience();
-            }
-        });
-    })
-
-    console.log("Module Ambience initialisé.")
-}
 
 
 
