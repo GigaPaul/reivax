@@ -27,7 +27,7 @@ function LoadAdventure(id_aventure) {
         let adventure = new Adventure(queriedAdventure);
 
         adventure.LoadAmbiences();
-        // adventure.LoadLandscapes();
+        adventure.LoadLandscapes();
         adventure.LoadPlaylists();
         // adventure.LoadSounds();
     });

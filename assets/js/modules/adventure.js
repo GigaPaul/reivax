@@ -1,6 +1,7 @@
 import { Ambience } from "./ambience.js";
 import { Playlist } from "./music.js";
-import { AMBIENCE_OUTPUT, MUSIC_OUTPUT } from "./../index.js";
+import { Landscape } from "./landscape.js";
+import { AMBIENCE_OUTPUT, MUSIC_OUTPUT, LANDSCAPE_OUTPUT } from "./../index.js";
 
 
 
@@ -29,7 +30,11 @@ export class Adventure {
 
 
     LoadLandscapes() {
-
+        $(this.landscapes).each(function() {
+            let landscape = new Landscape(this);
+            landscape.Load();
+            LANDSCAPE_OUTPUT.appendChild(landscape.element);
+        });
     }
 
 

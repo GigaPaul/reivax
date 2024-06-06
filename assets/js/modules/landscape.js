@@ -6,61 +6,113 @@ import { LANDSCAPE_OUTPUT } from "./../index.js";
 
 
 
-export default function InitLandscape() {
-    let send = {
-        type: "landscape"
+export class Landscape {
+    constructor(obj) {
+        this.name = obj.name;
+        this.url = obj.url;
+        this.element;
     }
 
+    Load() {
+        if(!FUNC.IsImage(this.url) && !FUNC.IsVideo(this.url)) {
+            return;
+        }
 
-    $.post("retriever.php", send, function(data)
-    {
-        let result = jQuery.parseJSON(data);
-
-
-        $(result).each(function() {
-
-            if(!FUNC.IsImage(this) && !FUNC.IsVideo(this)) {
-                return;
-            }
-
-            let container = document.createElement("div");
-            LANDSCAPE_OUTPUT.appendChild(container);
-            $(container).addClass("col-2 mb-3");
+        let container = document.createElement("div");
+        $(container).addClass("col-2 mb-3");
+        this.element = container;
 
 
-            let button = document.createElement("button");
-            container.appendChild(button);
-            $(button).addClass("background__button");
-            $(button).data("url", this);
+        let button = document.createElement("button");
+        container.appendChild(button);
+        $(button).addClass("background__button");
+        $(button).data("url", this.url);
 
-            // Image
-            if(FUNC.IsImage(this)) {
-                $(button).data("type", "image");
-                $(button).css("background-image", `url(${GLOBALS.LANDSCAPE_PATH + this})`)
-            }
-            // Video
-            else {
-                $(button).data("type", "video");
+        // Image
+        if(FUNC.IsImage(this.url)) {
+            $(button).data("type", "image");
+            $(button).css("background-image", `url(${this.url})`)
+        }
+        // Video
+        else {
+            $(button).data("type", "video");
 
-                let video = document.createElement("video");
-                button.appendChild(video);
-                $(video)
-                    .prop("muted", true)
-                    .prop("loop", true)
-                    .prop("disablePictureInPicture", true);
+            let video = document.createElement("video");
+            button.appendChild(video);
+            $(video)
+                .prop("muted", true)
+                .prop("loop", true)
+                .prop("disablePictureInPicture", true);
 
-                let source = document.createElement("source");
-                video.appendChild(source);
-                $(source).prop("src", GLOBALS.LANDSCAPE_PATH + this);
-                $(source).prop("type", "video/mp4");
-            }
+            let source = document.createElement("source");
+            video.appendChild(source);
+            $(source).prop("src", this.url);
+            $(source).prop("type", "video/mp4");
+        }
 
-            $(button).on("click", ChangeLandscape);
-        })
-
-        console.log("Module Landscape initialisé.")
-    });
+        $(button).on("click", ChangeLandscape);
+    }
 }
+
+
+
+
+
+// export default function InitLandscape() {
+//     let send = {
+//         type: "landscape"
+//     }
+
+
+//     $.post("retriever.php", send, function(data)
+//     {
+//         let result = jQuery.parseJSON(data);
+
+
+//         $(result).each(function() {
+
+//             if(!FUNC.IsImage(this) && !FUNC.IsVideo(this)) {
+//                 return;
+//             }
+
+//             let container = document.createElement("div");
+//             LANDSCAPE_OUTPUT.appendChild(container);
+//             $(container).addClass("col-2 mb-3");
+
+
+//             let button = document.createElement("button");
+//             container.appendChild(button);
+//             $(button).addClass("background__button");
+//             $(button).data("url", this);
+
+//             // Image
+//             if(FUNC.IsImage(this)) {
+//                 $(button).data("type", "image");
+//                 $(button).css("background-image", `url(${GLOBALS.LANDSCAPE_PATH + this})`)
+//             }
+//             // Video
+//             else {
+//                 $(button).data("type", "video");
+
+//                 let video = document.createElement("video");
+//                 button.appendChild(video);
+//                 $(video)
+//                     .prop("muted", true)
+//                     .prop("loop", true)
+//                     .prop("disablePictureInPicture", true);
+
+//                 let source = document.createElement("source");
+//                 video.appendChild(source);
+//                 $(source).prop("src", GLOBALS.LANDSCAPE_PATH + this);
+//                 $(source).prop("type", "video/mp4");
+//             }
+
+//             $(button).on("click", ChangeLandscape);
+//         })
+
+//         console.log("Module Landscape initialisé.")
+//     });
+// }
 
 
 

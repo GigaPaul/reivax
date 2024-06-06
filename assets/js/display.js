@@ -58,7 +58,7 @@ function SetBackgroundAs(backgroundUrl)
     let parent = $(".background__main")[0];
     let newLandscape = document.createElement("div");
     $(newLandscape).css("opacity", 0);
-    let path = LANDSCAPE_PATH + backgroundUrl;
+    let path = backgroundUrl;
 
     // Image
     if(FUNC.IsImage(backgroundUrl)) {

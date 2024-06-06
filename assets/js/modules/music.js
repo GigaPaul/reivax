@@ -218,7 +218,7 @@ export class Playlist {
 
                 remainingSongs = [...this.musics].filter(function(item)
                 {
-                    return !that.playedSongs.includes(item);
+                    return !that.playedMusics.includes(item);
                 })
                 
             }
