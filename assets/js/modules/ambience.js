@@ -44,7 +44,7 @@ export class Ambience {
             }
             // Si le bouton est cliqué alors que le son est en train d'être joué
             else {
-                $(btn).removeClass("active");
+                $(this).removeClass("active");
                 ResetAmbience();
             }
         });

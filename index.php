@@ -128,20 +128,7 @@
 
         <article id="ambienceSelector" class="mb-5">
             <h2 class="text-center">Ambiance</h2>
-            <div class="ambience_btns d-flex justify-content-center">
-                <article class="ambience_art me-2">
-                    <button data-url="AMB_ForestCleansed_Day04.ogg" class="btn btn-primary">Forêt</button>
-                </article>
-                <article class="ambience_art me-2">
-                    <button data-url="AMB_TKRaid_Subterranean.ogg" class="btn btn-primary">Caverne</button>
-                </article>
-                <article class="ambience_art me-2">
-                    <button data-url="StormwindDay.ogg" class="btn btn-primary">Village</button>
-                </article>
-                <article class="ambience_art">
-                    <button data-url="Tavern.ogg" class="btn btn-primary">Taverne</button>
-                </article>
-            </div>   
+            <output id="ambienceOutput" class="d-flex justify-content-center"></output>
         </article>
 
 

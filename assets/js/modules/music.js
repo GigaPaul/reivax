@@ -12,206 +12,163 @@ export default function InitMusic(){
         $(this).on("timeupdate", FadeTransition);    
         $(this).on("loadedmetadata", InitAudioPlay)
     })
-
-
-    let send = {
-        type: "music"
-    }
-
-
-    $.post("retriever.php", send, function(data)
-    {
-        let result = jQuery.parseJSON(data);
-        let container = document.createElement("div");
-        let output = $("#musicOutput")[0];
-        output.appendChild(container);
-        
-
-        $(result).each(function()
-        {
-            let folder = this;
-            
-            let folderContainer = document.createElement("article");
-            let folderTitle = document.createElement("h3");
-            $(folderTitle).addClass("text-capitalize");
-            $(folderTitle).text(folder.name);
-            folderContainer.appendChild(folderTitle);
-            
-            container.appendChild(folderContainer);
-
-            $(folder.children).each(function()
-            {
-                let category = this;
-
-                if(category.children.length === 0) {
-                    return;
-                }
-                
-                let categoryContainer = document.createElement("article");
-                $(categoryContainer).data("url", `${folder.name}/${category.name}/`);
-                $(categoryContainer).addClass("card w-max-content");
-                // $(categoryContainer).addClass("music__type");
-                folderContainer.appendChild(categoryContainer);
-
-
-                // HEADER
-                let categoryHeader = document.createElement("div");
-                $(categoryHeader).addClass("card-header");
-                categoryContainer.appendChild(categoryHeader);
-
-                let categoryTitle = document.createElement("h4");
-                $(categoryTitle).addClass("text-capitalize m-0");
-                $(categoryTitle).text(category.name);
-                categoryHeader.appendChild(categoryTitle);
-
-
-                // BODY
-                let categoryBody = document.createElement("div");
-                $(categoryBody).addClass("card-body d-flex");
-                categoryContainer.appendChild(categoryBody);
-
-                let songControls = document.createElement("div");
-                $(songControls).addClass("d-flex flex-column justify-content-between me-3");
-                categoryBody.appendChild(songControls);
-
-                // TOGGLE BUTTON
-                let toggleButton = document.createElement("button");
-                $(toggleButton).addClass("music__toggle btn btn-success mb-1");
-                songControls.appendChild(toggleButton);
-
-                let toggleIcon = document.createElement("i");
-                $(toggleIcon).addClass("fa-solid fa-play");
-                toggleButton.appendChild(toggleIcon);
-
-                // SHUFFLE BUTTON
-                let shuffleButton = document.createElement("button");
-                $(shuffleButton).addClass("music__shuffle btn");
-                songControls.appendChild(shuffleButton);
-
-                let shuffleIcon = document.createElement("i");
-                $(shuffleIcon).addClass("fa-solid fa-shuffle");
-                shuffleButton.appendChild(shuffleIcon);
-
-
-                // CURRENT SONG
-                let currentSong = document.createElement("div");
-                categoryBody.appendChild(currentSong);
-
-                let songTitle = document.createElement("h5");
-                $(songTitle).text(category.children[0]);
-                $(songTitle).addClass("music__songTitle");
-                currentSong.appendChild(songTitle);
-
-                let progressBarContainer = document.createElement("div");
-                $(progressBarContainer).addClass("progressbar");
-                currentSong.appendChild(progressBarContainer);
-
-                let progressbar = document.createElement("input");
-                $(progressbar)
-                    .prop("type", "range")
-                    .val("0")
-                    .prop("min", "0")
-                    .prop("max", "100")
-                    .prop("step", "any")
-                    .addClass("w-100");
-                progressBarContainer.appendChild(progressbar);
-
-                let timestamps = document.createElement("div");
-                $(timestamps).addClass("timestamp d-flex justify-content-between");
-                progressBarContainer.appendChild(timestamps);
-
-                let timestampCurrent = document.createElement("p");
-                $(timestampCurrent).addClass("timestamp__current m-0");
-                timestamps.appendChild(timestampCurrent);
-
-                let timestampEnd = document.createElement("p");
-                $(timestampEnd).addClass("timestamp__end m-0");
-                timestamps.appendChild(timestampEnd);
-
-
-                
-                // HIDDEN PLAYLIST
-                let playlist = document.createElement("ul");
-                categoryBody.appendChild(playlist);
-                $(playlist).addClass("music__playlist d-none");
-
-                $(category.children).each(function()
-                {
-                    let song = this;
-
-                    let li = document.createElement("li");
-                    $(li).data("url", song);
-                    playlist.appendChild(li);
-                });
-
-            
-                let music = new Playlist(categoryContainer);
-
-                if(music.isShuffled) {
-                    $(shuffleButton).addClass("btn-info");
-                }
-                else {
-                    $(shuffleButton).addClass("btn-outline-info");
-                }
-
-
-
-                // EVENTS
-                // Toggle
-                $(toggleButton).on("click", function() {
-                    let icon = $(this).children("i");
-                    if(CURRENT_MUSIC === music) {
-                        music.stop();
-                        $(this).addClass("btn-success").removeClass("btn-danger");
-                        $(icon).addClass("fa-play").removeClass("fa-stop");
-                    }
-                    // If this is not the current music
-                    else {
-                        music.start();
-                        $(this).addClass("btn-danger").removeClass("btn-success");
-                        $(icon).addClass("fa-stop").removeClass("fa-play");
-                    }
-                });
-
-                // Shuffle
-                $(shuffleButton).on("click", function() {
-                    music.isShuffled = !music.isShuffled;
-
-                    if(music.isShuffled) {
-                        $(this).addClass("btn-info").removeClass("btn-outline-info");
-                    }
-                    else {
-                        $(this).addClass("btn-outline-info").removeClass("btn-info");
-                    }
-                })
-
-            });
-        });
-
-        console.log("Module Music initialisé.")
-    });
 }
 
 
 
 
 
-class Playlist {
-    constructor(article, isShuffled = true)
+export class Playlist {
+    constructor(playlist)
     {
-        let that = this;
-        this.element = article;
-        this.url = GLOBALS.MUSIC_URL + $(article).data("url");
+        this.name = playlist.name;
         this.index = 0;
-        this.songs = [];
-        this.playedSongs = [];
-        this.isShuffled = isShuffled;
+        this.musics = [...playlist.musics];
+        this.playedMusics = [];
+        this.isShuffled = playlist.is_shuffle;
+        this.element;
+    }
 
-        let list = $(article).find(".music__playlist").children("li");
-        $(list).each(function()
+
+
+
+    Load() {
+        if(this.musics.length === 0) {
+            return;
+        }
+
+        let categoryContainer = document.createElement("article");
+        $(categoryContainer).addClass("card w-max-content");
+        this.element = categoryContainer;
+
+
+        // HEADER
+        let categoryHeader = document.createElement("div");
+        $(categoryHeader).addClass("card-header");
+        categoryContainer.appendChild(categoryHeader);
+
+        let categoryTitle = document.createElement("h4");
+        $(categoryTitle).addClass("text-capitalize m-0");
+        $(categoryTitle).text(this.name);
+        categoryHeader.appendChild(categoryTitle);
+
+
+        // BODY
+        let categoryBody = document.createElement("div");
+        $(categoryBody).addClass("card-body d-flex");
+        categoryContainer.appendChild(categoryBody);
+
+        let songControls = document.createElement("div");
+        $(songControls).addClass("d-flex flex-column justify-content-between me-3");
+        categoryBody.appendChild(songControls);
+
+        // TOGGLE BUTTON
+        let toggleButton = document.createElement("button");
+        $(toggleButton).addClass("music__toggle btn btn-success mb-1");
+        songControls.appendChild(toggleButton);
+
+        let toggleIcon = document.createElement("i");
+        $(toggleIcon).addClass("fa-solid fa-play");
+        toggleButton.appendChild(toggleIcon);
+
+        // SHUFFLE BUTTON
+        let shuffleButton = document.createElement("button");
+        $(shuffleButton).addClass("music__shuffle btn");
+        songControls.appendChild(shuffleButton);
+
+        let shuffleIcon = document.createElement("i");
+        $(shuffleIcon).addClass("fa-solid fa-shuffle");
+        shuffleButton.appendChild(shuffleIcon);
+
+
+        // CURRENT SONG
+        let currentSong = document.createElement("div");
+        categoryBody.appendChild(currentSong);
+
+        let songTitle = document.createElement("h5");
+        $(songTitle).text(this.musics[0].name);
+        $(songTitle).addClass("music__songTitle");
+        currentSong.appendChild(songTitle);
+
+        let progressBarContainer = document.createElement("div");
+        $(progressBarContainer).addClass("progressbar");
+        currentSong.appendChild(progressBarContainer);
+
+        let progressbar = document.createElement("input");
+        $(progressbar)
+            .prop("type", "range")
+            .val("0")
+            .prop("min", "0")
+            .prop("max", "100")
+            .prop("step", "any")
+            .addClass("w-100");
+        progressBarContainer.appendChild(progressbar);
+
+        let timestamps = document.createElement("div");
+        $(timestamps).addClass("timestamp d-flex justify-content-between");
+        progressBarContainer.appendChild(timestamps);
+
+        let timestampCurrent = document.createElement("p");
+        $(timestampCurrent).addClass("timestamp__current m-0");
+        timestamps.appendChild(timestampCurrent);
+
+        let timestampEnd = document.createElement("p");
+        $(timestampEnd).addClass("timestamp__end m-0");
+        timestamps.appendChild(timestampEnd);
+
+
+        
+        // HIDDEN PLAYLIST
+        let playlist = document.createElement("ul");
+        categoryBody.appendChild(playlist);
+        $(playlist).addClass("music__playlist d-none");
+
+        $(this.musics).each(function()
         {
-            that.songs.push($(this).data("url"));
-        })
+            let li = document.createElement("li");
+            $(li).data("url", this.url);
+            playlist.appendChild(li);
+        });
+
+
+        if(this.isShuffled) {
+            $(shuffleButton).addClass("btn-info");
+        }
+        else {
+            $(shuffleButton).addClass("btn-outline-info");
+        }
+
+
+
+        // EVENTS
+        // Toggle
+        let that = this;
+        $(toggleButton).on("click", function() {
+            let icon = $(this).children("i");
+            if(CURRENT_MUSIC === that) {
+                that.stop();
+                $(this).addClass("btn-success").removeClass("btn-danger");
+                $(icon).addClass("fa-play").removeClass("fa-stop");
+            }
+            // If this is not the current music
+            else {
+                that.start();
+                $(this).addClass("btn-danger").removeClass("btn-success");
+                $(icon).addClass("fa-stop").removeClass("fa-play");
+            }
+        });
+
+        // Shuffle
+        $(shuffleButton).on("click", function() {
+            that.isShuffled = !that.isShuffled;
+
+            if(that.isShuffled) {
+                $(this).addClass("btn-info").removeClass("btn-outline-info");
+            }
+            else {
+                $(this).addClass("btn-outline-info").removeClass("btn-info");
+            }
+        });
     }
 
 
@@ -246,10 +203,10 @@ class Playlist {
             let remainingSongs = []
 
             // Si toutes les musiques ont été jouées
-            if(this.songs.length === this.playedSongs.length)
+            if(this.musics.length === this.playedMusics.length)
             {
-                this.playedSongs = [];
-                remainingSongs = [...this.songs];
+                this.playedMusics = [];
+                remainingSongs = [...this.musics];
 
                 // On retire la musique qui est actuellement jouée pour ne pas répéter deux fois la même musique
                 remainingSongs.splice(this.index, 1);
@@ -259,7 +216,7 @@ class Playlist {
             {
                 let that = this;
 
-                remainingSongs = [...this.songs].filter(function(item)
+                remainingSongs = [...this.musics].filter(function(item)
                 {
                     return !that.playedSongs.includes(item);
                 })
@@ -277,12 +234,12 @@ class Playlist {
             let nextIndex = this.index + 1;
 
             // Si la dernière musique vient d'être jouée
-            if(nextIndex === this.songs.length)
+            if(nextIndex === this.musics.length)
             {
                 nextIndex = 0;
             }
             
-            return this.songs[nextIndex];
+            return this.musics[nextIndex];
         }
     }
 
@@ -292,13 +249,13 @@ class Playlist {
     start()
     {
         CURRENT_MUSIC = this;
-        let songPlayed = this.songs[0];
+        let songPlayed = this.musics[0];
 
         if(this.isShuffled)
         {
-            let length = this.songs.length;
+            let length = this.musics.length;
             let randomIndex = Math.floor(Math.random() * length);
-            songPlayed = this.songs[randomIndex];
+            songPlayed = this.musics[randomIndex];
         }
 
         this.play(songPlayed);
@@ -328,7 +285,7 @@ class Playlist {
     stop()
     {
         this.index = 0;
-        this.playedSongs = [];
+        this.playedMusics = [];
         Playlist.pause();
         CURRENT_MUSIC = null;
     }
@@ -346,10 +303,10 @@ class Playlist {
 
 
 
-    play(songName)
+    play(music)
     {
-        this.index = this.songs.indexOf(songName);
-        this.playedSongs.push(songName);
+        this.index = this.musics.indexOf(music);
+        this.playedMusics.push(music);
 
         let playingAudio = $(MUSIC_AUDIOS).children(".active")[0] ?? $(MUSIC_AUDIOS).children()[0];
         let pausedAudio = $(MUSIC_AUDIOS).children().filter(function() { return this !== playingAudio})[0];
@@ -360,7 +317,7 @@ class Playlist {
         }
         
         $(pausedAudio).addClass("active");
-        $(pausedAudio).prop("src", this.url+songName);
+        $(pausedAudio).prop("src", music.url);
         
 
         pausedAudio.play();
@@ -368,9 +325,9 @@ class Playlist {
         $(pausedAudio).animate({volume: volume}, GLOBALS.MUSIC_FADE_TIME);
         
         let title = $(this.element).find(".music__songTitle");
-        $(title).text(songName);
+        $(title).text(music.name);
 
-        console.log(`${songName} en cours d'écoute.`);
+        console.log(`${music.name} en cours d'écoute.`);
     }
 }
 
