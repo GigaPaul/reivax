@@ -1,7 +1,8 @@
 import { Ambience } from "./ambience.js";
 import { Playlist } from "./music.js";
 import { Landscape } from "./landscape.js";
-import { AMBIENCE_OUTPUT, MUSIC_OUTPUT, LANDSCAPE_OUTPUT } from "./../index.js";
+import { SoundFamily } from "./sound.js";
+import { AMBIENCE_OUTPUT, MUSIC_OUTPUT, LANDSCAPE_OUTPUT, SOUND_OUTPUT } from "./../index.js";
 
 
 
@@ -12,7 +13,7 @@ export class Adventure {
         this.ambiences = obj.ambiences;
         this.landscapes = obj.landscapes;
         this.playlists = obj.playlists;
-        this.sounds = obj.sounds;
+        this.soundFamilies = obj.soundfamilies;
     }
 
 
@@ -52,6 +53,10 @@ export class Adventure {
 
 
     LoadSounds() {
-
+        $(this.soundFamilies).each(function() {
+            let soundFamily = new SoundFamily(this);
+            soundFamily.Load();
+            SOUND_OUTPUT.appendChild(soundFamily.element);
+        });
     }
 }

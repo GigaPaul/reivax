@@ -83,6 +83,7 @@ switch($type)
     case "load":
         switch($for) {
             case "aventure":
+                // AMBIENCES
                 $sqlAmbiences = "SELECT ambiences.name, ambiences.url FROM aventures_ambiences 
                 INNER JOIN ambiences ON ambiences.id_ambience = aventures_ambiences.id_ambience
                 WHERE aventures_ambiences.id_aventure = :id_aventure";
@@ -96,10 +97,12 @@ switch($type)
                     $queryAmbiences->setFetchMode(PDO::FETCH_ASSOC);
                     $ambiences = $queryAmbiences->fetchALL();
                 }
+                //
 
 
 
 
+                // LANDSCAPES
                 $sqlLandscapes = "SELECT landscapes.name, landscapes.url FROM aventures_landscapes
                 INNER JOIN landscapes ON landscapes.id_landscape = aventures_landscapes.id_landscape
                 WHERE aventures_landscapes.id_aventure = :id_aventure";
@@ -113,10 +116,11 @@ switch($type)
                     $queryLandscapes->setFetchMode(PDO::FETCH_ASSOC);
                     $landscapes = $queryLandscapes->fetchALL();
                 }
+                //
 
 
 
-
+                // PLAYLISTS
                 $sqlPlaylists = "SELECT playlists.* FROM aventures_playlists 
                 INNER JOIN playlists ON playlists.id_playlist = aventures_playlists.id_playlist
                 WHERE aventures_playlists.id_aventure = :id_aventure";
@@ -152,29 +156,59 @@ switch($type)
                         }
                     }
                 }
+                //
 
 
 
 
-                $sqlSounds = "SELECT sounds.name, sounds.frequency, sounds.is_loop, sounds.url FROM aventures_sounds
-                INNER JOIN sounds ON sounds.id_sound = aventures_sounds.id_sound
-                WHERE aventures_sounds.id_aventure = :id_aventure";
+                // SOUNDS
+                $sqlSoundfamilies = "SELECT soundfamilies.id_soundfamily, soundfamilies.name, soundfamilies.frequency, soundfamilies.is_loop FROM aventures_soundfamilies
+                INNER JOIN soundfamilies ON soundfamilies.id_soundfamily = aventures_soundfamilies.id_soundfamily
+                WHERE aventures_soundfamilies.id_aventure = :id_aventure";
 
-                $querySounds = $pdo->prepare($sqlSounds);
-                $querySounds->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
-                $querySounds->execute();
+                // $sqlSoundfamilies = "SELECT sounds.name, sounds.frequency, sounds.is_loop, sounds.url FROM aventures_sounds
+                // INNER JOIN sounds ON sounds.id_sound = aventures_sounds.id_sound
+                // WHERE aventures_sounds.id_aventure = :id_aventure";
 
-                if($querySounds->errorCode() == '00000')
+                $querySoundfamilies = $pdo->prepare($sqlSoundfamilies);
+                $querySoundfamilies->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $querySoundfamilies->execute();
+
+                if($querySoundfamilies->errorCode() == '00000')
                 {
-                    $querySounds->setFetchMode(PDO::FETCH_ASSOC);
-                    $sounds = $querySounds->fetchALL();
+                    $querySoundfamilies->setFetchMode(PDO::FETCH_ASSOC);
+                    $soundfamilies = $querySoundfamilies->fetchALL();
+
+
+
+                    for($i = 0; $i < count($soundfamilies); $i++) {
+                        $soundfamilies[$i]["sounds"] = array();
+                        $soundfamilies[$i]["id_soundfamily"] = intval($soundfamilies[$i]["id_soundfamily"]);
+                        $soundfamilies[$i]["frequency"] = intval($soundfamilies[$i]["frequency"]);
+                        $soundfamilies[$i]["is_loop"] = filter_var($soundfamilies[$i]["is_loop"], FILTER_VALIDATE_BOOLEAN);
+
+                        $sqlSounds = "SELECT sounds.url FROM sounds 
+                        WHERE id_soundfamily = :id_soundfamily";
+
+                        $querySounds = $pdo->prepare($sqlSounds);
+                        $querySounds->bindValue(':id_soundfamily', $soundfamilies[$i]["id_soundfamily"], PDO::PARAM_INT);
+                        $querySounds->execute();
+
+                        if($querySounds->errorCode() == '00000') {
+                            $querySounds->setFetchMode(PDO::FETCH_ASSOC);
+                            $sounds = $querySounds->fetchALL();
+
+                            $soundfamilies[$i]["sounds"] = $sounds;
+                        }
+                    }
                 }
+                //
 
                 $result = array();
                 $result["ambiences"] = $ambiences;
                 $result["landscapes"] = $landscapes;
                 $result["playlists"] = $playlists;
-                $result["sounds"] = $sounds;
+                $result["soundfamilies"] = $soundfamilies;
                 
                 echo json_encode($result);
                 break;

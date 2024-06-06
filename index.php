@@ -140,8 +140,8 @@
                 <div class="row">
                     <h2 class="text-center">Sons</h2>
                     <div class="col-6">
-                        <div class="row">
-                            <div class="sounds__container col-3" data-name="Pluie" >
+                        <output id="soundOutput" class="row">
+                            <!-- <div class="sounds__container col-3" data-name="Pluie" >
                                 <ul class="sounds__playlist d-none">
                                     <li data-url="RainLightLoop.ogg"></li>
                                 </ul>
@@ -213,8 +213,8 @@
                                 <ul class="sounds__playlist d-none">
                                     <li data-url="FX_DarkmoonFaire_Bell.ogg"></li>
                                 </ul>
-                            </div>
-                        </div>
+                            </div> -->
+                        </output>
                 
                     </div>
         
