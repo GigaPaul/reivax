@@ -1,6 +1,6 @@
 import * as GLOBALS from "../globals/const.js";
 import * as FUNC from "../globals/func.js";
-import { MUSIC_AUDIOS } from "./../index.js";
+import { MUSIC_AUDIOS } from "./../globals/elements.js";
 
 let CURRENT_MUSIC = null;
 

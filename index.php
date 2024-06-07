@@ -1,5 +1,9 @@
 <?php
     include "./header.php";
+
+    if(!isset($_GET["id_aventure"])) {
+        header("Location: admin.php");
+    }
 ?>
 
 

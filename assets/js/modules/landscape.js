@@ -1,5 +1,5 @@
 import * as FUNC from "../globals/func.js";
-import { LANDSCAPE_OUTPUT } from "./../index.js";
+import { LANDSCAPE_OUTPUT } from "./../globals/elements.js";
 
 
 

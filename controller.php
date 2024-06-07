@@ -74,6 +74,13 @@ switch($type)
                     $query->setFetchMode(PDO::FETCH_ASSOC);
                     $result = $query->fetchALL();
 
+
+
+                    for($i = 0; $i < count($result); $i++) {
+                        $result[$i]["id_aventure"] = intval($result[$i]["id_aventure"]);
+                    }
+                    
+
                     echo json_encode($result);
                 }
                 break;

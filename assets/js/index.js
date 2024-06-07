@@ -1,37 +1,28 @@
 import InitVolume from "./modules/volume.js";
 import InitMusic from "./modules/music.js";
-
 import { Adventure } from "./modules/adventure.js";
+import { LANDSCAPE_OUTPUT, AMBIENCE_OUTPUT, MUSIC_OUTPUT, SOUND_OUTPUT } from "./globals/elements.js";
 
-export const LANDSCAPE_OUTPUT = $("#landscapeOutput")[0];
-export const AMBIENCE_OUTPUT = $("#ambienceOutput")[0];
-export const MUSIC_OUTPUT = $("#musicOutput")[0];
-export const SOUND_OUTPUT = $("#soundOutput")[0];
-
-export const MUSIC_AUDIOS = $("#musicAudios");
+let params = new URL(document.location.toString()).searchParams;
 
 
+async function LoadAdventure(id_aventure) {
+    let adventure = new Adventure();
+    await adventure.Fetch(id_aventure);
 
-
-
-function LoadAdventure(id_aventure) {
-    let send = {
-        type: "load",
-        for: "aventure",
-        id_aventure: id_aventure
-    };
-
-    $.post("controller.php", send, function(data) {
-        let queriedAdventure = jQuery.parseJSON(data);
-        let adventure = new Adventure(queriedAdventure);
-
-        adventure.LoadAmbiences();
-        adventure.LoadLandscapes();
-        adventure.LoadPlaylists();
-        adventure.LoadSounds();
-    });
+    adventure.LoadAmbiences(AMBIENCE_OUTPUT);
+    adventure.LoadLandscapes(LANDSCAPE_OUTPUT);
+    adventure.LoadPlaylists(MUSIC_OUTPUT);
+    adventure.LoadSounds(SOUND_OUTPUT);
 }
+
+
+
+
 
 InitVolume();
 InitMusic();
-LoadAdventure(2);
+
+if(params.has("id_aventure")) {
+    LoadAdventure(params.get("id_aventure"));
+}
