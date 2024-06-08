@@ -139,4 +139,20 @@
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
 }
+
+.adventureForm__card {
+  cursor: pointer;
+}
+
+.adventureForm__card.active {
+  opacity: 1;
+}
+
+.adventureForm__card:not(.active) {
+  opacity: 0.25;
+}
+
+.adventureForm__card:not(.active):hover {
+  opacity: 0.75;
+}
 /*# sourceMappingURL=main.css.map */

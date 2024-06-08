@@ -108,16 +108,20 @@ export class Adventure {
 
     CreateCard() {
         let article = document.createElement("article");
-        $(article).addClass("col-4");
+        $(article).addClass("col-4 mb-3");
     
         let card = document.createElement("div");
         $(card).addClass("card");
         article.appendChild(card);
     
-        let img = document.createElement("img");
-        $(img).addClass("card-img-top");
-        $(img).prop("src", this.background);
-        card.appendChild(img);
+        let frame = document.createElement("div");
+        $(frame)
+            .css("height", "130px")
+            .css("background-image", `url(${this.background})`)
+            .css("background-size", "cover")
+            .css("background-position", "center")
+            .addClass("card-img-top");
+        card.appendChild(frame);
     
         let body = document.createElement("div");
         $(body).addClass("card-body");

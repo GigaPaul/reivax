@@ -3,26 +3,10 @@
     src:
       local("Leander"),
       url("Leander.ttf") format("truetype");
-  }
+}
 
-// p, h1, h2, h3, h4
-// {
-//     margin: 0;
-//     padding: 0;
-// }
 
-// h2
-// {
-//     margin-bottom: 15px;
-// }
-
-// .background_btns
-// {
-//     &>:not(:last-child)
-//     {
-//         margin-right: 20px;
-//     }
-// }
+  
 
 .background
 {
@@ -91,12 +75,7 @@
         -moz-transition: opacity 250ms ease-in-out;
         -ms-transition: opacity 250ms ease-in-out;
         -o-transition: opacity 250ms ease-in-out;
-}
-    // transition: opacity 1s ease-in-out;
-    // -webkit-transition: opacity 1s ease-in-out;
-    // -moz-transition: opacity 1s ease-in-out;
-    // -ms-transition: opacity 1s ease-in-out;
-    // -o-transition: opacity 1s ease-in-out;
+    }
 }
 
 
@@ -162,134 +141,7 @@
 }
 
 
-// .capitalize
-// {
-//     text-transform: capitalize;
-// }
 
-// .hidden
-// {
-//     display: none;
-// }
-
-// .error
-// {
-//     color: red;
-// }
-
-
-// button.active
-// {
-//     background-color: red;
-// }
-
-
-
-
-
-// #main
-// {
-//     width: 100vw;
-//     height: 100vh;
-// }
-
-// #controller
-// {
-//     color: white;
-//     padding-top: 50px;
-//     position: absolute;
-//     text-align: center;
-//     width: 960px;
-//     height: max-content;
-//     margin: auto;
-//     left: 0;
-//     right: 0;
-//     top: 0;
-
-//     & a
-//     {
-//         color: white;
-//     }
-
-//     & > *
-//     {
-//         &:not(:last-child)
-//         {
-//             margin-bottom: 50px;
-//         }
-//     }
-// }
-
-
-// .sounds
-// {
-//     display: flex;
-
-//     & > * 
-//     {
-//         width: 50%;
-//         &:nth-child(1)
-//         {
-//             padding-right: 10px;
-//         }
-//         &:nth-child(2)
-//         {
-//             padding-left: 10px;
-//         }
-//     }
-
-
-//     &__body
-//     {
-//         display: flex;
-//         justify-content: space-between;
-//     }
-
-
-
-//     &__activeContainer
-//     {
-//         display: flex;
-//         align-items: center;
-//         justify-content: space-between;
-//     }
-
-//     &__article
-//     {
-//         &:not(:last-child)
-//         {
-//                 margin-bottom: 20px;
-//         }
-//     }
-
-//     &__activePlaylist
-//     {
-//         display: none;
-//     }
-
-//     &__playlist
-//     {
-//         display: none;
-//     }
-
-//     &__frequency
-//     {
-//         display: flex;
-//         align-items: center;
-//     }
-// }
-
-
-// .ambience_btns
-// {
-//     display: flex;
-//     justify-content: center;
-
-//     &>:not(:last-child)
-//     {
-//         margin-right: 20px;
-//     }
-// }
 
 .video
 {
@@ -313,21 +165,30 @@
         top: 50%;
         width: 177.77777778vh;
 
-        // &.active
-        // {
-        //     opacity: 1;
-        // }
-
         transform: translate(-50%, -50%);
         -webkit-transform: translate(-50%, -50%);
         -moz-transform: translate(-50%, -50%);
         -ms-transform: translate(-50%, -50%);
         -o-transform: translate(-50%, -50%);
+    }
+}
 
-        // transition: opacity 1s ease-in-out;
-        // -webkit-transition: opacity 1s ease-in-out;
-        // -moz-transition: opacity 1s ease-in-out;
-        // -ms-transition: opacity 1s ease-in-out;
-        // -o-transition: opacity 1s ease-in-out;
+
+
+.adventureForm {
+    &__card {
+        cursor: pointer;
+
+        &.active {
+            opacity: 1;
+        }
+
+        &:not(.active) {
+            opacity: 0.25;
+
+            &:hover {
+                opacity: 0.75;
+            }
+        }
     }
 }
