@@ -166,7 +166,7 @@ export class Adventure {
 
     async LoadForm() {
         let form = $("#editAdventureForm")[0];
-        
+
         if(form.length === 0) {
             return;
         }
@@ -192,7 +192,7 @@ export class Adventure {
 
             let text = document.createElement("p");
             $(text)
-                .addClass("text-center user-select-none opacity-25")
+                .addClass("text-center user-select-none opacity-25 m-0")
                 .text("Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.");
             div.appendChild(text);
 
@@ -261,7 +261,7 @@ export class Adventure {
                 $(title).addClass("m-0 text-truncate");
                 $(title).text(this.name);
                 body.appendChild(title);
-            })
+            });
         }
 
 
@@ -275,7 +275,7 @@ export class Adventure {
 
             let text = document.createElement("p");
             $(text)
-                .addClass("text-center user-select-none opacity-25")
+                .addClass("text-center user-select-none opacity-25 m-0")
                 .text("Cette aventure ne contient encore aucune ambiance. Faites une recherche pour en rajouter.");
             div.appendChild(text);
 
@@ -304,21 +304,106 @@ export class Adventure {
 
                 let button = document.createElement("button");
                 $(button).prop("type", "button");
-                $(button).addClass("btn btn-primary w-100 text-truncate ambienceForm_button");
+                $(button).addClass("btn btn-primary w-100 text-truncate");
                 $(button).text(this.name);
                 article.appendChild(button);
 
                 $(button).on("click", function() {
                     $(checkbox).prop("checked", !$(checkbox).prop("checked"));
                     $(checkbox).trigger("change");
-                })
+                });
 
                 $(checkbox).on("change", function() {
                     $(button).toggleClass("btn-outline-primary", !this.checked)
                     $(button).toggleClass("btn-primary", this.checked)
-                })
-            })
+                });
+            });
 
+        }
+
+
+
+
+
+        // SOUNDS
+        // If there are no sounds
+        if(this.soundFamilies.length === 0) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("p");
+            $(text)
+                .addClass("text-center user-select-none opacity-25 m-0")
+                .text("Cette aventure ne contient encore aucun son. Faites une recherche pour en rajouter.");
+            div.appendChild(text);
+
+            $("#formOutputSounds")[0].appendChild(div);
+        }
+        // If there are sounds
+        else {
+            let section = document.createElement("section");
+            $(section).addClass("row");
+            $("#formOutputSounds")[0].appendChild(section);
+            
+            $(this.soundFamilies).each(function() {
+                let article = document.createElement("article");
+                $(article).addClass("col-2 mb-2");
+                section.appendChild(article);
+
+                let checkbox = document.createElement("input");
+                $(checkbox)
+                    .prop("type", "checkbox")
+                    .prop("name", "soundFamilies[]")
+                    .prop("value", this.id_soundfamily)
+                    .prop("checked", true);
+                $(checkbox).addClass("d-none");
+                article.appendChild(checkbox);
+
+                let button = document.createElement("button");
+                $(button).prop("type", "button");
+                $(button).addClass("btn btn-primary w-100 text-truncate");
+                $(button).text(this.name);
+                article.appendChild(button);
+
+                $(button).on("click", function() {
+                    $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+                    $(checkbox).trigger("change");
+                });
+
+                $(checkbox).on("change", function() {
+                    $(button).toggleClass("btn-outline-primary", !this.checked)
+                    $(button).toggleClass("btn-primary", this.checked)
+                });
+            });
+
+        }
+
+
+
+
+
+        // MUSICS
+        // If there are no musics
+        if(this.playlists.length === 0) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("p");
+            $(text)
+                .addClass("text-center user-select-none opacity-25 m-0")
+                .text("Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.");
+            div.appendChild(text);
+
+            $("#formOutputMusics")[0].appendChild(div);
+        }
+        // If there are musics
+        else {
+            let section = document.createElement("section");
+            $(section).addClass("row");
+            $("#formOutputMusics")[0].appendChild(section);
+            
+            $(this.playlists).each(function() {
+                let article = document.createElement("article");
+                $(article).addClass("")
+            });
         }
         console.log(this);
     }

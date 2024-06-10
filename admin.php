@@ -58,12 +58,12 @@
                     <!-- AMBIANCES -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseAmbiances" aria-expanded="false" aria-controls="collapseAmbiances">
                                 Ambiances
                             </button>
                         </h2>
-                        <div id="collapseAmbiances" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div id="collapseAmbiances" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
 
                                 <section class="row">
@@ -99,14 +99,7 @@
                                     </div>
                                 </section>
 
-                                <section class="row">
-                                    <article class="col-2 mb-2">
-                                        <button type="button" class="btn btn-outline-primary w-100 text-truncate sonForm_button">
-                                            Loups
-                                        </button>
-                                    </article>
-                                </section>
-
+                                <output id="formOutputSounds" class="w-100"></output>
                             </div>
                         </div>
                     </div>
@@ -115,12 +108,12 @@
                     <!-- MUSIQUES -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseMusiques" aria-expanded="false" aria-controls="collapseMusiques">
                                 Musiques
                             </button>
                         </h2>
-                        <div id="collapseMusiques" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapseMusiques" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <section class="row">
                                     <div class="input-group mb-3">
@@ -130,7 +123,9 @@
                                     </div>
                                 </section>
 
-                                <section class="row">
+                                <outline id="formOutputMusics"></outline>
+
+                                <!-- <section class="row">
                                     <article class="col-3">
                                         <div class="card fade show overflow-hidden activable">
                                             <div class="card-header musicForm__header">
@@ -139,7 +134,7 @@
                                             <audio class="w-100 m-0 p-0" src="./assets/audio/musics/combat/gobelins/blood_rythm.mp3" controls></audio>
                                         </div>
                                     </article>
-                                </section>
+                                </section> -->
                             </div>
                         </div>
                     </div>

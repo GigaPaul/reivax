@@ -43,61 +43,7 @@ $("#editAdventureForm").on("show.bs.modal", function() {
 
 
 
-$(".adventureForm__card").each(InitLandscapeFormCards);
-$(".ambienceForm_button").each(InitAmbienceButtons);
-$(".sonForm_button").each(InitSonButtons);
 $(".musicForm__header").each(InitMusicButtons);
-
-
-// LANDSCAPE
-function InitLandscapeFormCards() {
-    $(this).on("click", function() {
-        if($(this).hasClass("active")) {
-            // Remove landscape from adventure
-            $(this).removeClass("active");
-        }
-        else {
-            // Add landscape from adventure
-            $(this).addClass("active");
-        }
-    });
-}
-
-// AMBIENCE
-function InitAmbienceButtons() {
-    $(this).on("click", function() {
-        if($(this).hasClass("btn-primary")) {
-            // Remove ambience from adventure
-            $(this)
-                .removeClass("active btn-primary")
-                .addClass("btn-outline-primary");
-        }
-        else {
-            // Add ambience from adventure
-            $(this)
-                .addClass("active btn-primary")
-                .removeClass("btn-outline-primary");
-        }
-    });
-}
-
-// SONS
-function InitSonButtons() {
-    $(this).on("click", function() {
-        if($(this).hasClass("btn-primary")) {
-            // Remove sound from adventure
-            $(this)
-                .removeClass("active btn-primary")
-                .addClass("btn-outline-primary");
-        }
-        else {
-            // Add sound from adventure
-            $(this)
-                .addClass("active btn-primary")
-                .removeClass("btn-outline-primary");
-        }
-    });
-}
 
 // MUSIC
 function InitMusicButtons() {
