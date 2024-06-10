@@ -166,6 +166,7 @@ export class Adventure {
 
     async LoadForm() {
         let form = $("#editAdventureForm")[0];
+        
         if(form.length === 0) {
             return;
         }
@@ -261,6 +262,63 @@ export class Adventure {
                 $(title).text(this.name);
                 body.appendChild(title);
             })
+        }
+
+
+
+
+
+        // AMBIENCES
+        // If there are no ambiences
+        if(this.ambiences.length === 0) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("p");
+            $(text)
+                .addClass("text-center user-select-none opacity-25")
+                .text("Cette aventure ne contient encore aucune ambiance. Faites une recherche pour en rajouter.");
+            div.appendChild(text);
+
+            $("#formOutputAmbiences")[0].appendChild(div);
+        }
+        // If there are ambiences
+        else {
+            let section = document.createElement("section");
+            $(section).addClass("row");
+            $("#formOutputAmbiences")[0].appendChild(section);
+            
+            $(this.ambiences).each(function() {
+
+                let article = document.createElement("article");
+                $(article).addClass("col-2 mb-2");
+                section.appendChild(article);
+
+                let checkbox = document.createElement("input");
+                $(checkbox)
+                    .prop("type", "checkbox")
+                    .prop("name", "ambiences[]")
+                    .prop("value", this.id_ambience)
+                    .prop("checked", true);
+                $(checkbox).addClass("d-none");
+                article.appendChild(checkbox);
+
+                let button = document.createElement("button");
+                $(button).prop("type", "button");
+                $(button).addClass("btn btn-primary w-100 text-truncate ambienceForm_button");
+                $(button).text(this.name);
+                article.appendChild(button);
+
+                $(button).on("click", function() {
+                    $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+                    $(checkbox).trigger("change");
+                })
+
+                $(checkbox).on("change", function() {
+                    $(button).toggleClass("btn-outline-primary", !this.checked)
+                    $(button).toggleClass("btn-primary", this.checked)
+                })
+            })
+
         }
         console.log(this);
     }

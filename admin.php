@@ -75,16 +75,6 @@
                                 </section>
 
                                 <output id="formOutputAmbiences" class="w-100"></output>
-
-                                <section class="row">
-                                    <article class="col-2 mb-2">
-                                        <input type="checkbox" name="ambiences[]" class="d-none">
-                                        <button type="button" class="btn btn-outline-primary w-100 text-truncate ambienceForm_button">
-                                            Forêt
-                                        </button>
-                                    </article>
-                                </section>
-
                             </div>
                         </div>
                     </div>

@@ -36,7 +36,7 @@ function RetrieveAdventures() {
 
 $("#editAdventureForm").on("show.bs.modal", function() {
     this.reset();
-    $("#formOutputLandscapes").html("");
+    $(this).find("output").html("");
 })
 
 

@@ -130,7 +130,7 @@ switch($type)
 
 
                 // AMBIENCES
-                $sqlAmbiences = "SELECT ambiences.name, ambiences.url FROM aventures_ambiences 
+                $sqlAmbiences = "SELECT ambiences.* FROM aventures_ambiences 
                 INNER JOIN ambiences ON ambiences.id_ambience = aventures_ambiences.id_ambience
                 WHERE aventures_ambiences.id_aventure = :id_aventure";
 
