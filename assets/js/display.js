@@ -1,4 +1,4 @@
-import {LANDSCAPE_TRANSITION_TIME, LANDSCAPE_PATH} from './globals/const.js';
+import {LANDSCAPE_TRANSITION_TIME} from './globals/const.js';
 import * as FUNC from './globals/func.js';
 
 const CURRENTSCENE = {

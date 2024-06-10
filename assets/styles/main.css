@@ -144,15 +144,31 @@
   cursor: pointer;
 }
 
-.adventureForm__card.active {
+.activable.active {
   opacity: 1;
 }
 
-.adventureForm__card:not(.active) {
+.activable:not(.active) {
   opacity: 0.25;
 }
 
-.adventureForm__card:not(.active):hover {
+.activable:not(.active):hover {
+  opacity: 0.75;
+}
+
+.musicForm__header {
+  cursor: pointer;
+}
+
+.adventureForm__landscape:has(input[type="checkbox"]:checked) {
+  opacity: 1;
+}
+
+.adventureForm__landscape:not(:has(input[type="checkbox"]:checked)) {
+  opacity: 0.25;
+}
+
+.adventureForm__landscape:not(:has(input[type="checkbox"]:checked)):hover {
   opacity: 0.75;
 }
 /*# sourceMappingURL=main.css.map */

@@ -14,8 +14,8 @@
 
 
 <!-- Modal -->
-<form class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-<!-- <form class="modal fade show d-block" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true"> -->
+<form class="modal fade" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true">
+<!-- <form class="modal fade show d-block" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true"> -->
     <div class="modal-dialog modal-xl">
         <div class="modal-content text-dark">
             <div class="modal-body">
@@ -24,68 +24,73 @@
                     <input type="text" name="name" id="" placeholder="Nom de l'aventure" class="form-control mb-1">
                     <input class="form-control mb-1" type="file" id="backgroundInput" name="background">
 
-                    <textarea name="" id="description" placeholder="Description" class="form-control"></textarea>                    
+                    <textarea name="description" id="description" placeholder="Description" class="form-control"></textarea>                    
                 </div>
 
 
-                <div class="accordion" id="accordionExample">
+                <!-- LANDSCAPES -->
+                <div class="accordion mb-2" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseLandscapes" aria-expanded="true" aria-controls="collapseLandscapes">
                                 Décors
                             </button>
                         </h2>
-                        <div id="collapseLandscapes" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div id="collapseLandscapes" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
 
                                 <section class="row">
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                        <input type="search" name="" id="" placeholder="Rechercher un décor" class="form-control" aria-describedby="basic-addon1">
+                                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <input id="searchLandscape" type="search" name="search_landscape" placeholder="Rechercher un décor" class="form-control" aria-describedby="basic-addon1">
+                                        <button id="resetLandscape" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
                                     </div>
                                 </section>
 
 
-
-                                <section class="row">
-                                    <!-- Card landscape -->
-                                    <article class="col-3">
-                                        <div class="card fade show adventureForm__card">
-
-                                            <div style="height:135px" class="overflow-hidden">
-                                                <video src="./assets/landscapes/100_Goblin-Ambush.mp4" 
-                                                    class="card-img-top"
-                                                    disablePictureInPicture></video>
-                                            </div>
-                                            
-                                            <div class="card-body">
-                                                <p class="m-0 text-truncate">Embuscade des Gobelins</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                    <!--  -->                                        
-                                </section>
+                                <output id="formOutputLandscapes" class="w-100"></output>
                             </div>
                         </div>
                     </div>
 
 
+                    <!-- AMBIANCES -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseAmbiances" aria-expanded="false" aria-controls="collapseAmbiances">
                                 Ambiances
                             </button>
                         </h2>
-                        <div id="collapseAmbiances" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapseAmbiances" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
+
+                                <section class="row">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <input id="searchAmbience" type="search" name="search_ambience" placeholder="Rechercher une ambiance" class="form-control" aria-describedby="basic-addon1">
+                                        <button id="resetAmbience" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
+                                    </div>
+                                </section>
+
+                                <output id="formOutputAmbiences" class="w-100"></output>
+
+                                <section class="row">
+                                    <article class="col-2 mb-2">
+                                        <input type="checkbox" name="ambiences[]" class="d-none">
+                                        <button type="button" class="btn btn-outline-primary w-100 text-truncate ambienceForm_button">
+                                            Forêt
+                                        </button>
+                                    </article>
+                                </section>
 
                             </div>
                         </div>
                     </div>
 
 
+                    <!-- SONS -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -96,11 +101,28 @@
                         <div id="collapseSons" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
 
+                                <section class="row">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <input id="searchSon" type="search" name="search_son" placeholder="Rechercher un son" class="form-control" aria-describedby="basic-addon1">
+                                        <button id="resetSon" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
+                                    </div>
+                                </section>
+
+                                <section class="row">
+                                    <article class="col-2 mb-2">
+                                        <button type="button" class="btn btn-outline-primary w-100 text-truncate sonForm_button">
+                                            Loups
+                                        </button>
+                                    </article>
+                                </section>
+
                             </div>
                         </div>
                     </div>
 
 
+                    <!-- MUSIQUES -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -110,10 +132,31 @@
                         </h2>
                         <div id="collapseMusiques" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
+                                <section class="row">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                        <input id="searchPlaylist" type="search" name="search_playlist" placeholder="Rechercher une musique" class="form-control" aria-describedby="basic-addon1">
+                                        <button id="resetPlaylist" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
+                                    </div>
+                                </section>
 
+                                <section class="row">
+                                    <article class="col-3">
+                                        <div class="card fade show overflow-hidden activable">
+                                            <div class="card-header musicForm__header">
+                                                <p class="text-truncate user-select-none m-0">Combat Gobelin</p>
+                                            </div>
+                                            <audio class="w-100 m-0 p-0" src="./assets/audio/musics/combat/gobelins/blood_rythm.mp3" controls></audio>
+                                        </div>
+                                    </article>
+                                </section>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
                 </div>
             </div>
         </div>
@@ -129,7 +172,7 @@
         <div id="adventureList" class="row">
 
             <div class="col-4 mb-3">
-                <button class="btn btn-outline-light w-100 h-100" data-bs-toggle="modal" data-bs-target="#formModal">
+                <button class="btn btn-outline-light w-100 h-100" data-bs-toggle="modal" data-bs-target="#editAdventureForm">
                     <i class="fa-solid fa-plus fs-1"></i>
                 </button>
             </div>

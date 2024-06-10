@@ -2,6 +2,7 @@ import { Ambience } from "./ambience.js";
 import { Playlist } from "./music.js";
 import { Landscape } from "./landscape.js";
 import { SoundFamily } from "./sound.js";
+import * as FUNC from './../globals/func.js';
 
 
 
@@ -51,6 +52,7 @@ export class Adventure {
         this.id_aventure = obj.id_aventure;
         this.name = obj.name;
         this.background = obj.background;
+        this.description = obj.description;
 
         this.ambiences = obj.ambiences;
         this.landscapes = obj.landscapes;
@@ -107,6 +109,8 @@ export class Adventure {
 
 
     CreateCard() {
+        let that = this;
+
         let article = document.createElement("article");
         $(article).addClass("col-4 mb-3");
     
@@ -143,14 +147,121 @@ export class Adventure {
         let editBtn = document.createElement("button");
         $(editBtn).addClass("btn btn-warning");
         $(editBtn).text("Éditer");
-        btnContainer.appendChild(editBtn);
 
-        let that = this;
+        // Open edit form
+        $(article).on("click", function() {
+            that.LoadForm();
+        })
+        //
+
+        btnContainer.appendChild(editBtn);
 
         $(loadBtn).on("click", function() {
             window.location.href = `index.php?id_aventure=${that.id_aventure}`;
         })
 
         return article;
+    }
+
+
+    async LoadForm() {
+        let form = $("#editAdventureForm")[0];
+        if(form.length === 0) {
+            return;
+        }
+
+        await this.Fetch(this.id);
+
+        $(form).modal("show");
+
+        let nameInput = $(form).find("input[name='name']")[0];
+        $(nameInput).val(this.name);
+
+        let descInput = $(form).find("textarea[name='description']")[0];
+        $(descInput).val(this.description);
+
+
+
+
+
+        // LANDSCAPES
+        // If there are no landscapes
+        if(this.landscapes.length === 0) {
+            let div = document.createElement("div");
+
+            let text = document.createElement("p");
+            $(text)
+                .addClass("text-center user-select-none opacity-25")
+                .text("Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.");
+            div.appendChild(text);
+
+            $("#formOutputLandscapes")[0].appendChild(div);
+        }
+        // If there are landscapes
+        else {
+            let section = document.createElement("section");
+            $(section).addClass("row");
+            $("#formOutputLandscapes")[0].appendChild(section);
+
+            $(this.landscapes).each(function() {
+                let article = document.createElement("article");
+                $(article).addClass("col-3 mb-2 fade show adventureForm__landscape");
+
+                section.appendChild(article);
+
+
+                let checkbox = document.createElement("input");
+                $(checkbox)
+                    .prop("type", "checkbox")
+                    .addClass("d-none")
+                    .prop("checked", true)
+                    .prop("name", "landscapes[]")
+                    .val(this.id_landscape);
+                article.appendChild(checkbox);
+
+                $(article).on("click", function() {
+                    $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+                })
+
+
+                let card = document.createElement("div");
+                $(card).addClass("card activable adventureForm__card active")
+                article.appendChild(card);
+
+                let frame = document.createElement("div");
+                $(frame)
+                    .addClass("overflow-hidden")
+                    .css("height", "135px");
+                card.appendChild(frame);
+
+                // Video
+                if(FUNC.IsVideo(this.url)) {
+                    let video = document.createElement("video");
+                    $(video)
+                        .addClass("card-img-top")
+                        .prop("disablepictureinpicture", true)
+                        .prop("src", this.url);
+                    frame.appendChild(video);
+                }
+                // Image
+                else {
+                    let img = document.createElement("img");
+                    $(img)
+                        .prop("src", this.url)
+                        .addClass("card-img-top");
+                    frame.appendChild(img);
+                }
+
+                let body = document.createElement("div");
+                $(body).addClass("card-body");
+                card.appendChild(body);
+
+                let title = document.createElement("p");
+                $(title).addClass("m-0 text-truncate");
+                $(title).text(this.name);
+                body.appendChild(title);
+            })
+        }
+        console.log(this);
     }
 }

@@ -19,6 +19,26 @@ $pdo = new PDO($config['driver'].':host='.$config['host'].';dbname='.$config['db
 
 
 
+class Adventure {
+    public $id_aventure;
+    public $name;
+    public $background;
+    public $description;
+
+    public $ambiences = array();
+    public $landscapes = array();
+    public $playlists = array();
+    public $soundfamilies = array();
+
+    function __construct($obj) {
+        $this->id_aventure = intval($obj->id_aventure);
+        $this->name = $obj->name;
+        $this->background = $obj->background;
+        $this->description = $obj->description;
+    }
+}
+
+
 
 
 switch($type)
@@ -90,6 +110,25 @@ switch($type)
     case "load":
         switch($for) {
             case "aventure":
+                // ADVENTURE
+                $sqlAdventure = "SELECT * FROM aventures WHERE id_aventure = :id_aventure";
+
+                $queryAdventure = $pdo->prepare($sqlAdventure);
+                $queryAdventure->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $queryAdventure->execute();
+
+                if($queryAdventure->errorCode() == '00000')
+                {
+                    $queryAdventure->setFetchMode(PDO::FETCH_ASSOC);
+                    $adventure = $queryAdventure->fetchObject();
+                    $result = new Adventure($adventure);
+                }
+                //
+
+
+
+
+
                 // AMBIENCES
                 $sqlAmbiences = "SELECT ambiences.name, ambiences.url FROM aventures_ambiences 
                 INNER JOIN ambiences ON ambiences.id_ambience = aventures_ambiences.id_ambience
@@ -110,7 +149,7 @@ switch($type)
 
 
                 // LANDSCAPES
-                $sqlLandscapes = "SELECT landscapes.name, landscapes.url FROM aventures_landscapes
+                $sqlLandscapes = "SELECT landscapes.id_landscape, landscapes.name, landscapes.url FROM aventures_landscapes
                 INNER JOIN landscapes ON landscapes.id_landscape = aventures_landscapes.id_landscape
                 WHERE aventures_landscapes.id_aventure = :id_aventure";
 
@@ -211,11 +250,16 @@ switch($type)
                 }
                 //
 
-                $result = array();
-                $result["ambiences"] = $ambiences;
-                $result["landscapes"] = $landscapes;
-                $result["playlists"] = $playlists;
-                $result["soundfamilies"] = $soundfamilies;
+                // $result = array();
+                // $result["ambiences"] = $ambiences;
+                // $result["landscapes"] = $landscapes;
+                // $result["playlists"] = $playlists;
+                // $result["soundfamilies"] = $soundfamilies;
+
+                $result->ambiences = $ambiences;
+                $result->landscapes = $landscapes;
+                $result->playlists = $playlists;
+                $result->soundfamilies = $soundfamilies;
                 
                 echo json_encode($result);
                 break;

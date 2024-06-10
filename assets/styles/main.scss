@@ -178,12 +178,35 @@
 .adventureForm {
     &__card {
         cursor: pointer;
+    }
+}
 
-        &.active {
+.activable {
+    &.active {
+        opacity: 1;
+    }
+
+    &:not(.active) {
+        opacity: 0.25;
+
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+}
+
+.musicForm {
+    &__header {
+        cursor: pointer;
+    }
+}
+
+.adventureForm {
+    &__landscape {
+        &:has(input[type="checkbox"]:checked) {
             opacity: 1;
         }
-
-        &:not(.active) {
+        &:not(:has(input[type="checkbox"]:checked)) {
             opacity: 0.25;
 
             &:hover {
