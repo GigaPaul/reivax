@@ -1,6 +1,6 @@
 import InitVolume from "./modules/volume.js";
 import InitMusic from "./modules/music.js";
-import { Adventure } from "./modules/adventure.js";
+import { Adventure } from "./classes/adventure.js";
 import { LANDSCAPE_OUTPUT, AMBIENCE_OUTPUT, MUSIC_OUTPUT, SOUND_OUTPUT } from "./globals/elements.js";
 
 let params = new URL(document.location.toString()).searchParams;

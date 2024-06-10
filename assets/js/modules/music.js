@@ -19,14 +19,30 @@ export default function InitMusic(){
 
 
 export class Playlist {
-    constructor(playlist)
+    constructor(obj = null)
     {
-        this.name = playlist.name;
         this.index = 0;
-        this.musics = [...playlist.musics];
-        this.playedMusics = [];
-        this.isShuffled = playlist.is_shuffle;
         this.element;
+        this.playedMusics = [];
+
+        if(obj !== null) {
+            this.Copy(obj);
+        }
+        else {
+            this.id_playlist = null;
+            this.name = "";
+            this.musics = [];
+            this.isShuffled = false;
+        }
+    }
+
+
+
+    Copy(obj) {
+        this.id_playlist = obj.id_playlist;
+        this.name = obj.name;
+        this.musics = [...obj.musics];
+        this.isShuffled = obj.is_shuffle;
     }
 
 
@@ -157,6 +173,7 @@ export class Playlist {
                 $(icon).addClass("fa-stop").removeClass("fa-play");
             }
         });
+
 
         // Shuffle
         $(shuffleButton).on("click", function() {
@@ -328,6 +345,55 @@ export class Playlist {
         $(title).text(music.name);
 
         console.log(`${music.name} en cours d'écoute.`);
+    }
+
+
+
+
+    CreateFormCard(parent) {
+        let article = document.createElement("article");
+        $(article).addClass("col-3");
+        parent.appendChild(article);
+
+        let checkbox = document.createElement("input");
+        $(checkbox)
+            .prop("type", "checkbox")
+            .prop("name", "playlists[]")
+            .prop("value", this.id_playlist)
+            .prop("checked", true);
+        $(checkbox).addClass("d-none");
+        article.appendChild(checkbox);
+
+        let card = document.createElement("div");
+        $(card).addClass("card fade show overflow-hidden activable active");
+        article.appendChild(card);
+
+        let header = document.createElement("div");
+        $(header).addClass("card-header musicForm__header");
+        card.appendChild(header);
+
+        $(header).on("click", function() {
+            $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+            $(checkbox).trigger("change");
+        });
+
+        $(checkbox).on("change", function() {
+            $(card).toggleClass("active", this.checked)
+        });
+
+        let title = document.createElement("p");
+        $(title).addClass("text-truncate user-select-none m-0")
+        $(title).text(this.name);
+        header.appendChild(title);
+
+        $(this.musics).each(function() {
+            let audio = document.createElement("audio");
+            $(audio).addClass("w-100 m-0 p-0");
+            $(audio)
+                .prop("src", this.url)
+                .prop("controls", true);
+            card.appendChild(audio);
+        });
     }
 }
 

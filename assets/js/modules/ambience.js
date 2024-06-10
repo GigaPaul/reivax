@@ -49,6 +49,41 @@ export class Ambience {
             }
         });
     }
+
+
+
+
+
+    CreateFormCard(parent) {
+        let article = document.createElement("article");
+        $(article).addClass("col-2 mb-2");
+        parent.appendChild(article);
+
+        let checkbox = document.createElement("input");
+        $(checkbox)
+            .prop("type", "checkbox")
+            .prop("name", "ambiences[]")
+            .prop("value", this.id_ambience)
+            .prop("checked", true);
+        $(checkbox).addClass("d-none");
+        article.appendChild(checkbox);
+
+        let button = document.createElement("button");
+        $(button).prop("type", "button");
+        $(button).addClass("btn btn-primary w-100 text-truncate");
+        $(button).text(this.name);
+        article.appendChild(button);
+
+        $(button).on("click", function() {
+            $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+            $(checkbox).trigger("change");
+        });
+
+        $(checkbox).on("change", function() {
+            $(button).toggleClass("btn-outline-primary", !this.checked)
+            $(button).toggleClass("btn-primary", this.checked)
+        });
+    }
 }
 
 

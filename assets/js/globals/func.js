@@ -69,3 +69,16 @@ export function IsVideo(filename)
     let extension = filename.substr( (filename.lastIndexOf(".") + 1) );
     return video.includes(extension);
 }
+
+
+
+
+
+export function CreateError(string, parent) {
+    let text = document.createElement("p");
+    $(text)
+        .addClass("text-center user-select-none opacity-25 m-0")
+        .text(string);
+
+    parent.appendChild(text);
+}
