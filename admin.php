@@ -123,18 +123,7 @@
                                     </div>
                                 </section>
 
-                                <outline id="formOutputMusics"></outline>
-
-                                <!-- <section class="row">
-                                    <article class="col-3">
-                                        <div class="card fade show overflow-hidden activable">
-                                            <div class="card-header musicForm__header">
-                                                <p class="text-truncate user-select-none m-0">Combat Gobelin</p>
-                                            </div>
-                                            <audio class="w-100 m-0 p-0" src="./assets/audio/musics/combat/gobelins/blood_rythm.mp3" controls></audio>
-                                        </div>
-                                    </article>
-                                </section> -->
+                                <output id="formOutputMusics" class="w-100"></output>
                             </div>
                         </div>
                     </div>

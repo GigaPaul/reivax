@@ -226,7 +226,7 @@ export class Adventure {
 
 
                 let card = document.createElement("div");
-                $(card).addClass("card activable adventureForm__card active")
+                $(card).addClass("card adventureForm__card")
                 article.appendChild(card);
 
                 let frame = document.createElement("div");
@@ -402,7 +402,48 @@ export class Adventure {
             
             $(this.playlists).each(function() {
                 let article = document.createElement("article");
-                $(article).addClass("")
+                $(article).addClass("col-3");
+                section.appendChild(article);
+
+                let checkbox = document.createElement("input");
+                $(checkbox)
+                    .prop("type", "checkbox")
+                    .prop("name", "playlists[]")
+                    .prop("value", this.id_playlist)
+                    .prop("checked", true);
+                $(checkbox).addClass("d-none");
+                article.appendChild(checkbox);
+
+                let card = document.createElement("div");
+                $(card).addClass("card fade show overflow-hidden activable active");
+                article.appendChild(card);
+
+                let header = document.createElement("div");
+                $(header).addClass("card-header musicForm__header");
+                card.appendChild(header);
+
+                $(header).on("click", function() {
+                    $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+                    $(checkbox).trigger("change");
+                });
+
+                $(checkbox).on("change", function() {
+                    $(card).toggleClass("active", this.checked)
+                });
+
+                let title = document.createElement("p");
+                $(title).addClass("text-truncate user-select-none m-0")
+                $(title).text(this.name);
+                header.appendChild(title);
+
+                $(this.musics).each(function() {
+                    let audio = document.createElement("audio");
+                    $(audio).addClass("w-100 m-0 p-0");
+                    $(audio)
+                        .prop("src", this.url)
+                        .prop("controls", true);
+                    card.appendChild(audio);
+                });
             });
         }
         console.log(this);
