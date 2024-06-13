@@ -151,7 +151,7 @@
         <div id="adventureList" class="row">
 
             <div class="col-4 mb-3">
-                <button class="btn btn-outline-light w-100 h-100" data-bs-toggle="modal" data-bs-target="#editAdventureForm">
+                <button class="btn btn-outline-light w-100 h-100" id="NewAdventureBtn">
                     <i class="fa-solid fa-plus fs-1"></i>
                 </button>
             </div>

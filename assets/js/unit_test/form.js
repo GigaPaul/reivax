@@ -14,86 +14,92 @@ class AdventureForm {
     }
 
 
-    async Load(adventure) {
-        if(adventure === undefined) {
-            return;
-        }
-        
-        await adventure.Fetch(this.id);
-
+    async Load(adventure = new Adventure()) {
+        $(this.element).modal("show");
         this.adventure = adventure;
         let that = this;
 
-        $(this.element).modal("show");
+        // New adventure
+        if(adventure.id_aventure === null) {
+            let errorLandscape = "Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(errorLandscape, $("#formOutputLandscapes")[0])
 
-        let idInput = $(this.element).find("input[name='id_aventure']")[0];
-        $(idInput).val(this.adventure.id_aventure);
+            let errorAmbience = "Cette aventure ne contient encore aucune ambiance. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(errorAmbience, $("#formOutputAmbiences")[0])
 
-        let nameInput = $(this.element).find("input[name='name']")[0];
-        $(nameInput).val(this.adventure.name);
+            let errorSound = "Cette aventure ne contient encore aucun son. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(errorSound, $("#formOutputSounds")[0])
 
-        let descInput = $(this.element).find("textarea[name='description']")[0];
-        $(descInput).val(this.adventure.description);
-
-
-
-
-        // LANDSCAPES
-        // If there are no landscapes
-        this.LoadAdventureLandscapeCard();
-
-
-
-
-
-        // AMBIENCES
-        // If there are no ambiences
-        if(this.adventure.ambiences.length === 0) {
-            let error = "Cette aventure ne contient encore aucune ambiance. Faites une recherche pour en rajouter.";
-            FUNC.CreateError(error, $("#formOutputAmbiences")[0])
+            let errorMusic = "Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(errorMusic, $("#formOutputMusics")[0])
+            return;
         }
-        // If there are ambiences
+        // Load existing adventure
         else {
-            $(this.adventure.ambiences).each(function() {
-                this.CreateFormCard($("#formOutputAmbiences")[0]);
-            });
+            await adventure.Fetch(this.id);
 
-        }
+            let idInput = $(this.element).find("input[name='id_aventure']")[0];
+            $(idInput).val(this.adventure.id_aventure);
 
+            let nameInput = $(this.element).find("input[name='name']")[0];
+            $(nameInput).val(this.adventure.name);
 
-
-
-
-        // SOUNDS
-        // If there are no sounds
-        if(this.adventure.soundFamilies.length === 0) {
-            let error = "Cette aventure ne contient encore aucun son. Faites une recherche pour en rajouter.";
-            FUNC.CreateError(error, $("#formOutputSounds")[0])
-        }
-        // If there are sounds
-        else {
-            $(this.adventure.soundFamilies).each(function() {
-                this.CreateFormCard($("#formOutputSounds")[0]);
-            });
-
-        }
+            let descInput = $(this.element).find("textarea[name='description']")[0];
+            $(descInput).val(this.adventure.description);
 
 
 
-
-
-        // MUSICS
-        // If there are no musics
-        if(this.adventure.playlists.length === 0) {
-            let error = "Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.";
-            FUNC.CreateError(error, $("#formOutputMusics")[0])
-        }
-        // If there are musics
-        else {
-            $(this.adventure.playlists).each(function() {
-
-                this.CreateFormCard($("#formOutputMusics")[0]);
-            });
+            // LANDSCAPES
+            // If there are no landscapes
+            this.LoadAdventureLandscapeCard();
+    
+    
+    
+            // AMBIENCES
+            // If there are no ambiences
+            if(this.adventure.ambiences.length === 0) {
+                let error = "Cette aventure ne contient encore aucune ambiance. Faites une recherche pour en rajouter.";
+                FUNC.CreateError(error, $("#formOutputAmbiences")[0])
+            }
+            // If there are ambiences
+            else {
+                $(this.adventure.ambiences).each(function() {
+                    this.CreateFormCard($("#formOutputAmbiences")[0]);
+                });
+    
+            }
+    
+    
+    
+            // SOUNDS
+            // If there are no sounds
+            if(this.adventure.soundFamilies.length === 0) {
+                let error = "Cette aventure ne contient encore aucun son. Faites une recherche pour en rajouter.";
+                FUNC.CreateError(error, $("#formOutputSounds")[0])
+            }
+            // If there are sounds
+            else {
+                $(this.adventure.soundFamilies).each(function() {
+                    this.CreateFormCard($("#formOutputSounds")[0]);
+                });
+    
+            }
+    
+     
+    
+            // MUSICS
+            // If there are no musics
+            if(this.adventure.playlists.length === 0) {
+                let error = "Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.";
+                FUNC.CreateError(error, $("#formOutputMusics")[0])
+            }
+            // If there are musics
+            else {
+                $(this.adventure.playlists).each(function() {
+    
+                    this.CreateFormCard($("#formOutputMusics")[0]);
+                });
+            }
         }
     }
     
@@ -125,11 +131,8 @@ class AdventureForm {
         
                 $.post("controller.php", send, function(data) {
                     let result = jQuery.parseJSON(data);
-                    $("#formOutputLandscapes")
-                        .html("")
-                        .removeClass("d-none");
+                    $("#formOutputLandscapes").html("")
                     
-                    // $("#formOutputLandscapes").addClass("d-none");
 
                     let selectedLandscapes = [];
                     $(that.adventure.landscapes).each(function() {
@@ -159,8 +162,6 @@ class AdventureForm {
             // Si le champs de recherche est vide, montrer les décors de l'aventure
             else {
                 that.LoadAdventureLandscapeCard();
-                // $("#formOutputLandscapes").removeClass("d-none");
-                // $("#formOutputLandscapesSearchResults").addClass("d-none");
             }
         });
     }
@@ -169,7 +170,7 @@ class AdventureForm {
 
     LoadAdventureLandscapeCard() {
         $("#formOutputLandscapes").html("");
-        
+
         if(this.adventure.landscapes.length === 0) {
             let error = "Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.";
             FUNC.CreateError(error, $("#formOutputLandscapes")[0])
@@ -280,4 +281,9 @@ function CreateAdventureCard(adventure) {
 $("#editAdventureForm").on("show.bs.modal", function() {
     this.reset();
     $(this).find("output").html("");
+})
+
+
+$("#NewAdventureBtn").on("click", function() {
+    FORM.Load();
 })
