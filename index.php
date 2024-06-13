@@ -53,7 +53,7 @@
                                 </section>
 
 
-                                <output id="formOutputLandscapesSearchResults" class="row d-none"></output>
+                                <!-- <output id="formOutputLandscapesSearchResults" class="row d-none"></output> -->
                                 <output id="formOutputLandscapes" class="row"></output>
                             </div>
                         </div>

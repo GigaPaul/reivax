@@ -104,6 +104,57 @@ export class Adventure {
         $.post("controller.php", send);
     }
 
+    RemoveLandscape(landscape) {
+        let index = this.GetLandscapeIndex(landscape);
+
+        if(index === -1) {
+            return;
+        }
+
+        this.landscapes.splice(index, 1);
+    }
+
+    AddLandscape(landscape) {
+        let isUsed = this.IsUsingLandscape(landscape)
+
+        if(isUsed) {
+            return;
+        }
+
+        this.landscapes.push(landscape);
+    }
+
+
+    GetLandscapeIndex(landscape) {
+        let index = -1;
+
+        for(let i = 0; i < this.landscapes.length; i++) {
+            let thisLandscape = this.landscapes[i]
+            if(thisLandscape.id_landscape === landscape.id_landscape) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+
+
+    IsUsingLandscape(landscape) {
+        let isUsed = false;
+
+        for(let i = 0; i < this.landscapes.length; i++) {
+            let thisLandscape = this.landscapes[i]
+            if(thisLandscape.id_landscape === landscape.id_landscape) {
+                isUsed = true;
+                break;
+            }
+        }
+
+        return isUsed;
+    }
+
 
 
 

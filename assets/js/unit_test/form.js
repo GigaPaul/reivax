@@ -1,5 +1,6 @@
 import { Adventure } from "../classes/adventure.js";
 import { Landscape } from "../modules/landscape.js";
+import { LandscapeFormCard } from "../classes/landscapeFormCard.js";
 import { ADVENTURE_LIST } from "../globals/elements.js";
 import * as FUNC from '../globals/func.js';
 
@@ -39,21 +40,7 @@ class AdventureForm {
 
         // LANDSCAPES
         // If there are no landscapes
-        if(this.adventure.landscapes.length === 0) {
-            let error = "Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.";
-            FUNC.CreateError(error, $("#formOutputLandscapes")[0])
-        }
-        // If there are landscapes
-        else {
-            $(this.adventure.landscapes).each(function() {
-                // let thisLandscape = new Landscape(this);
-                let card = this.CreateFormCard();
-                let checkInput = $(card).find("input[type='checkbox']");
-                $(checkInput).prop("checked", true);
-
-                $("#formOutputLandscapes")[0].appendChild(card);
-            })
-        }
+        this.LoadAdventureLandscapeCard();
 
 
 
@@ -138,43 +125,66 @@ class AdventureForm {
         
                 $.post("controller.php", send, function(data) {
                     let result = jQuery.parseJSON(data);
-                    $("#formOutputLandscapesSearchResults")
+                    $("#formOutputLandscapes")
                         .html("")
                         .removeClass("d-none");
                     
-                    $("#formOutputLandscapes").addClass("d-none");
+                    // $("#formOutputLandscapes").addClass("d-none");
 
                     let selectedLandscapes = [];
                     $(that.adventure.landscapes).each(function() {
+
                         selectedLandscapes.push(this.id_landscape);
                     })
                 
                     if(result.length > 0) {
                         $(result).each(function() {
                             let thisLandscape = new Landscape(this);
-                            let card = thisLandscape.CreateFormCard();
-                            $("#formOutputLandscapesSearchResults")[0].appendChild(card);
+                            let isActive = that.adventure.IsUsingLandscape(thisLandscape);
 
-                            // We check if this landscape is already linked to the adventure
-                            if(selectedLandscapes.includes(thisLandscape.id_landscape)) {
-                                let checkInput = $(card).find("input[type='checkbox']");
-                                $(checkInput).prop("checked", true);
-                            }
+                            let card = new LandscapeFormCard(thisLandscape, that.adventure);
+                            let cardElement = card.Create();
+                            thisLandscape.CreateFormCard(isActive);
+
+                            $("#formOutputLandscapes")[0].appendChild(cardElement);
                         });
                     }
                     else {
                         let error = "Aucun décor correspondant à votre recherche n'a été trouvé.";
-                        FUNC.CreateError(error, $("#formOutputLandscapesSearchResults")[0]);
+                        FUNC.CreateError(error, $("#formOutputLandscapes")[0]);
                     }
         
                 });
             }
             // Si le champs de recherche est vide, montrer les décors de l'aventure
             else {
-                $("#formOutputLandscapes").removeClass("d-none");
-                $("#formOutputLandscapesSearchResults").addClass("d-none");
+                that.LoadAdventureLandscapeCard();
+                // $("#formOutputLandscapes").removeClass("d-none");
+                // $("#formOutputLandscapesSearchResults").addClass("d-none");
             }
         });
+    }
+
+
+
+    LoadAdventureLandscapeCard() {
+        $("#formOutputLandscapes").html("");
+        
+        if(this.adventure.landscapes.length === 0) {
+            let error = "Cette aventure ne contient encore aucun décor. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(error, $("#formOutputLandscapes")[0])
+        }
+        // If there are landscapes
+        else {
+            let that = this;
+
+            $(this.adventure.landscapes).each(function() {
+                let card = new LandscapeFormCard(this, that.adventure);
+                let cardElement = card.Create();
+
+                $("#formOutputLandscapes")[0].appendChild(cardElement);
+            })            
+        }
     }
 }
 

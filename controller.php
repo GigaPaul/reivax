@@ -251,8 +251,7 @@ switch($type)
         
         switch($for) {
             case "landscapes":
-                $sql = "SELECT * FROM landscapes
-                WHERE name LIKE :search";
+                $sql = "SELECT * FROM landscapes WHERE name LIKE :search";
 
                 $query = $pdo->prepare($sql);
                 $query->bindValue(':search', "%".$_POST['search']."%", PDO::PARAM_STR);
@@ -262,6 +261,29 @@ switch($type)
                 {
                     $query->setFetchMode(PDO::FETCH_ASSOC);
                     $result = $query->fetchALL();
+
+                    echo json_encode($result);
+                }
+                break;
+        }
+        break;
+
+
+    case "belongToAdventure":
+        switch($for) {
+            case "landscapes":
+                $sql = "SELECT * FROM aventures_landscapes WHERE id_aventure = :id_aventure AND id_landscape = :id_landscape";
+
+                $query = $pdo->prepare($sql);
+                $query->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
+                $query->bindValue(':id_landscape', $_POST['id_landscape'], PDO::PARAM_INT);
+                $query->execute();
+
+                if($query->errorCode() == '00000')
+                {
+                    $query->setFetchMode(PDO::FETCH_ASSOC);
+                    $result = count($query->fetchALL()) > 0;
+
                     echo json_encode($result);
                 }
                 break;

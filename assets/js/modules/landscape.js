@@ -78,7 +78,7 @@ export class Landscape {
 
 
 
-    CreateFormCard() {
+    CreateFormCard(isSelected = false) {
         let article = document.createElement("article");
         $(article).addClass("col-3 mb-2 fade show adventureForm__landscape");
 
@@ -88,11 +88,14 @@ export class Landscape {
             .prop("type", "checkbox")
             .addClass("d-none")
             .prop("name", "landscapes[]")
+            .prop("checked", isSelected)
             .val(this.id_landscape);
         article.appendChild(checkbox);
 
         $(article).on("click", function() {
-            $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+            $(checkbox)
+                .prop("checked", !$(checkbox).prop("checked"))
+                .trigger("input");
         })
 
 
