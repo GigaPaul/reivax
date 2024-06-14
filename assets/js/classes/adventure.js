@@ -66,30 +66,7 @@ export class Adventure {
 
 
     
-    RemoveLandscape(landscape) {
-        let index = this.GetLandscapeIndex(landscape);
-
-        if(index === -1) {
-            return;
-        }
-
-        this.landscapes.splice(index, 1);
-    }
-
-
-
-    AddLandscape(landscape) {
-        let isUsed = this.IsUsingLandscape(landscape)
-
-        if(isUsed) {
-            return;
-        }
-
-        this.landscapes.push(landscape);
-    }
-
-
-
+    // =========== GET ===========
     GetLandscapeIndex(landscape) {
         let index = -1;
 
@@ -106,6 +83,50 @@ export class Adventure {
 
 
 
+
+
+    GetAmbienceIndex(ambience) {
+        let index = -1;
+
+        for(let i = 0; i < this.ambiences.length; i++) {
+            let thisAmbience = this.ambiences[i]
+            if(thisAmbience.id_ambience === ambience.id_ambience) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+
+
+
+
+    GetSoundIndex(sound) {
+        let index = -1;
+
+        for(let i = 0; i < this.soundFamilies.length; i++) {
+            let thisSoundFamily = this.soundFamilies[i]
+            if(thisSoundFamily.id_soundFamily === sound.id_soundFamily) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+
+
+
+
+
+
+
+
+
+    // =========== BOOL ===========
     IsUsingLandscape(landscape) {
         let isUsed = false;
 
@@ -120,6 +141,138 @@ export class Adventure {
         return isUsed;
     }
 
+
+
+
+
+    IsUsingAmbience(ambience) {
+        let isUsed = false;
+
+        for(let i = 0; i < this.ambiences.length; i++) {
+            let thisAmbience = this.ambiences[i]
+            if(thisAmbience.id_ambience === ambience.id_ambience) {
+                isUsed = true;
+                break;
+            }
+        }
+
+        return isUsed;
+    }
+
+
+
+
+
+    IsUsingSound(sound) {
+        let isUsed = false;
+
+        for(let i = 0; i < this.soundFamilies.length; i++) {
+            let thisSoundFamily = this.soundFamilies[i]
+            if(thisSoundFamily.id_soundFamily === sound.id_soundFamily) {
+                isUsed = true;
+                break;
+            }
+        }
+
+        return isUsed;
+    }
+
+
+
+
+
+
+
+
+
+
+    // =========== ADD ===========
+    AddLandscape(landscape) {
+        let isUsed = this.IsUsingLandscape(landscape)
+
+        if(isUsed) {
+            return;
+        }
+
+        this.landscapes.push(landscape);
+    }
+
+
+
+
+
+    AddAmbience(ambience) {
+        let isUsed = this.IsUsingAmbience(ambience)
+
+        if(isUsed) {
+            return;
+        }
+
+        this.ambiences.push(ambience);
+    }
+
+
+
+
+
+    AddSound(sound) {
+        let isUsed = this.IsUsingSound(sound)
+
+        if(isUsed) {
+            return;
+        }
+
+        this.soundFamilies.push(sound);
+    }
+
+
+
+
+
+
+
+
+
+
+    // =========== REMOVE ===========
+    RemoveLandscape(landscape) {
+        let index = this.GetLandscapeIndex(landscape);
+
+        if(index === -1) {
+            return;
+        }
+
+        this.landscapes.splice(index, 1);
+    }
+
+
+
+
+
+    RemoveAmbience(ambience) {
+        let index = this.GetAmbienceIndex(ambience);
+
+        if(index === -1) {
+            return;
+        }
+
+        this.ambiences.splice(index, 1);
+    }
+
+
+
+
+
+    RemoveSound(sound) {
+        let index = this.GetSoundIndex(sound);
+
+        if(index === -1) {
+            return;
+        }
+
+        this.soundFamilies.splice(index, 1);
+    }
+    
 
 
 

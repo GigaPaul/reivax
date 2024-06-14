@@ -36,12 +36,12 @@
                 <div class="accordion mb-2" id="accordionExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseLandscapes" aria-expanded="true" aria-controls="collapseLandscapes">
                                 Décors
                             </button>
                         </h2>
-                        <div id="collapseLandscapes" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div id="collapseLandscapes" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
 
                                 <section class="row">
@@ -113,12 +113,12 @@
                     <!-- MUSIQUES -->
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseMusiques" aria-expanded="false" aria-controls="collapseMusiques">
                                 Musiques
                             </button>
                         </h2>
-                        <div id="collapseMusiques" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapseMusiques" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <section class="row">
                                     <div class="input-group mb-3">

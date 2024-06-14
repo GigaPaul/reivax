@@ -7,6 +7,7 @@ import * as FUNC from "../globals/func.js";
 
 export class SoundFamily {
     constructor(obj) {
+        this.id_soundFamily = obj.id_soundfamily;
         this.name = obj.name;
         this.frequency = obj.frequency;
         this.isLoop = obj.is_loop;
@@ -42,35 +43,44 @@ export class SoundFamily {
     }
 
 
-    CreateFormCard(parent) {
+    CreateFormCard(adventure) {
+        let that = this;
+
         let article = document.createElement("article");
         $(article).addClass("col-2 mb-2");
-        parent.appendChild(article);
+
+        let isActive = adventure.IsUsingSound(this);
+        
+        let id = `formCheckboxSound${this.id_soundFamily}`;
 
         let checkbox = document.createElement("input");
         $(checkbox)
             .prop("type", "checkbox")
             .prop("name", "soundFamilies[]")
-            .prop("value", this.id_soundfamily)
-            .prop("checked", true);
-        $(checkbox).addClass("d-none");
+            .prop("value", this.id_soundFamily)
+            .prop("checked", isActive)
+            .prop("id", id)
+            .addClass("btn-check");
         article.appendChild(checkbox);
 
-        let button = document.createElement("button");
-        $(button).prop("type", "button");
-        $(button).addClass("btn btn-primary w-100 text-truncate");
-        $(button).text(this.name);
-        article.appendChild(button);
-
-        $(button).on("click", function() {
-            $(checkbox).prop("checked", !$(checkbox).prop("checked"));
-            $(checkbox).trigger("change");
-        });
-
         $(checkbox).on("change", function() {
-            $(button).toggleClass("btn-outline-primary", !this.checked)
-            $(button).toggleClass("btn-primary", this.checked)
-        });
+            if(this.checked) {
+                adventure.AddSound(that);
+            }
+            else {
+                adventure.RemoveSound(that);
+            }
+        })
+
+        let label = document.createElement("label");
+        $(label)
+            .addClass("btn btn-outline-primary w-100 text-truncate")
+            .prop("for", id)
+            .text(this.name);
+        article.appendChild(label);
+
+
+        return article;
     }
 }
 

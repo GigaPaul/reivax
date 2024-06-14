@@ -265,6 +265,42 @@ switch($type)
                     echo json_encode($result);
                 }
                 break;
+
+
+
+                case "ambiences":
+                    $sql = "SELECT * FROM ambiences WHERE name LIKE :search";
+    
+                    $query = $pdo->prepare($sql);
+                    $query->bindValue(':search', "%".$_POST['search']."%", PDO::PARAM_STR);
+                    $query->execute();
+    
+                    if($query->errorCode() == '00000')
+                    {
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $result = $query->fetchALL();
+    
+                        echo json_encode($result);
+                    }
+                    break;
+
+
+
+                case "soundFamilies":
+                    $sql = "SELECT * FROM soundfamilies WHERE name LIKE :search";
+    
+                    $query = $pdo->prepare($sql);
+                    $query->bindValue(':search', "%".$_POST['search']."%", PDO::PARAM_STR);
+                    $query->execute();
+    
+                    if($query->errorCode() == '00000')
+                    {
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $result = $query->fetchALL();
+    
+                        echo json_encode($result);
+                    }
+                    break;
         }
         break;
 
