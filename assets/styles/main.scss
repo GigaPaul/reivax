@@ -214,4 +214,18 @@
             }
         }
     }
+
+
+    &__music {
+        &:has(input[type="checkbox"]:checked) {
+            opacity: 1;
+        }
+        &:not(:has(input[type="checkbox"]:checked)) {
+            opacity: 0.25;
+
+            &:hover {
+                opacity: 0.75;
+            }
+        }
+    }
 }

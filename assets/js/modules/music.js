@@ -350,22 +350,25 @@ export class Playlist {
 
 
 
-    CreateFormCard(parent) {
+    CreateFormCard(adventure) {
+        let that = this;
+
         let article = document.createElement("article");
-        $(article).addClass("col-3");
-        parent.appendChild(article);
+        $(article).addClass("col-3 fade show adventureForm__music");
+
+        let isActive = adventure.IsUsingMusic(this);
 
         let checkbox = document.createElement("input");
         $(checkbox)
             .prop("type", "checkbox")
             .prop("name", "playlists[]")
             .prop("value", this.id_playlist)
-            .prop("checked", true);
+            .prop("checked", isActive);
         $(checkbox).addClass("d-none");
         article.appendChild(checkbox);
 
         let card = document.createElement("div");
-        $(card).addClass("card fade show overflow-hidden activable active");
+        $(card).addClass("card fade show overflow-hidden");
         article.appendChild(card);
 
         let header = document.createElement("div");
@@ -378,7 +381,12 @@ export class Playlist {
         });
 
         $(checkbox).on("change", function() {
-            $(card).toggleClass("active", this.checked)
+            if(this.checked) {
+                adventure.AddMusic(that);
+            }
+            else {
+                adventure.RemoveMusic(that);
+            }
         });
 
         let title = document.createElement("p");
@@ -394,6 +402,8 @@ export class Playlist {
                 .prop("controls", true);
             card.appendChild(audio);
         });
+
+        return article;
     }
 }
 

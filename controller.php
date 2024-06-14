@@ -44,9 +44,52 @@ class Adventure {
 
 switch($type)
 {
+    case "insert":
+        switch($for) {
+            case "adventure":
+                echo "Insert aventure";
+                break;
+        }
+        break;
+
+
+
     case "update":
         switch($for)
         {
+            case "adventure":
+                $adventure = $_POST['adventure'];
+                // var_dump($_POST);
+
+                // AVENTURE
+                $sqlAdventure = "UPDATE aventures SET name = :name, background = :background, description = :description WHERE id_aventure = :id_aventure";
+                $queryAdventure = $pdo->prepare($sqlAdventure);
+                $queryAdventure->bindValue(':name', $adventure['name'], PDO::PARAM_STR);
+                $queryAdventure->bindValue(':background', $adventure['background'], PDO::PARAM_STR);
+                $queryAdventure->bindValue(':description', $adventure['description'], PDO::PARAM_STR);
+                $queryAdventure->bindValue(':id_aventure', $adventure['id_aventure'], PDO::PARAM_INT);
+                $queryAdventure->execute();
+                //
+
+                // LANDSCAPES
+                $sqlBDDLandscapes = "SELECT id_landscape FROM aventures_landscapes WHERE id_aventure = :id_aventure";
+                $queryBDDLandscapes = $pdo->prepare($sqlBDDLandscapes);
+                $queryBDDLandscapes->bindValue(':id_aventure', $adventure['id_aventure'], PDO::PARAM_INT);
+                $queryBDDLandscapes->execute();
+                $queryBDDLandscapes->setFetchMode(PDO::FETCH_ASSOC);
+                $BDDLandscapes = $queryBDDLandscapes->fetchALL();
+
+                foreach($landscape as $BDDLandscapes) {
+                    
+                }
+
+                var_dump($BDDLandscapes);
+                //
+
+                break;
+
+
+
             case "background":
                 $sql = "UPDATE current_scene SET background_url = :background_url, type = :type";
 
@@ -301,31 +344,48 @@ switch($type)
                         echo json_encode($result);
                     }
                     break;
+
+
+
+                case "playlists":
+                    $sql = "SELECT * FROM playlists WHERE name LIKE :search";
+    
+                    $query = $pdo->prepare($sql);
+                    $query->bindValue(':search', "%".$_POST['search']."%", PDO::PARAM_STR);
+                    $query->execute();
+    
+                    if($query->errorCode() == '00000')
+                    {
+                        $query->setFetchMode(PDO::FETCH_ASSOC);
+                        $result = $query->fetchALL();
+    
+
+                        for($i = 0; $i < count($result); $i++) {
+                            $result[$i]["musics"] = array();
+                            $result[$i]["is_shuffle"] = filter_var($result[$i]["is_shuffle"], FILTER_VALIDATE_BOOLEAN);
+    
+                            $sqlMusic = "SELECT musics.url FROM playlists_musics 
+                            INNER JOIN musics ON playlists_musics.id_music = musics.id_music
+                            WHERE playlists_musics.id_playlist = :id_playlist";
+    
+                            $queryMusic = $pdo->prepare($sqlMusic);
+                            $queryMusic->bindValue(':id_playlist', $result[$i]["id_playlist"], PDO::PARAM_INT);
+                            $queryMusic->execute();
+    
+                            if($queryMusic->errorCode() == '00000') {
+                                $queryMusic->setFetchMode(PDO::FETCH_ASSOC);
+                                $musics = $queryMusic->fetchALL();
+    
+                                $result[$i]["musics"] = $musics;
+                            }
+                        }
+
+
+                        echo json_encode($result);
+                    }
+                    break;
         }
         break;
-
-
-    case "belongToAdventure":
-        switch($for) {
-            case "landscapes":
-                $sql = "SELECT * FROM aventures_landscapes WHERE id_aventure = :id_aventure AND id_landscape = :id_landscape";
-
-                $query = $pdo->prepare($sql);
-                $query->bindValue(':id_aventure', $_POST['id_aventure'], PDO::PARAM_INT);
-                $query->bindValue(':id_landscape', $_POST['id_landscape'], PDO::PARAM_INT);
-                $query->execute();
-
-                if($query->errorCode() == '00000')
-                {
-                    $query->setFetchMode(PDO::FETCH_ASSOC);
-                    $result = count($query->fetchALL()) > 0;
-
-                    echo json_encode($result);
-                }
-                break;
-        }
-        break;
-
 }
 
 ?>

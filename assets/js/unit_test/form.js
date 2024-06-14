@@ -1,24 +1,74 @@
 import { Adventure } from "../classes/adventure.js";
 import { Landscape } from "../modules/landscape.js";
 import { Ambience } from "../modules/ambience.js";
+import { SoundFamily } from "../modules/sound.js";
+import { Playlist } from "../modules/music.js";
 import { ADVENTURE_LIST } from "../globals/elements.js";
 import * as FUNC from '../globals/func.js';
-import { SoundFamily } from "../modules/sound.js";
+
+// let option = "hide";
+// var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+// var toastList = toastElList.map(function (toastEl) {
+//   return new bootstrap.Toast(toastEl, option)
+// })
+
+// $(toastList).each(function() {
+//     this.show();
+// })
+
 
 RetrieveAdventures();
+
+
+
+
+$("#editAdventureForm").on("show.bs.modal", function() {
+    this.reset();
+    $(this).find("output").html("");
+})
+
+
+
+
+
+
+
+
+
+
 
 
 class AdventureForm {
     constructor(element) {
         this.element = element;
         this.adventure = new Adventure();
+
+        let that = this;
+        $(this.element).on("submit", function(e) {
+            e.preventDefault();
+            that.SubmitForm();
+            $(that.element).modal("hide");
+        });
     }
 
 
     async Load(adventure = new Adventure()) {
         $(this.element).modal("show");
+        $(this.element).find(".accordion-button").addClass("collapsed");
+        $(this.element).find(".accordion-collapse").removeClass("show");
+
         this.adventure = adventure;
         let that = this;
+
+        let nameInput = $(this.element).find("input[name='name']")[0];
+        $(nameInput).on("input", function() {
+            that.adventure.name = $(this).val();
+        })
+
+        let descInput = $(this.element).find("textarea[name='description']")[0];
+        $(descInput).on("input", function() {
+            that.adventure.description = $(this).val();
+        })
 
         // New adventure
         if(adventure.id_aventure === null) {
@@ -41,11 +91,7 @@ class AdventureForm {
 
             let idInput = $(this.element).find("input[name='id_aventure']")[0];
             $(idInput).val(this.adventure.id_aventure);
-
-            let nameInput = $(this.element).find("input[name='name']")[0];
             $(nameInput).val(this.adventure.name);
-
-            let descInput = $(this.element).find("textarea[name='description']")[0];
             $(descInput).val(this.adventure.description);
 
 
@@ -67,18 +113,7 @@ class AdventureForm {
      
     
             // MUSICS
-            // If there are no musics
-            if(this.adventure.playlists.length === 0) {
-                let error = "Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.";
-                FUNC.CreateError(error, $("#formOutputMusics")[0])
-            }
-            // If there are musics
-            else {
-                $(this.adventure.playlists).each(function() {
-    
-                    this.CreateFormCard($("#formOutputMusics")[0]);
-                });
-            }
+            this.LoadAdventureMusicCard();
         }
     }
     
@@ -88,6 +123,7 @@ class AdventureForm {
         this.InitLandscapeSearch();
         this.InitAmbienceSearch();
         this.InitSoundSearch();
+        this.InitMusicSearch();
     }
 
     InitResetSearchBtns() {
@@ -140,7 +176,6 @@ class AdventureForm {
 
 
     InitAmbienceSearch() {
-
         let that = this;
 
         $(this.element).find("#searchAmbience").on("input", function() {
@@ -183,7 +218,6 @@ class AdventureForm {
 
 
     InitSoundSearch() {
-
         let that = this;
 
         $(this.element).find("#searchSon").on("input", function() {
@@ -219,6 +253,48 @@ class AdventureForm {
             // Si le champs de recherche est vide, montrer les sons de l'aventure
             else {
                 that.LoadAdventureSoundCard();
+            }
+        });
+    }
+
+
+
+    InitMusicSearch() {
+        let that = this;
+
+        $(this.element).find("#searchPlaylist").on("input", function() {
+            // Si le champs de recherche est rempli, faire une recherche
+            if(this.value.length > 0) {
+                let send = {
+                    type: "search",
+                    for: "playlists",
+                    search: this.value
+                };
+        
+        
+                $.post("controller.php", send, function(data) {
+                    let result = jQuery.parseJSON(data);
+                    let output = $("#formOutputMusics")[0];
+                    $(output).html("")
+                
+                    if(result.length > 0) {
+                        $(result).each(function() {
+                            let thisPlaylist = new Playlist(this);
+                            let card = thisPlaylist.CreateFormCard(that.adventure);
+
+                            output.appendChild(card);
+                        });
+                    }
+                    else {
+                        let error = "Aucune musique correspondant à votre recherche n'a été trouvé.";
+                        FUNC.CreateError(error, output);
+                    }
+        
+                });
+            }
+            // Si le champs de recherche est vide, montrer les musiques de l'aventure
+            else {
+                that.LoadAdventureMusicCard();
             }
         });
     }
@@ -290,10 +366,104 @@ class AdventureForm {
             });
         }
     }
+
+
+
+
+
+    LoadAdventureMusicCard() {
+        $("#formOutputMusics").html("");
+
+        // If there are no musics
+        if(this.adventure.playlists.length === 0) {
+            let error = "Cette aventure ne contient encore aucune musique. Faites une recherche pour en rajouter.";
+            FUNC.CreateError(error, $("#formOutputMusics")[0])
+        }
+        // If there are musics
+        else {
+            let that = this;
+
+            $(this.adventure.playlists).each(function() {
+                let card = this.CreateFormCard(that.adventure);
+                $("#formOutputMusics")[0].appendChild(card);
+            });
+        }
+    }
+
+
+
+
+
+    SubmitForm() {
+        let send = {
+            type: "update",
+            for: "adventure",
+            adventure: this.adventure
+        };
+
+        if(this.adventure.id_aventure === null) {
+            send.type = "insert";
+        }
+
+
+        $.post("controller.php", send, function(data) {
+            try {
+                let result = jQuery.parseJSON(data);
+                console.log(result);
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+            }
+        });
+
+
+
+        let toast = document.createElement("div");
+        $(toast)
+            .addClass("toast align-items-center text-white bg-success border-0 fade hide mt-1")
+            .prop("role", "alert")
+            .prop("aria-live", "assertive")
+            .prop("aria-atomic", true)
+            .attr("data-bs-delay", 5000);
+        $("#popupContainer")[0].appendChild(toast);
+        
+        let content = document.createElement("div");
+        $(content).addClass("d-flex");
+        toast.appendChild(content);
+
+        let body = document.createElement("div");
+        $(body).addClass("toast-body");
+        content.appendChild(body);
+
+        let text = document.createElement("p");
+        $(text).addClass("m-0");
+        $(text).text("L'aventure a été mise à jour avec succès!");
+        body.appendChild(text);
+
+        let bootstrapToast = new bootstrap.Toast(toast);
+        bootstrapToast.show();
+    }
 }
+
+
+
+
 
 let FORM = new AdventureForm($("#editAdventureForm")[0]);
 FORM.Init();
+$("#NewAdventureBtn").on("click", function() {
+    FORM.Load();
+})
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -375,18 +545,3 @@ function CreateAdventureCard(adventure) {
 
     return article;
 }
-
-
-
-
-
-
-$("#editAdventureForm").on("show.bs.modal", function() {
-    this.reset();
-    $(this).find("output").html("");
-})
-
-
-$("#NewAdventureBtn").on("click", function() {
-    FORM.Load();
-})

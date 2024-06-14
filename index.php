@@ -11,7 +11,7 @@
 
 
 
-
+<div id="popupContainer" class="position-fixed bottom-0 start-50 pb-2" style="z-index: 99999; transform: translateX(-50%)"></div>
 
 <!-- Modal -->
 <form class="modal fade" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true">
@@ -20,9 +20,6 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content text-dark">
             <div class="modal-body">
-                <output class="row">
-                    <p>test</p>
-                </output>
                 
                 <div class="mb-2">
                     <input type="text" name="name" id="" placeholder="Nom de l'aventure" class="form-control mb-1">
@@ -128,7 +125,7 @@
                                     </div>
                                 </section>
 
-                                <output id="formOutputMusics" class="w-100"></output>
+                                <output id="formOutputMusics" class="row"></output>
                             </div>
                         </div>
                     </div>

@@ -121,6 +121,24 @@ export class Adventure {
 
 
 
+    GetMusicIndex(playlist) {
+        let index = -1;
+
+        for(let i = 0; i < this.playlists.length; i++) {
+            let thisPlaylist = this.playlists[i]
+            if(thisPlaylist.id_playlist === playlist.id_playlist) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+
+
+
+
 
 
 
@@ -181,6 +199,24 @@ export class Adventure {
 
 
 
+    IsUsingMusic(playlist) {
+        let isUsed = false;
+
+        for(let i = 0; i < this.playlists.length; i++) {
+            let thisPlaylist = this.playlists[i]
+            if(thisPlaylist.id_playlist === playlist.id_playlist) {
+                isUsed = true;
+                break;
+            }
+        }
+
+        return isUsed;
+    }
+
+
+
+
+
 
 
 
@@ -229,6 +265,20 @@ export class Adventure {
 
 
 
+    AddMusic(playlist) {
+        let isUsed = this.IsUsingMusic(playlist)
+
+        if(isUsed) {
+            return;
+        }
+
+        this.playlists.push(playlist);
+    }
+
+
+
+
+
 
 
 
@@ -271,6 +321,20 @@ export class Adventure {
         }
 
         this.soundFamilies.splice(index, 1);
+    }
+
+
+
+
+
+    RemoveMusic(playlist) {
+        let index = this.GetMusicIndex(playlist);
+
+        if(index === -1) {
+            return;
+        }
+
+        this.playlists.splice(index, 1);
     }
     
 
