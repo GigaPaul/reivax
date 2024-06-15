@@ -8,7 +8,7 @@
 
 
 <!-- Button trigger modal -->
-<div class="sticky-top pt-3 ps-5">
+<div class="fixed-top pt-3 ps-5">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#volumeModal">
         <i class="fa-solid fa-volume-high"></i>
     </button>        

@@ -22,7 +22,7 @@
             <div class="modal-body">
                 
                 <div class="mb-2">
-                    <input type="text" name="name" id="" placeholder="Nom de l'aventure" class="form-control mb-1">
+                    <input type="text" name="name" required autocomplete="off" placeholder="Nom de l'aventure" class="form-control mb-1">
                     <input class="form-control mb-1" type="file" id="backgroundInput" name="background">
 
                     <textarea name="description" id="description" placeholder="Description" class="form-control"></textarea>                    
@@ -44,7 +44,7 @@
                                 <section class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                        <input id="searchLandscape" type="search" name="search_landscape" placeholder="Rechercher un décor" class="form-control" aria-describedby="basic-addon1">
+                                        <input id="searchLandscape" type="search" name="search_landscape" autocomplete="off" placeholder="Rechercher un décor" class="form-control" aria-describedby="basic-addon1">
                                         <button id="resetLandscape" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
                                     </div>
                                 </section>
@@ -71,7 +71,7 @@
                                 <section class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                        <input id="searchAmbience" type="search" name="search_ambience" placeholder="Rechercher une ambiance" class="form-control" aria-describedby="basic-addon1">
+                                        <input id="searchAmbience" type="search" name="search_ambience" autocomplete="off" placeholder="Rechercher une ambiance" class="form-control" aria-describedby="basic-addon1">
                                         <button id="resetAmbience" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
                                     </div>
                                 </section>
@@ -96,7 +96,7 @@
                                 <section class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                        <input id="searchSon" type="search" name="search_son" placeholder="Rechercher un son" class="form-control" aria-describedby="basic-addon1">
+                                        <input id="searchSon" type="search" name="search_son" autocomplete="off" placeholder="Rechercher un son" class="form-control" aria-describedby="basic-addon1">
                                         <button id="resetSon" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
                                     </div>
                                 </section>
@@ -120,7 +120,7 @@
                                 <section class="row">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                        <input id="searchPlaylist" type="search" name="search_playlist" placeholder="Rechercher une musique" class="form-control" aria-describedby="basic-addon1">
+                                        <input id="searchPlaylist" type="search" name="search_playlist" autocomplete="off" placeholder="Rechercher une musique" class="form-control" aria-describedby="basic-addon1">
                                         <button id="resetPlaylist" class="btn btn-outline-secondary resetSearch" type="button"><i class="fa-solid fa-rotate"></i></button>
                                     </div>
                                 </section>

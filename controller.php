@@ -72,7 +72,11 @@ switch($type)
                 $queryAdventure->execute();
                 //
 
-                // LANDSCAPES
+
+
+
+
+                // ==================== LANDSCAPES ====================
                 // We select which landscapes are currently linked to this adventure
                 $sqlBDDLandscapes = "SELECT id_landscape FROM aventures_landscapes WHERE id_aventure = :id_aventure";
                 $queryBDDLandscapes = $pdo->prepare($sqlBDDLandscapes);
@@ -155,6 +159,302 @@ switch($type)
                         $pdo->beginTransaction();
 
                         foreach($landscapesToDel as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+
+                
+                // ==================== AMBIENCES ====================
+                // We select which ambiences are currently linked to this adventure
+                $stmt = $pdo->prepare('SELECT id_ambience FROM aventures_ambiences WHERE id_aventure = ?');
+                $stmt->execute([$adventure["id_aventure"]]);
+                $BDDAmbiences = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                $ambiencesToAdd = array();
+                $ambiencesToDel = array();
+
+                // We formate $ambiencesToDel tel que [id_aventure, id_ambience]
+                foreach($BDDAmbiences as $row) {
+                    $val = [
+                        $adventure["id_aventure"],
+                        $row
+                    ];
+
+                    array_push($ambiencesToDel, $val);
+                }
+
+                
+
+
+
+                // If the adventure sent by form has ambiences
+                if(array_key_exists("ambiences", $adventure)) {
+                    // Determine which ambiences to keep or add in the DB
+                    foreach($adventure["ambiences"] as $local)
+                    {
+                        $local["id_ambience"] = intval($local["id_ambience"]);
+                        
+
+
+                        // This ambience is both in local and DB, no need to change anything
+                        if(in_array($local["id_ambience"], $BDDAmbiences)) {
+                            $val = [
+                                $adventure["id_aventure"],
+                                $local["id_ambience"]
+                            ];
+
+                            // We remove it from the "to delete" array
+                            $indexToKeep = array_search($val, $ambiencesToDel);
+                            array_splice($ambiencesToDel, $indexToKeep, 1);
+                            continue;
+                        }
+                        // This ambience is in local but not on the DB, we need to add it to the DB
+                        else {
+                            // We add it to the "to add" array
+                            $aventures_ambiences = [$adventure["id_aventure"], $local["id_ambience"]];
+                            array_push($ambiencesToAdd, $aventures_ambiences);
+                            continue;
+                        }
+                    }
+                }
+                
+
+
+                // If there are ambiences to insert
+                if(count($ambiencesToAdd) > 0) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_ambiences (id_aventure, id_ambience) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($ambiencesToAdd as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+                // If there are ambiences to delete
+                if(count($ambiencesToDel) > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM aventures_ambiences WHERE id_aventure = ? AND id_ambience = ?");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($ambiencesToDel as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+                
+                // ==================== SOUNDS ====================
+                // We select which sounds are currently linked to this adventure
+                $stmt = $pdo->prepare('SELECT id_soundfamily FROM aventures_soundfamilies WHERE id_aventure = ?');
+                $stmt->execute([$adventure["id_aventure"]]);
+                $BDDSounds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                $soundsToAdd = array();
+                $soundsToDel = array();
+
+                // We formate $soundsToDel tel que [id_aventure, id_soundfamily]
+                foreach($BDDSounds as $row) {
+                    $val = [
+                        $adventure["id_aventure"],
+                        $row
+                    ];
+
+                    array_push($soundsToDel, $val);
+                }
+
+                
+
+
+
+                // If the adventure sent by form has sounds
+                if(array_key_exists("soundFamilies", $adventure)) {
+                    // Determine which sounds to keep or add in the DB
+                    foreach($adventure["soundFamilies"] as $local)
+                    {
+                        $local["id_soundFamily"] = intval($local["id_soundFamily"]);
+                        
+
+
+                        // This sound is both in local and DB, no need to change anything
+                        if(in_array($local["id_soundFamily"], $BDDSounds)) {
+                            $val = [
+                                $adventure["id_aventure"],
+                                $local["id_soundFamily"]
+                            ];
+
+                            // We remove it from the "to delete" array
+                            $indexToKeep = array_search($val, $soundsToDel);
+                            array_splice($soundsToDel, $indexToKeep, 1);
+                            continue;
+                        }
+                        // This sound is in local but not on the DB, we need to add it to the DB
+                        else {
+                            // We add it to the "to add" array
+                            $aventures_sounds = [$adventure["id_aventure"], $local["id_soundFamily"]];
+                            array_push($soundsToAdd, $aventures_sounds);
+                            continue;
+                        }
+                    }
+                }
+                
+
+
+                // If there are sounds to insert
+                if(count($soundsToAdd) > 0) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_soundfamilies (id_aventure, id_soundfamily) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($soundsToAdd as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+                // If there are sounds to delete
+                if(count($soundsToDel) > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM aventures_soundfamilies WHERE id_aventure = ? AND id_soundfamily = ?");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($soundsToDel as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+
+                
+                // ==================== MUSICS ====================
+                // We select which musics are currently linked to this adventure
+                $stmt = $pdo->prepare('SELECT id_playlist FROM aventures_playlists WHERE id_aventure = ?');
+                $stmt->execute([$adventure["id_aventure"]]);
+                $BDDPlaylists = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                $playlistsToAdd = array();
+                $playlistsToDel = array();
+
+                // We formate $playlistsToDel tel que [id_aventure, id_playlist]
+                foreach($BDDPlaylists as $row) {
+                    $val = [
+                        $adventure["id_aventure"],
+                        $row
+                    ];
+
+                    array_push($playlistsToDel, $val);
+                }
+
+                
+
+
+
+                // If the adventure sent by form has playlists
+                if(array_key_exists("playlists", $adventure)) {
+                    // Determine which musics to keep or add in the DB
+                    foreach($adventure["playlists"] as $local)
+                    {
+                        $local["id_playlist"] = intval($local["id_playlist"]);
+                        
+
+
+                        // This music is both in local and DB, no need to change anything
+                        if(in_array($local["id_playlist"], $BDDPlaylists)) {
+                            $val = [
+                                $adventure["id_aventure"],
+                                $local["id_playlist"]
+                            ];
+
+                            // We remove it from the "to delete" array
+                            $indexToKeep = array_search($val, $playlistsToDel);
+                            array_splice($playlistsToDel, $indexToKeep, 1);
+                            continue;
+                        }
+                        // This music is in local but not on the DB, we need to add it to the DB
+                        else {
+                            // We add it to the "to add" array
+                            $aventures_playlists = [$adventure["id_aventure"], $local["id_playlist"]];
+                            array_push($playlistsToAdd, $aventures_playlists);
+                            continue;
+                        }
+                    }
+                }
+                
+
+
+                // If there are musics to insert
+                if(count($playlistsToAdd) > 0) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_playlists (id_aventure, id_playlist) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($playlistsToAdd as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+                // If there are musics to delete
+                if(count($playlistsToDel) > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM aventures_playlists WHERE id_aventure = ? AND id_playlist = ?");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($playlistsToDel as $row) {
                             $stmt->execute($row);
                         }
 
