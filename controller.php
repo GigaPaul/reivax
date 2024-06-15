@@ -59,6 +59,7 @@ switch($type)
         {
             case "adventure":
                 $adventure = $_POST['adventure'];
+                $adventure["id_aventure"] = intval($adventure["id_aventure"]);
                 // var_dump($_POST);
 
                 // AVENTURE
@@ -72,19 +73,98 @@ switch($type)
                 //
 
                 // LANDSCAPES
+                // We select which landscapes are currently linked to this adventure
                 $sqlBDDLandscapes = "SELECT id_landscape FROM aventures_landscapes WHERE id_aventure = :id_aventure";
                 $queryBDDLandscapes = $pdo->prepare($sqlBDDLandscapes);
                 $queryBDDLandscapes->bindValue(':id_aventure', $adventure['id_aventure'], PDO::PARAM_INT);
                 $queryBDDLandscapes->execute();
-                $queryBDDLandscapes->setFetchMode(PDO::FETCH_ASSOC);
-                $BDDLandscapes = $queryBDDLandscapes->fetchALL();
+                $BDDLandscapes = $queryBDDLandscapes->fetchALL(PDO::FETCH_COLUMN);
+                
 
-                foreach($landscape as $BDDLandscapes) {
-                    
+                $landscapesToAdd = array();
+                $landscapesToDel = array();
+                // We formate $landscapesToDel tel que [id_aventure, id_landscape]
+                foreach($BDDLandscapes as $row) {
+                    $val = [
+                        $adventure["id_aventure"],
+                        $row
+                    ];
+
+                    array_push($landscapesToDel, $val);
                 }
 
-                var_dump($BDDLandscapes);
-                //
+
+                // If the adventure sent by form has landscapes
+                if(array_key_exists("landscapes", $adventure)) {
+                    // Determine which landscapes to keep or add in the DB
+                    foreach($adventure["landscapes"] as $local)
+                    {
+                        $local["id_landscape"] = intval($local["id_landscape"]);
+                        
+
+
+                        // This landscape is both in local and DB, no need to change anything
+                        if(in_array($local["id_landscape"], $BDDLandscapes)) {
+                            $val = [
+                                $adventure["id_aventure"],
+                                $local["id_landscape"]
+                            ];
+
+                            // We remove it from the "to delete" array
+                            $indexToKeep = array_search($val, $landscapesToDel);
+                            array_splice($landscapesToDel, $indexToKeep, 1);
+                            continue;
+                        }
+                        // This landscape is in local but not on the DB, we need to add it to the DB
+                        else {
+                            // We add it to the "to add" array
+                            $aventures_landscapes = [$adventure["id_aventure"], $local["id_landscape"]];
+                            array_push($landscapesToAdd, $aventures_landscapes);
+                            continue;
+                        }
+                    }
+                }
+                
+
+
+                // If there are landscapes to insert
+                if(count($landscapesToAdd) > 0) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_landscapes (id_aventure, id_landscape) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($landscapesToAdd as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+                // If there are landscapes to delete
+                if(count($landscapesToDel) > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM aventures_landscapes WHERE id_aventure = ? AND id_landscape = ?");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($landscapesToDel as $row) {
+                            $stmt->execute($row);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
 
                 break;
 
