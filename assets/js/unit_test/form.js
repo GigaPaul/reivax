@@ -6,15 +6,7 @@ import { Playlist } from "../modules/music.js";
 import { ADVENTURE_LIST } from "../globals/elements.js";
 import * as FUNC from '../globals/func.js';
 
-// let option = "hide";
-// var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-// var toastList = toastElList.map(function (toastEl) {
-//   return new bootstrap.Toast(toastEl, option)
-// })
 
-// $(toastList).each(function() {
-//     this.show();
-// })
 
 
 RetrieveAdventures();
@@ -61,14 +53,28 @@ class AdventureForm {
         let that = this;
 
         let nameInput = $(this.element).find("input[name='name']")[0];
-        $(nameInput).on("input", function() {
-            that.adventure.name = $(this).val();
-        })
+        // $(nameInput).on("input", function() {
+        //     that.adventure.name = $(this).val();
+        // })
+
+        // let backgroundInput = $(this.element).find("input[name='background'")[0];
+        // $(backgroundInput).on("change", function() {
+        //     let name = $(this).val().replace(/.*[\/\\]/, '');
+            
+        //     if(!FUNC.IsImage(name)) {
+        //         console.log("Le fichier envoyé n'est pas une image.")
+        //         return;
+        //     }
+
+        //     let path = `assets/upload/images/${name}`;
+        //     that.adventure.background = path;
+        // })
+
 
         let descInput = $(this.element).find("textarea[name='description']")[0];
-        $(descInput).on("input", function() {
-            that.adventure.description = $(this).val();
-        })
+        // $(descInput).on("input", function() {
+        //     that.adventure.description = $(this).val();
+        // })
 
         // New adventure
         if(adventure.id_aventure === null) {
@@ -394,27 +400,102 @@ class AdventureForm {
 
 
 
-    SubmitForm() {
-        let send = {
-            type: "update",
-            for: "adventure",
-            adventure: this.adventure
-        };
+    async SubmitForm() {
+        let that = this;
+        // Update or Insert of the adventure
+        let name = $(this.element).find("input[name='name']").val();
+        let description = $(this.element).find("textarea[name='description']").val();
+        let background = $(this.element).find("input[name='background']")[0].files[0];
 
-        if(this.adventure.id_aventure === null) {
-            send.type = "insert";
+        this.adventure.name = name;
+        this.adventure.description = description
+
+
+        if(background === undefined) {
+            await this.adventure.Push();
+            RetrieveAdventures();
         }
+        else {
+            // Upload de l'image de fond
+            let formData = new FormData();
+            formData.append("type", "upload");
+            formData.append("for", "image");
+            formData.append("background", background);
 
 
-        $.post("controller.php", send, function(data) {
-            try {
-                let result = jQuery.parseJSON(data);
-                console.log(result);
-            } catch(error) {
-                console.log("Erreur détectée");
-                console.log(data);
-            }
-        });
+            $.ajax({
+                type: "POST",
+                url: "controller.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: async function(data) {
+                    try {
+                        let result = jQuery.parseJSON(data);
+                        that.adventure.background = result;
+                        await that.adventure.Push();
+                        RetrieveAdventures();
+                    } catch(error) {
+                        console.log("Erreur détectée");
+                        console.log(data);
+                    }
+                }
+            })
+        }
+        
+
+        // let send = {
+        //     type: "update",
+        //     for: "adventure",
+        //     adventure: this.adventure
+        // };
+
+        // if(this.adventure.id_aventure === null) {
+        //     send.type = "insert";
+        // }
+
+        // $.post("controller.php", send, function(data) {
+        //     try {
+        //         if (send.type === "insert") {
+        //             that.adventure.id_aventure = data;
+        //         }
+
+        //         if(background === undefined) {
+        //             RetrieveAdventures();
+        //         }
+        //         else {
+        //             // Upload de l'image de fond
+        //             let formData = new FormData();
+        //             formData.append("type", "upload");
+        //             formData.append("for", "image");
+        //             formData.append("background", background);
+
+
+        //             $.ajax({
+        //                 type: "POST",
+        //                 url: "controller.php",
+        //                 data: formData,
+        //                 processData: false,
+        //                 contentType: false,
+        //                 success: function(data) {
+        //                     try {
+        //                         let result = jQuery.parseJSON(data);
+        //                         that.adventure.background = result;
+        //                         console.log(result);
+        //                         // RetrieveAdventures();
+        //                     } catch(error) {
+        //                         console.log("Erreur détectée");
+        //                         console.log(data);
+        //                     }
+        //                 }
+        //             })
+        //         }
+        //     } catch(error) {
+        //         console.log("Erreur détectée");
+        //         console.log(data);
+        //     }
+        // });
+        //
 
 
 
@@ -481,11 +562,10 @@ function RetrieveAdventures() {
 
     $.post("controller.php", send, function(data) {
         let queriedAdventure = jQuery.parseJSON(data);
-
+        $(ADVENTURE_LIST).find("article").remove();
 
         $(queriedAdventure).each(function() {
             let adventure = new Adventure(this);
-            // let card = adventure.CreateCard();
             let card = CreateAdventureCard(adventure);
             ADVENTURE_LIST.appendChild(card);
         })

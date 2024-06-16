@@ -23,7 +23,7 @@
                 
                 <div class="mb-2">
                     <input type="text" name="name" required autocomplete="off" placeholder="Nom de l'aventure" class="form-control mb-1">
-                    <input class="form-control mb-1" type="file" id="backgroundInput" name="background">
+                    <input class="form-control mb-1" type="file" id="backgroundInput" accept="image/png, image/jpeg" name="background">
 
                     <textarea name="description" id="description" placeholder="Description" class="form-control"></textarea>                    
                 </div>

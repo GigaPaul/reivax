@@ -163,7 +163,7 @@
         <article class="mb-5">
             <h2 class="text-center">Musique</h2>
 
-            <output id="musicOutput"></output>
+            <output id="musicOutput" class="row"></output>
 
             <div id="musicAudios">
                 <audio data-volume="musique" preload="metadata" src=""></audio>

@@ -1,6 +1,9 @@
 <?php
+require_once("./assets/php/func.php");
+
 $type = $_POST["type"];
 $for = $_POST["for"];
+
 
 
 
@@ -47,7 +50,135 @@ switch($type)
     case "insert":
         switch($for) {
             case "adventure":
-                echo "Insert aventure";
+                $adventure = $_POST["adventure"];
+
+                $data = [
+                    $adventure["name"],
+                    $adventure["background"],
+                    $adventure["description"]
+                ];
+
+                $sql = "INSERT INTO aventures (name, background, description) VALUES (?,?,?)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                $adventure["id_aventure"] = $pdo->lastInsertId();
+
+
+
+
+
+
+                // ==================== LANDSCAPES ====================
+                if(array_key_exists("landscapes", $adventure)) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_landscapes (id_aventure, id_landscape) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($adventure["landscapes"] as $row) {
+                            $data = [
+                                $adventure["id_aventure"],
+                                $row["id_landscape"]
+                            ];
+
+                            $stmt->execute($data);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+
+                
+                // ==================== AMBIENCES ====================
+                if(array_key_exists("ambiences", $adventure)) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_ambiences (id_aventure, id_ambience) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($adventure["ambiences"] as $row) {
+                            $data = [
+                                $adventure["id_aventure"],
+                                $row["id_ambience"]
+                            ];
+
+                            $stmt->execute($data);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+
+                
+                // ==================== SOUNDS ====================
+                if(array_key_exists("soundFamilies", $adventure)) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_soundfamilies (id_aventure, id_soundfamily) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($adventure["soundFamilies"] as $row) {
+                            $data = [
+                                $adventure["id_aventure"],
+                                $row["id_soundFamily"]
+                            ];
+
+                            $stmt->execute($data);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+
+
+
+                
+                // ==================== MUSICS ====================
+                if(array_key_exists("playlists", $adventure)) {
+                    $stmt = $pdo->prepare("INSERT INTO aventures_playlists (id_aventure, id_playlist) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+
+                        foreach($adventure["playlists"] as $row) {
+                            $data = [
+                                $adventure["id_aventure"],
+                                $row["id_playlist"]
+                            ];
+
+                            $stmt->execute($data);
+                        }
+
+                        $pdo->commit();
+                     
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                }
+
+                // Return the new id_aventure
+                echo intval($adventure["id_aventure"]);
                 break;
         }
         break;
@@ -60,7 +191,7 @@ switch($type)
             case "adventure":
                 $adventure = $_POST['adventure'];
                 $adventure["id_aventure"] = intval($adventure["id_aventure"]);
-                // var_dump($_POST);
+                
 
                 // AVENTURE
                 $sqlAdventure = "UPDATE aventures SET name = :name, background = :background, description = :description WHERE id_aventure = :id_aventure";
@@ -666,6 +797,39 @@ switch($type)
                 $result->soundfamilies = $soundfamilies;
                 
                 echo json_encode($result);
+                break;
+        }
+        break;
+
+    case "upload":
+        switch($for) {
+            case "image":
+                $dir = "assets/upload/images/";
+
+                foreach($_FILES as $file) {
+                    $check = getimagesize($file["tmp_name"]);
+                    
+                    // The image is a fake image
+                    if($check === false) {
+                        continue;
+                    }
+                    
+                    $fileExists = true;
+                    $pathfile = "";
+                    $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
+
+                    // Generate a random unique name
+                    while($fileExists) {
+                        $fileName = getRandomString();
+                        $pathfile = $dir.$fileName.".".$ext;
+                        $fileExists = file_exists($pathfile);
+                    }
+
+                    // Upload the file
+                    move_uploaded_file($file["tmp_name"], $pathfile);
+
+                    echo json_encode($pathfile);
+                }
                 break;
         }
         break;

@@ -372,14 +372,30 @@ export class Adventure {
 
 
 
-    Push() {
+    async Push() {
         let send = {
-            type: "push",
-            for: "aventure",
-            aventure: this
+            type: "update",
+            for: "adventure",
+            adventure: this
         };
-    
-        $.post("controller.php", send);
+
+        if(this.id_aventure === null) {
+            send.type = "insert";
+        }
+
+        let that = this;
+
+        await $.post("controller.php", send, function(data) {
+            try {
+                if (send.type === "insert") {
+                    that.id_aventure = data;
+                }
+
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+            }
+        })
     }
 
 
