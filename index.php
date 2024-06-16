@@ -13,6 +13,23 @@
 
 <div id="popupContainer" class="position-fixed bottom-0 start-50 pb-2" style="z-index: 99999; transform: translateX(-50%)"></div>
 
+
+<form class="modal fade" id="landscapeForm" style="z-index: 2000">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100">Ajout d'un décor</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="type" value="upload">
+                <input type="text" name="name" class="form-control mb-1" placeholder="Nom du décor" required autocomplete="off">
+                <input type="file" name="url" class="form-control mb-1" accept="image/png, image/jpeg, video/mp4" required>
+                <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">
+            </div>
+        </div>
+    </div>
+</form>
+
 <!-- Modal -->
 <form class="modal fade" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true">
 <!-- <form class="modal fade show d-block" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true"> -->

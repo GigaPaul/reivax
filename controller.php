@@ -180,6 +180,27 @@ switch($type)
                 // Return the new id_aventure
                 echo intval($adventure["id_aventure"]);
                 break;
+
+
+
+
+
+            case "landscape":
+                $landscape = $_POST["landscape"];
+
+                $data = [
+                    $landscape["name"],
+                    $landscape["url"]
+                ];
+
+                $sql = "INSERT INTO landscapes (name, url) VALUES (?,?)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                $landscape["id_landscape"] = $pdo->lastInsertId();
+
+                echo intval($landscape["id_landscape"]);
+                break;
         }
         break;
 
@@ -601,6 +622,26 @@ switch($type)
 
 
 
+
+
+            case "landscape":
+                $landscape = $_POST["landscape"];
+
+                $data = [
+                    $landscape["name"],
+                    $landscape["url"],
+                    $landscape["id_landscape"]
+                ];
+
+                $sql = "UPDATE landscapes SET name=?, url=? WHERE id_landscape=?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+                break;
+
+
+
+
+
             case "background":
                 $sql = "UPDATE current_scene SET background_url = :background_url, type = :type";
 
@@ -830,6 +871,39 @@ switch($type)
 
                     echo json_encode($pathfile);
                 }
+                break;
+
+            case "video":
+                $dir = "assets/upload/videos/";
+
+                $result = array();
+
+                foreach($_FILES as $file) {
+                    // $check = getimagesize($file["tmp_name"]);
+                    
+                    // // The image is a fake image
+                    // if($check === false) {
+                    //     continue;
+                    // }
+                    
+                    $fileExists = true;
+                    $pathfile = "";
+                    $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
+
+                    // Generate a random unique name
+                    while($fileExists) {
+                        $fileName = getRandomString();
+                        $pathfile = $dir.$fileName.".".$ext;
+                        $fileExists = file_exists($pathfile);
+                    }
+
+                    // Upload the file
+                    move_uploaded_file($file["tmp_name"], $pathfile);
+
+                    array_push($result, $pathfile);
+                }
+
+                echo json_encode($result);
                 break;
         }
         break;

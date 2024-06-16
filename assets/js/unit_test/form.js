@@ -20,6 +20,50 @@ $("#editAdventureForm").on("show.bs.modal", function() {
 })
 
 
+$("#addLandscapeButton").on("click", function() {
+    $("#landscapeForm").modal("show")
+})
+
+$("#landscapeForm").on("submit", function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData(this);
+
+    let fileName = formData.get("url").name;
+    if(FUNC.IsImage(fileName)) {
+        formData.append("for", "image");
+    }
+    else if(FUNC.IsVideo(fileName)) {
+        formData.append("for", "video");
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "controller.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            try {
+                let result = jQuery.parseJSON(data);
+                
+                let newLandscape = new Landscape();
+                newLandscape.name = formData.get("name");
+                newLandscape.url = result[0];
+
+                console.log(newLandscape);
+                newLandscape.Push();
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        }
+    })
+    
+    $(this).modal("hide");
+})
+
 
 
 
@@ -53,28 +97,7 @@ class AdventureForm {
         let that = this;
 
         let nameInput = $(this.element).find("input[name='name']")[0];
-        // $(nameInput).on("input", function() {
-        //     that.adventure.name = $(this).val();
-        // })
-
-        // let backgroundInput = $(this.element).find("input[name='background'")[0];
-        // $(backgroundInput).on("change", function() {
-        //     let name = $(this).val().replace(/.*[\/\\]/, '');
-            
-        //     if(!FUNC.IsImage(name)) {
-        //         console.log("Le fichier envoyé n'est pas une image.")
-        //         return;
-        //     }
-
-        //     let path = `assets/upload/images/${name}`;
-        //     that.adventure.background = path;
-        // })
-
-
         let descInput = $(this.element).find("textarea[name='description']")[0];
-        // $(descInput).on("input", function() {
-        //     that.adventure.description = $(this).val();
-        // })
 
         // New adventure
         if(adventure.id_aventure === null) {
@@ -402,7 +425,7 @@ class AdventureForm {
 
     async SubmitForm() {
         let that = this;
-        // Update or Insert of the adventure
+
         let name = $(this.element).find("input[name='name']").val();
         let description = $(this.element).find("textarea[name='description']").val();
         let background = $(this.element).find("input[name='background']")[0].files[0];
@@ -411,10 +434,12 @@ class AdventureForm {
         this.adventure.description = description
 
 
+        // If there are no background change, push immediately the adventure
         if(background === undefined) {
             await this.adventure.Push();
             RetrieveAdventures();
         }
+        // Otherwise, upload the background image first
         else {
             // Upload de l'image de fond
             let formData = new FormData();
@@ -432,7 +457,10 @@ class AdventureForm {
                 success: async function(data) {
                     try {
                         let result = jQuery.parseJSON(data);
+                        // Update the adventure background with the newly uploaded image
                         that.adventure.background = result;
+
+                        // Then push the adventure
                         await that.adventure.Push();
                         RetrieveAdventures();
                     } catch(error) {
@@ -443,59 +471,6 @@ class AdventureForm {
             })
         }
         
-
-        // let send = {
-        //     type: "update",
-        //     for: "adventure",
-        //     adventure: this.adventure
-        // };
-
-        // if(this.adventure.id_aventure === null) {
-        //     send.type = "insert";
-        // }
-
-        // $.post("controller.php", send, function(data) {
-        //     try {
-        //         if (send.type === "insert") {
-        //             that.adventure.id_aventure = data;
-        //         }
-
-        //         if(background === undefined) {
-        //             RetrieveAdventures();
-        //         }
-        //         else {
-        //             // Upload de l'image de fond
-        //             let formData = new FormData();
-        //             formData.append("type", "upload");
-        //             formData.append("for", "image");
-        //             formData.append("background", background);
-
-
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "controller.php",
-        //                 data: formData,
-        //                 processData: false,
-        //                 contentType: false,
-        //                 success: function(data) {
-        //                     try {
-        //                         let result = jQuery.parseJSON(data);
-        //                         that.adventure.background = result;
-        //                         console.log(result);
-        //                         // RetrieveAdventures();
-        //                     } catch(error) {
-        //                         console.log("Erreur détectée");
-        //                         console.log(data);
-        //                     }
-        //                 }
-        //             })
-        //         }
-        //     } catch(error) {
-        //         console.log("Erreur détectée");
-        //         console.log(data);
-        //     }
-        // });
-        //
 
 
 

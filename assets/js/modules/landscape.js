@@ -34,6 +34,36 @@ export class Landscape {
 
 
 
+    async Push() {
+        let send = {
+            type: "update",
+            for: "landscape",
+            landscape: this
+        };
+
+        if(this.id_landscape === null) {
+            send.type = "insert";
+        }
+
+        let that = this;
+
+        await $.post("controller.php", send, function(data) {
+            try {
+                if (send.type === "insert") {
+                    that.id_landscape = data;
+                }
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        })
+    }
+
+
+
+
+
     Load() {
         if(!FUNC.IsImage(this.url) && !FUNC.IsVideo(this.url)) {
             return;

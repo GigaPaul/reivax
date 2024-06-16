@@ -8,7 +8,7 @@
 
 
 <!-- Button trigger modal -->
-<div class="fixed-top pt-3 ps-5">
+<div class="fixed-bottom mb-3 ms-3 w-max-content">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#volumeModal">
         <i class="fa-solid fa-volume-high"></i>
     </button>        
@@ -111,7 +111,9 @@
 
 
 
-<div class="container">
+<div class="container position-relative">
+
+
     <section>
         <div>
             <h1 class="text-center">Reivax</h1>
