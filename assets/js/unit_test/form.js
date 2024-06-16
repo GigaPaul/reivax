@@ -13,13 +13,17 @@ RetrieveAdventures();
 
 
 
-
+// FORMULAIRE AVENTURE
 $("#editAdventureForm").on("show.bs.modal", function() {
     this.reset();
     $(this).find("output").html("");
 })
 
 
+
+
+
+// FORMULAIRE DÉCOR
 $("#addLandscapeButton").on("click", function() {
     $("#landscapeForm").modal("show")
 })
@@ -29,13 +33,14 @@ $("#landscapeForm").on("submit", function(e) {
     
     let formData = new FormData(this);
 
-    let fileName = formData.get("url").name;
-    if(FUNC.IsImage(fileName)) {
-        formData.append("for", "image");
-    }
-    else if(FUNC.IsVideo(fileName)) {
-        formData.append("for", "video");
-    }
+    // let fileName = formData.get("url").name;
+    // if(FUNC.IsImage(fileName)) {
+    //     formData.append("for", "image");
+    // }
+    // else if(FUNC.IsVideo(fileName)) {
+    //     formData.append("for", "video");
+    // }
+    formData.append("for", "file");
     
     $.ajax({
         type: "POST",
@@ -46,7 +51,7 @@ $("#landscapeForm").on("submit", function(e) {
         success: function(data) {
             try {
                 let result = jQuery.parseJSON(data);
-                
+
                 let newLandscape = new Landscape();
                 newLandscape.name = formData.get("name");
                 newLandscape.url = result[0];
@@ -63,6 +68,12 @@ $("#landscapeForm").on("submit", function(e) {
     
     $(this).modal("hide");
 })
+
+
+
+
+
+// FORMULAIRE AMBIANCE
 
 
 
@@ -444,7 +455,7 @@ class AdventureForm {
             // Upload de l'image de fond
             let formData = new FormData();
             formData.append("type", "upload");
-            formData.append("for", "image");
+            formData.append("for", "file");
             formData.append("background", background);
 
 
@@ -457,8 +468,9 @@ class AdventureForm {
                 success: async function(data) {
                     try {
                         let result = jQuery.parseJSON(data);
+                        console.log(result);
                         // Update the adventure background with the newly uploaded image
-                        that.adventure.background = result;
+                        that.adventure.background = result[0];
 
                         // Then push the adventure
                         await that.adventure.Push();

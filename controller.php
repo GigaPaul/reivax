@@ -844,48 +844,28 @@ switch($type)
 
     case "upload":
         switch($for) {
-            case "image":
-                $dir = "assets/upload/images/";
-
-                foreach($_FILES as $file) {
-                    $check = getimagesize($file["tmp_name"]);
-                    
-                    // The image is a fake image
-                    if($check === false) {
-                        continue;
-                    }
-                    
-                    $fileExists = true;
-                    $pathfile = "";
-                    $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
-
-                    // Generate a random unique name
-                    while($fileExists) {
-                        $fileName = getRandomString();
-                        $pathfile = $dir.$fileName.".".$ext;
-                        $fileExists = file_exists($pathfile);
-                    }
-
-                    // Upload the file
-                    move_uploaded_file($file["tmp_name"], $pathfile);
-
-                    echo json_encode($pathfile);
-                }
-                break;
-
-            case "video":
-                $dir = "assets/upload/videos/";
+            case "file":
+                $uploadDir = "assets/upload/";
 
                 $result = array();
 
                 foreach($_FILES as $file) {
-                    // $check = getimagesize($file["tmp_name"]);
-                    
-                    // // The image is a fake image
-                    // if($check === false) {
-                    //     continue;
-                    // }
-                    
+                    $mime = mime_content_type($file["tmp_name"]);
+                    $folder = "";
+
+                    if(str_contains($mime, "image/")) {
+                        $folder .= "images/";
+                    }
+                    else if(str_contains($mime, "video/")) {
+                        $folder .= "videos/";
+                    }
+                    else if(str_contains($mime, "audio/")) {
+                        $folder .= "audios/";
+                    }
+                    else {
+                        continue;
+                    }
+                 
                     $fileExists = true;
                     $pathfile = "";
                     $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
@@ -893,7 +873,7 @@ switch($type)
                     // Generate a random unique name
                     while($fileExists) {
                         $fileName = getRandomString();
-                        $pathfile = $dir.$fileName.".".$ext;
+                        $pathfile = $uploadDir.$folder.$fileName.".".$ext;
                         $fileExists = file_exists($pathfile);
                     }
 
