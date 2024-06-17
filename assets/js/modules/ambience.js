@@ -3,11 +3,24 @@ import * as FUNC from "../globals/func.js";
 
 
 export class Ambience {
-    constructor(obj) {
+    constructor(obj = null) {
+        if(obj !== null) {
+            this.Copy(obj);
+        }
+        else {
+            this.id_ambience = null;
+            this.name = "";
+            this.url = "";
+        }
+
+        this.element;
+    }
+
+
+    Copy(obj) {
         this.id_ambience = obj.id_ambience;
         this.name = obj.name;
         this.url = obj.url;
-        this.element;
     }
 
     Load() {
@@ -48,6 +61,34 @@ export class Ambience {
                 ResetAmbience();
             }
         });
+    }
+
+
+
+    async Push() {
+        let send = {
+            type: "update",
+            for: "ambience",
+            ambience: this
+        };
+
+        if(this.id_ambience === null) {
+            send.type = "insert";
+        }
+
+        let that = this;
+
+        await $.post("controller.php", send, function(data) {
+            try {
+                if (send.type === "insert") {
+                    that.id_ambience = data;
+                }
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        })
     }
 
 

@@ -43,6 +43,53 @@ class Adventure {
 }
 
 
+class File {
+    public $tmp_name;
+    public $name;
+    public $pathfile;
+
+    function __construct($tmp_name, $name) {
+        $this->tmp_name = $tmp_name;
+        $this->name = $name;
+    }
+
+    public function Upload() {
+        $mime = mime_content_type($this->tmp_name);
+        $folder = "";
+
+        if(str_contains($mime, "image/")) {
+            $folder .= "images/";
+        }
+        else if(str_contains($mime, "video/")) {
+            $folder .= "videos/";
+        }
+        else if(str_contains($mime, "audio/")) {
+            $folder .= "audios/";
+        }
+        else {
+            return;
+        }
+     
+        $fileExists = true;
+        $uploadDir = "assets/upload/";
+        $pathfile = "";
+        $ext = pathinfo($this->name, PATHINFO_EXTENSION);
+
+        // Generate a random unique name
+        while($fileExists) {
+            $fileName = getRandomString();
+            $pathfile = $uploadDir.$folder.$fileName.".".$ext;
+            $fileExists = file_exists($pathfile);
+        }
+
+        // Upload the file
+        move_uploaded_file($this->tmp_name, $pathfile);
+
+        $this->pathfile = $pathfile;
+    }
+}
+
+
 
 
 switch($type)
@@ -200,6 +247,66 @@ switch($type)
                 $landscape["id_landscape"] = $pdo->lastInsertId();
 
                 echo intval($landscape["id_landscape"]);
+                break;
+
+            case "ambience":
+                $ambience = $_POST["ambience"];
+
+                $data = [
+                    $ambience["name"],
+                    $ambience["url"]
+                ];
+
+                $sql = "INSERT INTO ambiences (name, url) VALUES (?,?)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                $ambience["id_ambience"] = $pdo->lastInsertId();
+
+                echo intval($ambience["id_ambience"]);
+                break;
+
+            case "soundFamily":
+                $soundFamily = $_POST["soundFamily"];
+
+                $data = [
+                    $soundFamily["name"],
+                    $soundFamily["frequency"],
+                    boolval($soundFamily["isLoop"])
+                ];
+
+                $sql = "INSERT INTO soundfamilies (name, frequency, is_loop) VALUES (?,?,?)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                $soundFamily["id_soundFamily"] = $pdo->lastInsertId();
+
+                // Sounds
+                $stmt = $pdo->prepare("INSERT INTO sounds (id_soundfamily, url) VALUES (?,?)");
+
+
+                try {
+                    $pdo->beginTransaction();
+
+                    foreach($soundFamily["urls"] as $url) {
+                        $data = [
+                            $soundFamily["id_soundFamily"],
+                            $url
+                        ];
+
+                        $stmt->execute($data);
+                    }
+
+                    $pdo->commit();
+                 
+                }catch(Exception $e) {
+                    $pdo->rollback();
+                    throw $e;
+                }
+
+
+
+                echo intval($soundFamily["id_soundFamily"]);
                 break;
         }
         break;
@@ -651,6 +758,20 @@ switch($type)
                 $query->bindValue(':type', $_POST['fileType'], PDO::PARAM_STR);
                 $query->execute();
                 break;
+
+            case "ambience":
+                $ambience = $_POST["ambience"];
+
+                $data = [
+                    $ambience["name"],
+                    $ambience["url"],
+                    $ambience["id_ambience"]
+                ];
+
+                $sql = "UPDATE ambiences SET name=?, url=? WHERE id_ambience=?";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+                break;
         }
         break;
 
@@ -845,42 +966,25 @@ switch($type)
     case "upload":
         switch($for) {
             case "file":
-                $uploadDir = "assets/upload/";
-
                 $result = array();
 
-                foreach($_FILES as $file) {
-                    $mime = mime_content_type($file["tmp_name"]);
-                    $folder = "";
+                // If there are multiple files
+                if(is_array($_FILES["url"]["tmp_name"])) {
+                    $length = count($_FILES["url"]["tmp_name"]);
 
-                    if(str_contains($mime, "image/")) {
-                        $folder .= "images/";
-                    }
-                    else if(str_contains($mime, "video/")) {
-                        $folder .= "videos/";
-                    }
-                    else if(str_contains($mime, "audio/")) {
-                        $folder .= "audios/";
-                    }
-                    else {
-                        continue;
-                    }
-                 
-                    $fileExists = true;
-                    $pathfile = "";
-                    $ext = pathinfo($file["name"], PATHINFO_EXTENSION);
+                    for($i = 0; $i < $length; $i++) {
+                        $newFile = new File($_FILES["url"]["tmp_name"][$i], $_FILES["url"]["name"][$i]);
+                        $newFile->Upload();
 
-                    // Generate a random unique name
-                    while($fileExists) {
-                        $fileName = getRandomString();
-                        $pathfile = $uploadDir.$folder.$fileName.".".$ext;
-                        $fileExists = file_exists($pathfile);
+                        array_push($result, $newFile->pathfile);
                     }
-
-                    // Upload the file
-                    move_uploaded_file($file["tmp_name"], $pathfile);
-
-                    array_push($result, $pathfile);
+                }
+                // If there is only one file
+                else {
+                    $newFile = new File($_FILES["url"]["tmp_name"], $_FILES["url"]["name"]);
+                    $newFile->Upload();
+                    
+                    array_push($result, $newFile->pathfile);
                 }
 
                 echo json_encode($result);

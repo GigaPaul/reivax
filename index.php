@@ -13,8 +13,8 @@
 
 <div id="popupContainer" class="position-fixed bottom-0 start-50 pb-2" style="z-index: 99999; transform: translateX(-50%)"></div>
 
-
-<form class="modal fade" id="landscapeForm" style="z-index: 2000">
+<!-- FORM LANDSCAPE -->
+<form class="modal fade modal-form" id="landscapeForm">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-dark">
             <div class="modal-header">
@@ -22,6 +22,8 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" name="type" value="upload">
+                <input type="hidden" name="for" value="file">
+
                 <input type="text" name="name" class="form-control mb-1" placeholder="Nom du décor" required autocomplete="off">
                 <input type="file" name="url" class="form-control mb-1" accept="image/png, image/jpeg, video/mp4" required>
                 <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">
@@ -30,8 +32,80 @@
     </div>
 </form>
 
+<!-- FORM AMBIENCE -->
+<form class="modal fade modal-form" id="ambienceForm">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100">Ajout d'une ambiance</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="type" value="upload">
+                <input type="hidden" name="for" value="file">
+
+                <input type="text" name="name" class="form-control mb-1" placeholder="Nom de l'ambiance" required autocomplete="off">
+                <input type="file" name="url" class="form-control mb-1" accept="audio/*" required>
+                <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- FORM SOUND -->
+<form class="modal fade modal-form" id="soundForm">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100">Ajout de sons</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="type" value="upload">
+                <input type="hidden" name="for" value="file">
+
+                <input type="text" name="name" class="form-control mb-1" placeholder="Nom de la famille de sons" autocomplete="off" required>
+                <input type="number" name="frequency" placeholder="Temps entre chaque son (ms)" class="form-control mb-1">
+                <input type="file" name="url[]" class="form-control mb-1" accept="audio/*" multiple required>
+
+                <div class="form-check mb-1">
+                    <input id="soundIsLoopCheckbox" type="checkbox" name="is_loop" class="form-check-input" checked>
+                    <label for="soundIsLoopCheckbox" class="form-check-label user-select-none">Boucle</label>
+                </div>
+
+                <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- FORM MUSIC -->
+<form class="modal fade modal-form" id="playlistForm">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-center w-100">Ajout d'une playlist</h5>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="type" value="upload">
+                <input type="hidden" name="for" value="file">
+
+                <input type="text" name="name" class="form-control mb-1" placeholder="Nom de la famille de sons" autocomplete="off" required>
+                <input type="number" name="frequency" placeholder="Temps entre chaque son (ms)" class="form-control mb-1">
+                <input type="file" name="url[]" class="form-control mb-1" accept="audio/*" multiple required>
+
+                <div class="form-check mb-1">
+                    <input id="soundIsLoopCheckbox" type="checkbox" name="is_loop" class="form-check-input" checked>
+                    <label for="soundIsLoopCheckbox" class="form-check-label user-select-none">Boucle</label>
+                </div>
+
+                <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">
+            </div>
+        </div>
+    </div>
+</form>
+
+
 <!-- Modal -->
-<form class="modal fade" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true">
+<form class="modal fade modal-form" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true">
 <!-- <form class="modal fade show d-block" id="editAdventureForm" tabindex="-1" aria-labelledby="editAdventureFormLabel" aria-hidden="true"> -->
     <input type="hidden" name="id_aventure">
     <div class="modal-dialog modal-xl">
@@ -39,7 +113,7 @@
             <div class="modal-body">
                 
                 <div class="mb-2">
-                    <input type="text" name="name" required autocomplete="off" placeholder="Nom de l'aventure" class="form-control mb-1">
+                    <input type="text" name="name" required autocomplete="off" placeholder="Nom de l'aventure" class="form-control form-control-lg mb-1">
                     <input class="form-control mb-1" type="file" id="backgroundInput" accept="image/png, image/jpeg" name="background">
 
                     <textarea name="description" id="description" placeholder="Description" class="form-control"></textarea>                    

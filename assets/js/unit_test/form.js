@@ -12,10 +12,12 @@ import * as FUNC from '../globals/func.js';
 RetrieveAdventures();
 
 
+$(".modal-form").on("show.bs.modal", function() {
+    this.reset();
+})
 
 // FORMULAIRE AVENTURE
 $("#editAdventureForm").on("show.bs.modal", function() {
-    this.reset();
     $(this).find("output").html("");
 })
 
@@ -23,24 +25,12 @@ $("#editAdventureForm").on("show.bs.modal", function() {
 
 
 
-// FORMULAIRE DÉCOR
-$("#addLandscapeButton").on("click", function() {
-    $("#landscapeForm").modal("show")
-})
 
+// FORMULAIRE DÉCOR
 $("#landscapeForm").on("submit", function(e) {
     e.preventDefault();
     
     let formData = new FormData(this);
-
-    // let fileName = formData.get("url").name;
-    // if(FUNC.IsImage(fileName)) {
-    //     formData.append("for", "image");
-    // }
-    // else if(FUNC.IsVideo(fileName)) {
-    //     formData.append("for", "video");
-    // }
-    formData.append("for", "file");
     
     $.ajax({
         type: "POST",
@@ -56,7 +46,6 @@ $("#landscapeForm").on("submit", function(e) {
                 newLandscape.name = formData.get("name");
                 newLandscape.url = result[0];
 
-                console.log(newLandscape);
                 newLandscape.Push();
             } catch(error) {
                 console.log("Erreur détectée");
@@ -74,7 +63,83 @@ $("#landscapeForm").on("submit", function(e) {
 
 
 // FORMULAIRE AMBIANCE
+$("#ambienceForm").on("submit", function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData(this);
+    
+    $.ajax({
+        type: "POST",
+        url: "controller.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            try {
+                let result = jQuery.parseJSON(data);
 
+                let newAmbience = new Ambience();
+                newAmbience.name = formData.get("name");
+                newAmbience.url = result[0];
+
+                newAmbience.Push();
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        }
+    })
+    
+    $(this).modal("hide");
+})
+
+
+
+
+
+// FORMULAIRE SOUND
+$("#soundForm").on("submit", function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData(this);
+
+    
+    $.ajax({
+        type: "POST",
+        url: "controller.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            try {
+                let result = jQuery.parseJSON(data);
+
+                let obj = {
+                    "name": formData.get("name"),
+                    "frequency": formData.get("frequency"),
+                    "is_loop": formData.get("is_loop") === "on",
+                    "sounds": []
+                }
+
+
+                $(result).each(function() {
+                    obj.sounds.push({"url": this});
+                });
+
+                let newSoundFamily = new SoundFamily(obj);
+
+                newSoundFamily.Push();
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        }
+    })
+    
+    $(this).modal("hide");
+})
 
 
 

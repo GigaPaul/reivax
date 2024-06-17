@@ -6,18 +6,75 @@ import * as FUNC from "../globals/func.js";
 
 
 export class SoundFamily {
-    constructor(obj) {
-        this.id_soundFamily = obj.id_soundfamily;
-        this.name = obj.name;
-        this.frequency = obj.frequency;
-        this.isLoop = obj.is_loop;
+    constructor(obj = null) {
+
         this.urls = [];
+
+        if(obj !== null) {
+            this.Copy(obj);
+        }
+        else {
+            this.id_soundFamily = null;
+            this.name = "";
+            this.frequency = 0;
+            this.isLoop = true;
+        }
+
         this.element;
+    }
+
+
+    Copy(obj) {
+        this.id_soundFamily = obj.id_soundfamily ?? null;
+        this.name = obj.name;
+        this.isLoop = obj.is_loop;
+
+        let frequency = 0;
+
+        if(Number.isInteger(obj.frequency)) {
+            frequency = obj.frequency;
+        }
+        else {
+            let parsed = parseInt(obj.frequency);
+            if(!isNaN(parsed)) {
+                frequency = parsed;
+            }
+        }
+
+        this.frequency = frequency;
 
         let that = this;
         $(obj.sounds).each(function() {
             that.urls.push(this.url);
         });
+    }
+
+
+
+    async Push() {
+        let send = {
+            type: "update",
+            for: "soundFamily",
+            soundFamily: this
+        };
+
+        if(this.id_soundFamily === null) {
+            send.type = "insert";
+        }
+
+        let that = this;
+
+        await $.post("controller.php", send, function(data) {
+            try {
+                if (send.type === "insert") {
+                    that.id_soundFamily = data;
+                }
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        })
     }
 
 

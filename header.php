@@ -17,19 +17,19 @@
             <nav class="navbar-collapse collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <button type="button" id="addLandscapeButton" class="btn-link nav-link">Décors</button>
+                        <button type="button" id="addLandscapeButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#landscapeForm">Décors</button>
                     </li>
 
                     <li class="nav-item">
-                        <button type="button" id="addAmbienceButton" class="btn-link nav-link">Ambiances</button>
+                        <button type="button" id="addAmbienceButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#ambienceForm">Ambiances</button>
                     </li>
 
                     <li class="nav-item">
-                        <button type="button" id="addSoundFamilyButton" class="btn-link nav-link">Sons</button>
+                        <button type="button" id="addSoundFamilyButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#soundForm">Sons</button>
                     </li>
 
                     <li class="nav-item">
-                        <button type="button" id="addPlaylistButton" class="btn-link nav-link">Musiques</button>
+                        <button type="button" id="addPlaylistButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="playlistForm">Musiques</button>
                     </li>
                 </ul>
             </nav>
