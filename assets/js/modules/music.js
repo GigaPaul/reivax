@@ -39,11 +39,42 @@ export class Playlist {
 
 
     Copy(obj) {
-        this.id_playlist = obj.id_playlist;
+        this.id_playlist = obj.id_playlist ?? null;
         this.name = obj.name;
         this.musics = [...obj.musics];
         this.isShuffled = obj.is_shuffle;
     }
+
+
+
+
+
+    async Push() {
+        let send = {
+            type: "update",
+            for: "playlist",
+            playlist: this
+        };
+
+        if(this.id_playlist === null) {
+            send.type = "insert";
+        }
+
+        let that = this;
+
+        await $.post("controller.php", send, function(data) {
+            try {
+                if (send.type === "insert") {
+                    that.id_playlist = data;
+                }
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        })
+    }
+
 
 
 
@@ -53,15 +84,18 @@ export class Playlist {
             return;
         }
 
-        let categoryContainer = document.createElement("article");
-        $(categoryContainer).addClass("card w-max-content");
-        this.element = categoryContainer;
+        let article = document.createElement("article");
+        $(article).addClass("col-4 mb-3");
+        this.element = article;
 
+        let card = document.createElement("div");
+        $(card).addClass("card");
+        article.appendChild(card);
 
         // HEADER
         let categoryHeader = document.createElement("div");
         $(categoryHeader).addClass("card-header");
-        categoryContainer.appendChild(categoryHeader);
+        card.appendChild(categoryHeader);
 
         let categoryTitle = document.createElement("h4");
         $(categoryTitle).addClass("text-capitalize m-0");
@@ -72,7 +106,7 @@ export class Playlist {
         // BODY
         let categoryBody = document.createElement("div");
         $(categoryBody).addClass("card-body d-flex");
-        categoryContainer.appendChild(categoryBody);
+        card.appendChild(categoryBody);
 
         let songControls = document.createElement("div");
         $(songControls).addClass("d-flex flex-column justify-content-between me-3");
@@ -99,6 +133,7 @@ export class Playlist {
 
         // CURRENT SONG
         let currentSong = document.createElement("div");
+        $(currentSong).addClass("w-100")
         categoryBody.appendChild(currentSong);
 
         let songTitle = document.createElement("h5");

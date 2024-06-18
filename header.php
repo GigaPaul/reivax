@@ -29,7 +29,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <button type="button" id="addPlaylistButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="playlistForm">Musiques</button>
+                        <button type="button" id="addPlaylistButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#playlistForm">Musiques</button>
                     </li>
                 </ul>
             </nav>

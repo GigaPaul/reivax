@@ -89,12 +89,13 @@
                 <input type="hidden" name="for" value="file">
 
                 <input type="text" name="name" class="form-control mb-1" placeholder="Nom de la famille de sons" autocomplete="off" required>
-                <input type="number" name="frequency" placeholder="Temps entre chaque son (ms)" class="form-control mb-1">
                 <input type="file" name="url[]" class="form-control mb-1" accept="audio/*" multiple required>
 
+                <output class="w-100 mb-1"></output>
+
                 <div class="form-check mb-1">
-                    <input id="soundIsLoopCheckbox" type="checkbox" name="is_loop" class="form-check-input" checked>
-                    <label for="soundIsLoopCheckbox" class="form-check-label user-select-none">Boucle</label>
+                    <input id="soundIsShuffledCheckbox" type="checkbox" name="isShuffled" class="form-check-input" checked>
+                    <label for="soundIsShuffledCheckbox" class="form-check-label user-select-none">Shuffled</label>
                 </div>
 
                 <input type="submit" value="Enregistrer" class="btn btn-success d-block m-auto">

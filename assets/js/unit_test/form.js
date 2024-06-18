@@ -145,6 +145,107 @@ $("#soundForm").on("submit", function(e) {
 
 
 
+$("#playlistForm").find("input[name='url[]']").on("change", function(e) {
+    let output = $(this).siblings("output")[0];
+    $(output).html("");
+
+    let ul = document.createElement("ul");
+    $(ul).addClass("list-group");
+    output.appendChild(ul);
+
+    if(e.target.files.length > 0) {
+        $(e.target.files).each(function() {
+            let li = document.createElement("li");
+            $(li).addClass("list-group-item list-group-item-action");
+            ul.appendChild(li);
+
+            let row = document.createElement("div");
+            $(row).addClass("row");
+            li.appendChild(row);
+
+            let leftCol = document.createElement("col");
+            $(leftCol).addClass("col-6");
+            row.appendChild(leftCol);
+            
+            let urlInput = document.createElement("input");
+            $(urlInput)
+                .addClass("form-control form-control-plaintext")
+                .prop("type", "text")
+                .prop("name", "musicUrl[]")
+                .prop("readonly", true)
+                .val(this.name);
+            leftCol.appendChild(urlInput);
+
+            let rightCol = document.createElement("col");
+            $(rightCol).addClass("col-6");
+            row.appendChild(rightCol);
+            
+            let nameInput = document.createElement("input");
+            $(nameInput)
+                .addClass("form-control")
+                .prop("type", "text")
+                .prop("name", "musicName[]")
+                .prop("placeholder", "Nom de la musique")
+                .prop("autocomplete", "off")
+                .prop("required", true);
+            rightCol.appendChild(nameInput);
+        });
+    }
+});
+
+// FORMULAIRE MUSIC
+$("#playlistForm").on("submit", function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData(this);
+
+
+    
+    $.ajax({
+        type: "POST",
+        url: "controller.php",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            try {
+                let urls = jQuery.parseJSON(data);
+                let names = formData.getAll("musicName[]");
+
+                let musics = [];
+                for(let i = 0; i < urls.length; i++) {
+                    let thisMusic = {
+                        "name": names[i],
+                        "url": urls[i]
+                    }
+
+                    musics.push(thisMusic);
+                }
+                
+                let obj = {
+                    "name": formData.get("name"),
+                    "musics": musics,
+                    "is_shuffle": formData.get("isShuffled") === "on"
+                }
+
+                let newPlaylist = new Playlist(obj);
+                newPlaylist.Push();
+
+            } catch(error) {
+                console.log("Erreur détectée");
+                console.log(data);
+                console.log(error);
+            }
+        }
+    })
+    
+    $(this).modal("hide");
+})
+
+
+
+
+
 
 
 

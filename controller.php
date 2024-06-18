@@ -74,11 +74,12 @@ class File {
         $uploadDir = "assets/upload/";
         $pathfile = "";
         $ext = pathinfo($this->name, PATHINFO_EXTENSION);
+        $originalName = explode(".", $this->name)[0];
 
         // Generate a random unique name
         while($fileExists) {
-            $fileName = getRandomString();
-            $pathfile = $uploadDir.$folder.$fileName.".".$ext;
+            $randomString = getRandomString();
+            $pathfile = $uploadDir.$folder.$originalName."_".$randomString.".".$ext;
             $fileExists = file_exists($pathfile);
         }
 
@@ -272,7 +273,7 @@ switch($type)
                 $data = [
                     $soundFamily["name"],
                     $soundFamily["frequency"],
-                    boolval($soundFamily["isLoop"])
+                    filter_var($soundFamily["isLoop"], FILTER_VALIDATE_BOOLEAN)
                 ];
 
                 $sql = "INSERT INTO soundfamilies (name, frequency, is_loop) VALUES (?,?,?)";
@@ -307,6 +308,86 @@ switch($type)
 
 
                 echo intval($soundFamily["id_soundFamily"]);
+                break;
+
+            case "playlist":
+                $playlist = $_POST["playlist"];
+
+                $data = [
+                    $playlist["name"],
+                    filter_var($playlist["isShuffled"], FILTER_VALIDATE_BOOLEAN)
+                ];
+
+                $sql = "INSERT INTO playlists (name, is_shuffle) VALUES (?,?)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($data);
+
+                $playlist["id_playlist"] = $pdo->lastInsertId();
+
+                // Musics
+                $stmt = $pdo->prepare("INSERT INTO musics (name, url) VALUES (?,?)");
+
+
+                try {
+                    $pdo->beginTransaction();
+
+                    $id_music_index = array();
+
+                    foreach($playlist["musics"] as $music) {
+                        $data = [
+                            $music["name"],
+                            $music["url"]
+                        ];
+
+                        $stmt->execute($data);
+
+                        // Junction table
+                        $id_music = $pdo->lastInsertId();
+                        array_push($id_music_index, $id_music);
+                        // $junctionData = [
+                        //     $playlist["id_playlist"],
+                        //     $id_music
+                        // ];
+
+                        // $sql = "INSERT INTO playlists_musics (id_playlist, id_music) VALUES (?,?)";
+                        // $stmt = $pdo->prepare($sql);
+                        // $stmt->execute($junctionData);
+                    }
+
+                    $pdo->commit();
+
+                    // Junction table
+                    
+                    $stmt = $pdo->prepare("INSERT INTO playlists_musics (id_playlist, id_music) VALUES (?,?)");
+
+                    try {
+                        $pdo->beginTransaction();
+    
+                        foreach($id_music_index as $id_music) {
+                            $data = [
+                                $playlist["id_playlist"],
+                                $id_music
+                            ];
+    
+                            $stmt->execute($data);
+                        }
+    
+                        $pdo->commit();
+                        
+                    }catch(Exception $e) {
+                        $pdo->rollback();
+                        throw $e;
+                    }
+                 
+                }catch(Exception $e) {
+                    $pdo->rollback();
+                    throw $e;
+                }
+                //
+
+
+
+                echo intval($playlist["id_playlist"]);
                 break;
         }
         break;
@@ -975,6 +1056,7 @@ switch($type)
                     for($i = 0; $i < $length; $i++) {
                         $newFile = new File($_FILES["url"]["tmp_name"][$i], $_FILES["url"]["name"][$i]);
                         $newFile->Upload();
+                        
 
                         array_push($result, $newFile->pathfile);
                     }
