@@ -98,7 +98,7 @@ export class Playlist {
         card.appendChild(categoryHeader);
 
         let categoryTitle = document.createElement("h4");
-        $(categoryTitle).addClass("text-capitalize m-0");
+        $(categoryTitle).addClass("m-0");
         $(categoryTitle).text(this.name);
         categoryHeader.appendChild(categoryTitle);
 
@@ -249,6 +249,10 @@ export class Playlist {
 
     getNextSong()
     {
+        if(this.musics.length === 1) {
+            return this.musics[0];
+        }
+
         // Si la playlist est en mode shuffle et doit choisir une musique aléatoire à chaque fois
         if(this.isShuffled)
         {

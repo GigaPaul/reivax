@@ -63,7 +63,7 @@
                 <input type="hidden" name="for" value="file">
 
                 <input type="text" name="name" class="form-control mb-1" placeholder="Nom de la famille de sons" autocomplete="off" required>
-                <input type="number" name="frequency" placeholder="Temps entre chaque son (ms)" class="form-control mb-1">
+                <input type="number" name="frequency" placeholder="Temps entre chaque son (ms)" class="form-control mb-1" min="500">
                 <input type="file" name="url[]" class="form-control mb-1" accept="audio/*" multiple required>
 
                 <div class="form-check mb-1">

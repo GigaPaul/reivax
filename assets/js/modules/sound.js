@@ -193,22 +193,6 @@ class Sound {
         this.audio = audio;
         $(container).append(audio);
     
-    
-    
-        // // PLAYLIST
-        // let playlist = document.createElement("ul");
-        // $(playlist).addClass("sounds__activePlaylist d-none");
-        // $(playlist).data("order", 0);
-        // $(container).append(playlist);
-    
-        // $(this.family.urls).each(function()
-        // {
-        //     let li = document.createElement("li");
-        //     let url = $(this).data("url");
-        //     $(li).data("url", url);
-        //     $(playlist).append(li);
-        // })
-    
         let play = document.createElement("button");
         $(play).html(`<i class="fa-solid fa-play"></i>`);
         $(play).addClass("sounds__play btn btn-success me-3");
@@ -246,6 +230,7 @@ class Sound {
         $(inputFrequency).on("input", function()
         {
             $(outputFrequency).text($(this).val());
+            that.family.frequency = $(this).val() * 1000;
         })
         $(frequency).append(outputFrequency);
     
@@ -326,14 +311,13 @@ class Sound {
         let url = this.family.urls[this.order];
         $(this.audio).prop("src", url);
     
-        // Conversion en ms
-    
+
         if(this.family.frequency > 0)
         {
             let volume = $("#SonsVolume").val() / 100;
             FUNC.Wait(this.family.frequency).then(() => { 
                 FUNC.PlayAudio(this.audio, volume, GLOBALS.SOUND_FADE_TIME)
-            });        
+            });
         }
         else
         {
