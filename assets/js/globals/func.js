@@ -36,11 +36,11 @@ export function PlayAudio(audioElt, volume, fadetime)
 
 
 
-export function PauseAudio(audioElt, fadetime)
+export async function PauseAudio(audioElt, fadetime)
 {
     if(!audioElt.paused)
     {
-        $(audioElt).animate({volume: 0}, fadetime, function()
+        await $(audioElt).animate({volume: 0}, fadetime, function()
         {
             audioElt.pause();
             audioElt.currentTime = 0;

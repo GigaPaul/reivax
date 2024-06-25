@@ -24,6 +24,8 @@ export class Ambience {
     }
 
     Load() {
+        let that = this;
+
         let article = document.createElement("article");
         $(article).addClass("ambience_art me-2");
         this.element = article;
@@ -32,33 +34,82 @@ export class Ambience {
         $(button).text(this.name);
         $(button).addClass("btn btn-primary");
         article.appendChild(button);
-    
-        let audio = document.createElement("audio");
-        $(audio)
-            .prop("src", this.url)
-            .attr("data-volume", "ambiance")
-            .prop("loop", true)
-            .prop("volume", 0);
-            // .prop("id", `ambience_${url}`);
-        article.appendChild(audio);
 
-        let that = this;
+        let nbOfAudios = 2;
+
+        for(let i = 0; i < nbOfAudios; i++) {
+            let audio = document.createElement("audio");
+
+            $(audio)
+                .prop("src", this.url)
+                .attr("data-volume", "ambiance")
+                .prop("volume", 0);
+
+            article.appendChild(audio);
+
+            $(audio).on("timeupdate", function() {
+                if(this.paused) {
+                    return;
+                }
+        
+                if(isNaN(this.duration)) {
+                    return;
+                }
+
+                let activeAudios = $(that.element).find("audio.active");
+
+                if(activeAudios.length === 0) {
+                    return;
+                }
+    
+                let transitionTime = 1000;
+                let buffer = transitionTime / 1000;
+    
+                if(this.currentTime <= this.duration - buffer)
+                {
+                    return;
+                }
+                
+                let otherAudio = $(this).siblings("audio")[0];
+
+                if(!otherAudio.paused) {
+                    return;
+                }
+    
+    
+                FUNC.PauseAudio(this, transitionTime * 2);
+                $(this).removeClass("active");
+    
+                let volume = $("#AmbianceVolume").val() / 100;
+                $(otherAudio).addClass("active");
+                FUNC.PlayAudio(otherAudio, volume, transitionTime);
+            })
+        }
+
+
+
     
         $(button).on("click", function() {
-            // Si le bouton est cliqué alors que le son n'était pas joué
-            if(audio.paused) {
-                if(!$(this).hasClass("active"))
-                {
+            let isOngoing = false;
+            let audios = $(article).find("audio");
+
+            $(audios).each(function() {
+                if(!this.paused) {
+                    isOngoing = true;
+                }
+            });
+
+
+            if(isOngoing) {
+                Ambience.StopAllAudios();
+            }
+            else {
+                if(!$(this).hasClass("active")) {
                     $(that.element.parentNode).find("button").removeClass("active");
                     $(this).addClass("active");
                 }
     
-                SetAmbienceAs(audio);
-            }
-            // Si le bouton est cliqué alors que le son est en train d'être joué
-            else {
-                $(this).removeClass("active");
-                ResetAmbience();
+                Ambience.SetAs(that);
             }
         });
     }
@@ -134,49 +185,73 @@ export class Ambience {
 
         return article;
     }
-}
 
 
 
 
 
+    static SetAs(ambience) {
+        // Find a paused audio of the concerned Ambience
+        let audioToPlay = $(ambience.element).find("audio").filter((index, node) => { return node.paused });
 
+        if(audioToPlay.length === 0) {
+            console.log(`Aucun audio de l'ambiance ${ambience.name} n'est actuellement en pause.`);
+            return;
+        }
 
-function ResetAmbience()
-{
-    let audioIndex = $("#ambienceSelector").find("audio");
+        audioToPlay = audioToPlay[0];
 
-    $(audioIndex).each(function()
-    {
-        FUNC.PauseAudio(this, GLOBALS.AMBIENCE_FADE_TIME);
-    })
-}
-
-
-
-
-
-function SetAmbienceAs(element)
-{
-
-    let audioIndex = $("#ambienceSelector").find("audio");
-
-    // Jouer l'ambiance sélectionnée et mettre en pause les autres
-    $(audioIndex).each(function()
-    {
-        // Jouer l'ambiance concernée
-        if(this == element)
-        {
-            if(this.paused)
-            {
+        // Go through all the ambience audio
+        $("#ambienceSelector").find("audio").each(function() {
+            // Play the one we previously selected
+            if(this === audioToPlay) {
+                $(this).addClass("active");
                 let volume = $("#AmbianceVolume").val() / 100;
                 FUNC.PlayAudio(this, volume, GLOBALS.AMBIENCE_FADE_TIME);
-            }            
+            }
+            // Pause those who were playing
+            else if(!this.paused) {
+                Ambience.StopThisAudio(this);
+            }
+        });
+    }
+
+
+
+
+    StopAudios() {
+        let audios = $(this.element).find("audio");
+
+        $(audios).each(function() {
+            Ambience.StopThisAudio(this);
+        })
+
+    }
+
+
+
+    static StopThisAudio(element) {
+        if(element.paused) {
+            return;
         }
-        // Si une autre ambiance est jouée, la mettre sur pause
-        else
-        {
-            FUNC.PauseAudio(this, GLOBALS.AMBIENCE_FADE_TIME);
+
+        let transitionTime = GLOBALS.AMBIENCE_FADE_TIME;
+
+        let fadeTimeMs = GLOBALS.AMBIENCE_FADE_TIME / 1000;
+        
+        if(element.currentTime > element.duration - fadeTimeMs) {
+            transitionTime = ( element.duration - element.currentTime ) * 1000;
         }
-    })
+
+        $(element).removeClass("active").stop();
+        FUNC.PauseAudio(element, transitionTime);
+    }
+
+
+
+    static StopAllAudios() {
+        $("#ambienceSelector").find("audio").each(function() {
+            Ambience.StopThisAudio(this);
+        });
+    }
 }

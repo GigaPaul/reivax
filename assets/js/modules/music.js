@@ -32,6 +32,8 @@ export class Playlist {
             this.id_playlist = null;
             this.name = "";
             this.musics = [];
+            this.intro = null;
+            this.outro = null;
             this.isShuffled = false;
         }
     }
@@ -42,6 +44,8 @@ export class Playlist {
         this.id_playlist = obj.id_playlist ?? null;
         this.name = obj.name;
         this.musics = [...obj.musics];
+        this.intro = obj.intro;
+        this.outro = obj.outro;
         this.isShuffled = obj.is_shuffle;
     }
 
@@ -227,8 +231,7 @@ export class Playlist {
 
 
 
-    static isMusicPlaying()
-    {
+    static isMusicPlaying() {
         let isPlaying = false;
 
         $(MUSIC_AUDIOS).children().each(function() {
@@ -247,8 +250,7 @@ export class Playlist {
 
 
 
-    getNextSong()
-    {
+    getNextSong() {
         if(this.musics.length === 1) {
             return this.musics[0];
         }
@@ -302,8 +304,7 @@ export class Playlist {
 
 
 
-    start()
-    {
+    start() {
         CURRENT_MUSIC = this;
         let songPlayed = this.musics[0];
 
@@ -319,7 +320,7 @@ export class Playlist {
 
 
 
-    static pause(){
+    static pause() {
         let playingAudio = $(MUSIC_AUDIOS).children(".active")[0] ?? $(MUSIC_AUDIOS).children()[0];
         
         $(playingAudio).removeClass("active");
@@ -338,8 +339,7 @@ export class Playlist {
 
 
 
-    stop()
-    {
+    stop() {
         this.index = 0;
         this.playedMusics = [];
         Playlist.pause();
@@ -349,8 +349,7 @@ export class Playlist {
 
 
 
-    next()
-    {
+    next() {
         let nextSong = this.getNextSong();
         this.play(nextSong);
     }
@@ -359,8 +358,7 @@ export class Playlist {
 
 
 
-    play(music)
-    {
+    play(music) {
         this.index = this.musics.indexOf(music);
         this.playedMusics.push(music);
 
@@ -498,7 +496,7 @@ function FadeTransition() {
     if(this.currentTime <= this.duration - buffer)
     {
         return;
-    }    
+    }
         
     CURRENT_MUSIC.next();
 }
