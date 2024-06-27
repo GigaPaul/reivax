@@ -1,6 +1,7 @@
 import * as GLOBALS from "../globals/const.js";
 import * as FUNC from "../globals/func.js";
 import { MUSIC_AUDIOS } from "./../globals/elements.js";
+import { CleanLoop } from "./cleanloop.js"
 
 let CURRENT_MUSIC = null;
 
@@ -87,10 +88,11 @@ export class Playlist {
         if(this.musics.length === 0) {
             return;
         }
+        let that = this;
 
         let article = document.createElement("article");
         $(article).addClass("col-4 mb-3");
-        this.element = article;
+        this.element = article
 
         let card = document.createElement("div");
         $(card).addClass("card");
@@ -105,6 +107,75 @@ export class Playlist {
         $(categoryTitle).addClass("m-0");
         $(categoryTitle).text(this.name);
         categoryHeader.appendChild(categoryTitle);
+
+
+
+
+
+
+        //
+        let bidule = null;
+        let testButton = document.createElement("button");
+        $(testButton)
+            .prop("type", "button")
+            .text("Test son")
+            .on("click", function() {
+                let truc = [];
+                $(that.musics).each(function() {
+                    truc.push(this.url);
+                })
+
+                let data = {
+                    "urls": truc,
+                    "fadeTime": GLOBALS.MUSIC_FADE_TIME
+                }
+
+                let cleanLoop = new CleanLoop(data);
+                article.appendChild(cleanLoop.audio);
+                $(cleanLoop.audio).prop("controls", true);
+                
+
+
+
+
+
+                // $(cleanLoop.audio).on("cl_start", function() {
+                //     $(categoryTitle).text(cleanLoop.playlist[0]);
+                // })
+
+
+
+
+                // $(cleanLoop.audio).on("cl_clone", function() {
+                //     $(this).on("cl_clone", function() {
+
+                //     })
+                //     console.log(`Un clone a été créé, ${cleanLoop.clone.playlist[0]} est en cours d'écoute`);
+                // })
+
+
+
+
+
+                cleanLoop.audio.play();
+                bidule = cleanLoop;
+            })
+
+        article.appendChild(testButton);
+
+        let testButton2 = document.createElement("button");
+        $(testButton2)
+            .prop("type", "button")
+            .text("Pause")
+            .on("click", function() {
+                $(bidule.audio).attr("paused", true);
+            });
+        article.appendChild(testButton2);
+        //
+
+
+
+
 
 
         // BODY
@@ -173,31 +244,31 @@ export class Playlist {
 
 
         
-        // HIDDEN PLAYLIST
-        let playlist = document.createElement("ul");
-        categoryBody.appendChild(playlist);
-        $(playlist).addClass("music__playlist d-none");
+        // // HIDDEN PLAYLIST
+        // let playlist = document.createElement("ul");
+        // categoryBody.appendChild(playlist);
+        // $(playlist).addClass("music__playlist d-none");
 
-        $(this.musics).each(function()
-        {
-            let li = document.createElement("li");
-            $(li).data("url", this.url);
-            playlist.appendChild(li);
-        });
+        // $(this.musics).each(function()
+        // {
+        //     let li = document.createElement("li");
+        //     $(li).data("url", this.url);
+        //     playlist.appendChild(li);
+        // });
 
 
-        if(this.isShuffled) {
-            $(shuffleButton).addClass("btn-info");
-        }
-        else {
-            $(shuffleButton).addClass("btn-outline-info");
-        }
+        // if(this.isShuffled) {
+        //     $(shuffleButton).addClass("btn-info");
+        // }
+        // else {
+        //     $(shuffleButton).addClass("btn-outline-info");
+        // }
 
 
 
         // EVENTS
         // Toggle
-        let that = this;
+        // let that = this;
         $(toggleButton).on("click", function() {
             let icon = $(this).children("i");
             if(CURRENT_MUSIC === that) {

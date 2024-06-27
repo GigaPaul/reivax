@@ -113,6 +113,10 @@
   -ms-writing-mode: vertical-lr;
 }
 
+audio[paused] {
+  background-color: red;
+}
+
 .progressbar input[type="range"] {
   pointer-events: none;
 }

@@ -1,5 +1,6 @@
 export class CleanLoop {
     constructor(args = {}) {
+
         // AUDIO
         let audioIsValid = args.audio !== undefined && args.audio.nodeType !== undefined && args.audio.tagName === "AUDIO";
         audioIsValid ? 
@@ -17,6 +18,18 @@ export class CleanLoop {
         playlistIsValid ? 
             this.playlist = args.playlist : 
             this.playlist = [];
+
+        // NAMES
+        let namesIsValid = args.names !== undefined && Array.isArray(args.names);
+        namesIsValid ? 
+            this.names = args.names : 
+            this.names = [];
+
+        // DISPLAYER
+        let displayerIsValid = args.displayer !== undefined && args.displayer.nodeType !== undefined;
+        displayerIsValid ? 
+            this.displayer = args.displayer : 
+            this.displayer = null;
 
         // IS LOOP
         let boolLoopIsValid = args.isLoop !== undefined && typeof args.isLoop === "boolean";
@@ -65,6 +78,7 @@ export class CleanLoop {
         $(this.audio).on("play", function() {
             // Prevent trigger on initial play
             if(this.currentTime === 0) {
+                that.#OnStart();
                 return;
             }
 
@@ -82,25 +96,25 @@ export class CleanLoop {
             return;
         }
 
-        let initialUrl = this.audio.attributes.getNamedItem("src")?.value;
+        // let initialUrl = this.audio.attributes.getNamedItem("src")?.value;
 
-        // S'il y a quelque chose de renseigné dans l'attribut "src" de l'audio
-        if(initialUrl !== undefined) {
-            // Si le src de l'audio est inclus dans la liste d'urls
-            if(this.urls.includes(initialUrl)) {
-                let index = this.urls.indexOf(initialUrl);
+        // // S'il y a quelque chose de renseigné dans l'attribut "src" de l'audio
+        // if(initialUrl !== undefined) {
+        //     // Si le src de l'audio est inclus dans la liste d'urls
+        //     if(this.urls.includes(initialUrl)) {
+        //         let index = this.urls.indexOf(initialUrl);
 
-                // Si le src n'est pas le premier élément des urls
-                if(index > 0) {
-                    this.urls.splice(index, 1);
-                    this.urls.unshift(initialUrl);
-                }
-            }
-            // Si le src de l'audio n'est pas encore inclus dans la liste d'url
-            else {
-                this.urls.unshift(initialUrl);
-            }
-        }
+        //         // Si le src n'est pas le premier élément des urls
+        //         if(index > 0) {
+        //             this.urls.splice(index, 1);
+        //             this.urls.unshift(initialUrl);
+        //         }
+        //     }
+        //     // Si le src de l'audio n'est pas encore inclus dans la liste d'url
+        //     else {
+        //         this.urls.unshift(initialUrl);
+        //     }
+        // }
 
         if(this.isShuffle) {
             this.Shuffle();
@@ -110,16 +124,16 @@ export class CleanLoop {
         }
         
 
-        // Make sure the initial URL is the first song to play of the initial playlist
-        if(initialUrl !== this.playlist[0]) {
-            if(initialUrl !== undefined) {
-                let index = this.playlist.indexOf(initialUrl);
-                this.playlist.splice(index, 1);
-                this.playlist.unshift(initialUrl);            
-            }
-                
-            $(this.audio).prop("src", this.playlist[0])    
-        }
+        // // Make sure the initial URL is the first song to play of the initial playlist
+        // if(initialUrl !== this.playlist[0]) {
+        //     if(initialUrl !== undefined) {
+        //         let index = this.playlist.indexOf(initialUrl);
+        //         this.playlist.splice(index, 1);
+        //         this.playlist.unshift(initialUrl);            
+        //     }
+                 
+        // }
+        $(this.audio).prop("src", this.playlist[0])   
     }
 
 
@@ -156,8 +170,23 @@ export class CleanLoop {
 
         $(this.audio).stop();
 
-        this.clone.pause();
-        $(this.clone).stop();
+        this.clone.audio.pause();
+        $(this.clone.audio).stop();
+    }
+
+
+
+
+
+    #OnStart() {
+        let event = new Event("cl_start");
+        this.audio.dispatchEvent(event);
+        
+        if(this.displayer !== null) {
+            let currentName = this.GetCurrentName();
+            console.log(currentName);
+            $(this.displayer).text(currentName);
+        }
     }
 
 
@@ -174,7 +203,7 @@ export class CleanLoop {
         this.#IntroduceClone(fadeTime);
         this.#GentlyGo(fadeTime);
     }
-
+    
 
 
 
@@ -192,8 +221,8 @@ export class CleanLoop {
 
     #IntroduceClone(fadeTime) {
         this.targetVolume = this.audio.volume;
-        this.clone.play();
-        $(this.clone).animate({volume: this.targetVolume}, fadeTime)
+        this.clone.audio.play();
+        $(this.clone.audio).animate({volume: this.targetVolume}, fadeTime)
     }
 
 
@@ -246,24 +275,29 @@ export class CleanLoop {
 
 
     #Clone() {
-        this.clone = $(this.audio).clone()[0];
+        let clonedAudio = $(this.audio).clone()[0];
         let nextUrl = this.playlist[0];
 
-        $(this.clone)
+        $(clonedAudio)
             .prop("volume", 0)
             .prop("src", nextUrl);
-        this.audio.parentNode.appendChild(this.clone);
+        this.audio.parentNode.appendChild(clonedAudio);
 
         let cloneData = {
-            "audio": this.clone,
-            "urls": this.urls,
-            "playlist": this.playlist,
+            "audio": clonedAudio,
+            "urls": [...this.urls],
+            "playlist": [...this.playlist],
+            "displayer": this.displayer,
+            "names": [...this.names],
             "isLoop": this.isLoop,
             "isShuffle": this.isShuffle,
             "fadeTime": this.fadeTime
         }
 
-        return new CleanLoop(cloneData);
+        this.clone = new CleanLoop(cloneData)
+
+        let event = new Event("cl_clone")
+        this.audio.dispatchEvent(event);
     }
 
 
@@ -314,7 +348,48 @@ export class CleanLoop {
 
 
 
+    GetCurrentName() {
+        if(this.names.length === 0) {
+            return;
+        }
+
+        let index = this.urls.indexOf(this.playlist[0]);
+        return this.names[index];
+    }
+
+
+
+
+
     ReLoop() {
         this.playlist = [...this.urls];
     }
 }
+
+
+
+
+// let audio = $("audio")[0];
+// let displayer = $("p")[0];
+// let sounds = [
+//     "assets/upload/audios/AMB_Drustvar_Crickets_Loop_FlavorKit_01_7T7GVrPdAOJghCy.ogg",
+//     "assets/upload/audios/FX_PA_Fire_Small_Loop_h0h2ICr1wVvi6sT.ogg",
+//     "assets/upload/audios/GilneasStageCoach_WheelsOS_01_k4ETt7vQKtHL1Zo.ogg",
+//     "assets/upload/audios/fx_fw_wolfhowl_dry_07_Ai1wVIs9r58dmC1.ogg",
+// ];
+
+// let names = [
+//     "Criquets",
+//     "Feu",
+//     "Chariot",
+//     "Loup"
+// ]
+
+// let data = {
+//     "audio": audio,
+//     "displayer": displayer,
+//     "urls": sounds,
+//     "names": names
+// };
+
+// new CleanLoop(data);
