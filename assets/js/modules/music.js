@@ -108,76 +108,6 @@ export class Playlist {
         $(categoryTitle).text(this.name);
         categoryHeader.appendChild(categoryTitle);
 
-
-
-
-
-
-        //
-        let bidule = null;
-        let testButton = document.createElement("button");
-        $(testButton)
-            .prop("type", "button")
-            .text("Test son")
-            .on("click", function() {
-                let truc = [];
-                $(that.musics).each(function() {
-                    truc.push(this.url);
-                })
-
-                let data = {
-                    "urls": truc,
-                    "fadeTime": GLOBALS.MUSIC_FADE_TIME
-                }
-
-                let cleanLoop = new CleanLoop(data);
-                article.appendChild(cleanLoop.audio);
-                $(cleanLoop.audio).prop("controls", true);
-                
-
-
-
-
-
-                // $(cleanLoop.audio).on("cl_start", function() {
-                //     $(categoryTitle).text(cleanLoop.playlist[0]);
-                // })
-
-
-
-
-                // $(cleanLoop.audio).on("cl_clone", function() {
-                //     $(this).on("cl_clone", function() {
-
-                //     })
-                //     console.log(`Un clone a été créé, ${cleanLoop.clone.playlist[0]} est en cours d'écoute`);
-                // })
-
-
-
-
-
-                cleanLoop.audio.play();
-                bidule = cleanLoop;
-            })
-
-        article.appendChild(testButton);
-
-        let testButton2 = document.createElement("button");
-        $(testButton2)
-            .prop("type", "button")
-            .text("Pause")
-            .on("click", function() {
-                $(bidule.audio).attr("paused", true);
-            });
-        article.appendChild(testButton2);
-        //
-
-
-
-
-
-
         // BODY
         let categoryBody = document.createElement("div");
         $(categoryBody).addClass("card-body d-flex");
@@ -215,6 +145,85 @@ export class Playlist {
         $(songTitle).text(this.musics[0].name);
         $(songTitle).addClass("music__songTitle");
         currentSong.appendChild(songTitle);
+
+
+        //
+        let testButton = document.createElement("button");
+
+
+        let newProgress = document.createElement("div");
+        $(newProgress).addClass("progress").prop("role", "progressbar")
+
+        let newProgressBar = document.createElement("div");
+        $(newProgressBar).addClass("progress-bar").css("width", "0%");
+        newProgress.appendChild(newProgressBar);
+
+
+        $(testButton)
+            .prop("type", "button")
+            .text("Test son")
+            .on("click", function() {
+
+                // Séparation des urls
+                let urls = [];
+
+                $(that.musics).each(function() {
+                    urls.push(this.url);
+                })
+
+                // Constitution de la data
+                let data = {
+                    "urls": urls,
+                    "fadeTime": GLOBALS.MUSIC_FADE_TIME,
+                    "isLoop": that.isLoop,
+                    "isShuffle": that.isShuffled
+                }
+
+                // Création de la CleanLoop
+                let cleanLoop = new CleanLoop(data);
+
+                // Ajout de l'audio au DOM
+                article.appendChild(cleanLoop.audio);
+                $(cleanLoop.audio).prop("controls", true);
+                $(cleanLoop.audio).attr("data-volume", "musique");
+
+                // Event de début pour changer le nom de la musique affichée
+                $(cleanLoop.audio).on("cl_start", function() {
+                    let currentMusic = cleanLoop.playlist[0];
+                    let name = null;
+
+                    $(that.musics).each(function() {
+                        if(this.url === currentMusic) {
+                            name = this.name;
+                            return false;
+                        }
+                    });
+
+                    if(name === null) {
+                        name = "Musique sans nom";
+                    }
+
+                    console.log(name);
+                    $(songTitle).text(name);
+                })
+
+                $(cleanLoop.audio).on("timeupdate", function() {
+                    let percent = ( cleanLoop.audio.currentTime / cleanLoop.audio.duration ) * 100;
+                    $(newProgressBar).css("width", `${percent}%`);
+                })
+                
+                // Lecture automatique de l'audio
+                cleanLoop.audio.play();
+            })
+
+        // Ajout du bouton de test au DOM
+        article.appendChild(testButton);
+
+
+
+        article.appendChild(newProgress);
+        //
+
 
         let progressBarContainer = document.createElement("div");
         $(progressBarContainer).addClass("progressbar");

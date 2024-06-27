@@ -19,18 +19,6 @@ export class CleanLoop {
             this.playlist = args.playlist : 
             this.playlist = [];
 
-        // NAMES
-        let namesIsValid = args.names !== undefined && Array.isArray(args.names);
-        namesIsValid ? 
-            this.names = args.names : 
-            this.names = [];
-
-        // DISPLAYER
-        let displayerIsValid = args.displayer !== undefined && args.displayer.nodeType !== undefined;
-        displayerIsValid ? 
-            this.displayer = args.displayer : 
-            this.displayer = null;
-
         // IS LOOP
         let boolLoopIsValid = args.isLoop !== undefined && typeof args.isLoop === "boolean";
         boolLoopIsValid ? 
@@ -69,7 +57,7 @@ export class CleanLoop {
         
         $(this.audio).on("pause", function() {
             // Prevent trigger on end of audio
-            if(this.currentTime === this.duration) {
+            if(that.audio.currentTime === that.audio.duration) {
                 return;
             }
             that.#OnPause();
@@ -77,7 +65,7 @@ export class CleanLoop {
 
         $(this.audio).on("play", function() {
             // Prevent trigger on initial play
-            if(this.currentTime === 0) {
+            if(that.audio.currentTime === 0) {
                 that.#OnStart();
                 return;
             }
@@ -181,12 +169,6 @@ export class CleanLoop {
     #OnStart() {
         let event = new Event("cl_start");
         this.audio.dispatchEvent(event);
-        
-        if(this.displayer !== null) {
-            let currentName = this.GetCurrentName();
-            console.log(currentName);
-            $(this.displayer).text(currentName);
-        }
     }
 
 
@@ -275,7 +257,7 @@ export class CleanLoop {
 
 
     #Clone() {
-        let clonedAudio = $(this.audio).clone()[0];
+        let clonedAudio = $(this.audio).clone(true)[0];
         let nextUrl = this.playlist[0];
 
         $(clonedAudio)
@@ -287,8 +269,6 @@ export class CleanLoop {
             "audio": clonedAudio,
             "urls": [...this.urls],
             "playlist": [...this.playlist],
-            "displayer": this.displayer,
-            "names": [...this.names],
             "isLoop": this.isLoop,
             "isShuffle": this.isShuffle,
             "fadeTime": this.fadeTime
@@ -342,19 +322,6 @@ export class CleanLoop {
         // Déplacer l'url de la première à la deuxième place
         this.playlist.shift();
         this.playlist.splice(1, 0, prevent);
-    }
-
-
-
-
-
-    GetCurrentName() {
-        if(this.names.length === 0) {
-            return;
-        }
-
-        let index = this.urls.indexOf(this.playlist[0]);
-        return this.names[index];
     }
 
 
