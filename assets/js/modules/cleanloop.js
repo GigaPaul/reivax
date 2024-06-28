@@ -66,6 +66,8 @@ export class CleanLoop {
         });
 
         $(this.audio).on("play", function() {
+            that.#OnPlay();
+
             // Prevent trigger on initial play
             if(that.audio.currentTime === 0) {
                 that.#OnStart();
@@ -136,6 +138,92 @@ export class CleanLoop {
 
         this.clone.audio.pause();
         $(this.clone.audio).stop();
+    }
+
+
+
+
+
+    #OnPlay() {
+        let event = new Event("cl_play");
+        this.audio.dispatchEvent(event);
+
+
+        if(!this.IsExclusive()) {
+            return;
+        }
+
+        let mustTransition = false;
+        let thatCleanLoop = this;
+
+
+        console.log(`${$("audio").length} audios à itérer`);
+        let toStop = [];
+
+        $("audio").each(function() {
+            // Si l'audio itéré est l'audio lié à la CleanLoop
+            if(this === thatCleanLoop.audio) {
+                return true;
+            }
+
+            // Si l'audio itéré est le clone de cette CleanLoop
+            if(this === thatCleanLoop.clone?.audio) {
+                return true;
+            }
+
+            // Si l'audio itéré est en pause
+            if(this.paused) {
+                return true;
+            }
+
+            // Si l'audio itéré n'a pas de CleanLoop liée
+            let thisCleanLoop = $(this).data("cleanloop");
+            if(thisCleanLoop === undefined) {
+                return true;
+            }
+
+            // Si la CleanLoop itéré n'est pas exclusive
+            if(!thisCleanLoop.IsExclusive()) {
+                return true;
+            }
+
+            // Si la CleanLoop itéré et la CleanLoop actuelle n'ont pas le même ID d'exclusivité
+            if(thisCleanLoop.exclusivityId !== thatCleanLoop.exclusivityId) {
+                return true;
+            }
+
+            console.log("Exclusivité détectée");
+
+
+
+            mustTransition = true;
+            console.log("Cet audio sera mis en pause");
+            toStop.push(this);
+        });
+
+        if(mustTransition) {
+            console.log("Transition en cours")
+            let targetVolume = this.audio.volume;
+            console.log(this.audio)
+            console.log(this.audio.volume)
+            this.audio.volume = 0;
+
+            $(this.audio).animate({volume: targetVolume}, this.fadeTime);
+
+            $(toStop).each(function() {
+                // In case the fade time is greater than the duration of the audio
+                let fadeTime = (this.duration - this.currentTime) * 1000;
+
+                if(fadeTime > thatCleanLoop.fadeTime) {
+                    fadeTime = thatCleanLoop.fadeTime;
+                }
+
+                $(this).animate({volume: 0}, fadeTime, function()
+                {
+                    this.pause();
+                })
+            })
+        }
     }
 
 
@@ -216,6 +304,7 @@ export class CleanLoop {
 
         // Suppression du premier élément
         this.playlist.shift();
+        console.log(!this.isLoop);
         
         if(this.playlist.length === 0) {
             if(!this.isLoop) {
@@ -274,6 +363,30 @@ export class CleanLoop {
 
         let event = new Event("cl_clone")
         this.audio.dispatchEvent(event);
+    }
+
+
+
+
+
+    IsExclusive() {
+        return $(this.audio).prop("cl-exclusivity-id") !== undefined;
+    }
+
+
+
+    get exclusivityId() {
+        if(!this.IsExclusive()) {
+            return undefined;
+        }
+
+        return $(this.audio).prop("cl-exclusivity-id");
+    }
+
+
+
+    set exclusivityId(id) {
+        $(this.audio).prop("cl-exclusivity-id", id);
     }
 
 

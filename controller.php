@@ -975,6 +975,7 @@ switch($type)
                     for($i = 0; $i < count($playlists); $i++) {
                         $playlists[$i]["musics"] = array();
                         $playlists[$i]["is_shuffle"] = filter_var($playlists[$i]["is_shuffle"], FILTER_VALIDATE_BOOLEAN);
+                        $playlists[$i]["is_loop"] = filter_var($playlists[$i]["is_loop"], FILTER_VALIDATE_BOOLEAN);
 
                         $sqlMusic = "SELECT musics.name, musics.url FROM playlists_musics 
                         INNER JOIN musics ON playlists_musics.id_music = musics.id_music

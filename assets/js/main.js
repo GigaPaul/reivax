@@ -1,5 +1,4 @@
 import InitVolume from "./modules/volume.js";
-import InitMusic from "./modules/music.js";
 import { Adventure } from "./classes/adventure.js";
 import { LANDSCAPE_OUTPUT, AMBIENCE_OUTPUT, MUSIC_OUTPUT, SOUND_OUTPUT } from "./globals/elements.js";
 
@@ -21,7 +20,6 @@ async function LoadAdventure(id_aventure) {
 
 
 InitVolume();
-// InitMusic();
 
 if(params.has("id_aventure")) {
     LoadAdventure(params.get("id_aventure"));
