@@ -148,78 +148,73 @@ export class Playlist {
 
 
         //
-        let testButton = document.createElement("button");
-
-
         let newProgress = document.createElement("div");
         $(newProgress).addClass("progress").prop("role", "progressbar")
 
         let newProgressBar = document.createElement("div");
-        $(newProgressBar).addClass("progress-bar").css("width", "0%");
+        $(newProgressBar).addClass("progress-bar progress-bar-striped bg-danger progress-bar-animated").css("width", "0%");
         newProgress.appendChild(newProgressBar);
 
+        let audioTest = document.createElement("audio");
+        $(audioTest).addClass("w-100").prop("controls", true)
+        article.appendChild(audioTest);
 
-        $(testButton)
-            .prop("type", "button")
-            .text("Test son")
-            .on("click", function() {
 
-                // Séparation des urls
-                let urls = [];
+        // Séparation des urls
+        let urls = [];
 
-                $(that.musics).each(function() {
-                    urls.push(this.url);
-                })
+        $(this.musics).each(function() {
+            urls.push(this.url);
+        })
 
-                // Constitution de la data
-                let data = {
-                    "urls": urls,
-                    "fadeTime": GLOBALS.MUSIC_FADE_TIME,
-                    "isLoop": that.isLoop,
-                    "isShuffle": that.isShuffled
+        // Constitution de la data
+        let data = {
+            "urls": urls,
+            "fadeTime": GLOBALS.MUSIC_FADE_TIME,
+            "isLoop": this.isLoop,
+            "isShuffle": this.isShuffled,
+            "audio": audioTest
+        }
+
+        // Création de la CleanLoop
+        let cleanLoop = new CleanLoop(data);
+
+
+        // Ajout de l'audio au DOM
+        article.appendChild(cleanLoop.audio);
+        $(cleanLoop.audio).prop("controls", true);
+        $(cleanLoop.audio).attr("data-volume", "musique");
+
+        // Event de début pour changer le nom de la musique affichée
+        $(cleanLoop.audio).on("cl_start", function() {
+            let thisCleanLoop = $(this).data("cleanloop");
+
+            let currentMusic = thisCleanLoop.playlist[0];
+            let name = null;
+
+            $(this.musics).each(function() {
+                if(this.url === currentMusic) {
+                    name = this.name;
+                    return false;
                 }
+            });
 
-                // Création de la CleanLoop
-                let cleanLoop = new CleanLoop(data);
+            if(name === null) {
+                name = "Musique sans nom";
+            }
+            
+            $(songTitle).text(name);
 
-                // Ajout de l'audio au DOM
-                article.appendChild(cleanLoop.audio);
-                $(cleanLoop.audio).prop("controls", true);
-                $(cleanLoop.audio).attr("data-volume", "musique");
+        })
 
-                // Event de début pour changer le nom de la musique affichée
-                $(cleanLoop.audio).on("cl_start", function() {
-                    let currentMusic = cleanLoop.playlist[0];
-                    let name = null;
+        // Event de remplissage de la barre de progrès
+        $(cleanLoop.audio).on("timeupdate", function() {
+            let thisCleanLoop = $(this).data("cleanloop");
+            let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
+            $(newProgressBar).css("width", `${percent}%`);
 
-                    $(that.musics).each(function() {
-                        if(this.url === currentMusic) {
-                            name = this.name;
-                            return false;
-                        }
-                    });
-
-                    if(name === null) {
-                        name = "Musique sans nom";
-                    }
-
-                    console.log(name);
-                    $(songTitle).text(name);
-                })
-
-                $(cleanLoop.audio).on("timeupdate", function() {
-                    let percent = ( cleanLoop.audio.currentTime / cleanLoop.audio.duration ) * 100;
-                    $(newProgressBar).css("width", `${percent}%`);
-                })
-                
-                // Lecture automatique de l'audio
-                cleanLoop.audio.play();
-            })
-
-        // Ajout du bouton de test au DOM
-        article.appendChild(testButton);
-
-
+        })
+        
 
         article.appendChild(newProgress);
         //
@@ -250,28 +245,6 @@ export class Playlist {
         let timestampEnd = document.createElement("p");
         $(timestampEnd).addClass("timestamp__end m-0");
         timestamps.appendChild(timestampEnd);
-
-
-        
-        // // HIDDEN PLAYLIST
-        // let playlist = document.createElement("ul");
-        // categoryBody.appendChild(playlist);
-        // $(playlist).addClass("music__playlist d-none");
-
-        // $(this.musics).each(function()
-        // {
-        //     let li = document.createElement("li");
-        //     $(li).data("url", this.url);
-        //     playlist.appendChild(li);
-        // });
-
-
-        // if(this.isShuffled) {
-        //     $(shuffleButton).addClass("btn-info");
-        // }
-        // else {
-        //     $(shuffleButton).addClass("btn-outline-info");
-        // }
 
 
 

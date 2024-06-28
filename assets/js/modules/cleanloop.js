@@ -40,8 +40,9 @@ export class CleanLoop {
         // Simpler init
         this.clone = null;
         this.targetVolume = null;
-        this.#InitAudio();
+        this.#InitPlaylist();
         this.#AddEvents();
+        $(this.audio).data("cleanloop", this);
     }
 
 
@@ -51,13 +52,14 @@ export class CleanLoop {
     #AddEvents() {
         let that = this;
 
-        $(this.audio).on("timeupdate", function() {
+        $(this.audio).on("timeupdate", function(event) {
             that.#OnTimeupdate();
         });
         
         $(this.audio).on("pause", function() {
             // Prevent trigger on end of audio
             if(that.audio.currentTime === that.audio.duration) {
+                that.#OnEnd();
                 return;
             }
             that.#OnPause();
@@ -79,30 +81,10 @@ export class CleanLoop {
 
 
 
-    #InitAudio() {
+    #InitPlaylist() {
         if(this.playlist.length > 0) {
             return;
         }
-
-        // let initialUrl = this.audio.attributes.getNamedItem("src")?.value;
-
-        // // S'il y a quelque chose de renseigné dans l'attribut "src" de l'audio
-        // if(initialUrl !== undefined) {
-        //     // Si le src de l'audio est inclus dans la liste d'urls
-        //     if(this.urls.includes(initialUrl)) {
-        //         let index = this.urls.indexOf(initialUrl);
-
-        //         // Si le src n'est pas le premier élément des urls
-        //         if(index > 0) {
-        //             this.urls.splice(index, 1);
-        //             this.urls.unshift(initialUrl);
-        //         }
-        //     }
-        //     // Si le src de l'audio n'est pas encore inclus dans la liste d'url
-        //     else {
-        //         this.urls.unshift(initialUrl);
-        //     }
-        // }
 
         if(this.isShuffle) {
             this.Shuffle();
@@ -111,16 +93,6 @@ export class CleanLoop {
             this.ReLoop();
         }
         
-
-        // // Make sure the initial URL is the first song to play of the initial playlist
-        // if(initialUrl !== this.playlist[0]) {
-        //     if(initialUrl !== undefined) {
-        //         let index = this.playlist.indexOf(initialUrl);
-        //         this.playlist.splice(index, 1);
-        //         this.playlist.unshift(initialUrl);            
-        //     }
-                 
-        // }
         $(this.audio).prop("src", this.playlist[0])   
     }
 
@@ -130,6 +102,10 @@ export class CleanLoop {
 
     #OnTimeupdate() {
         if(isNaN(this.audio.duration)) {
+            return;
+        }
+
+        if(this.audio.paused) {
             return;
         }
     
@@ -175,15 +151,24 @@ export class CleanLoop {
 
 
 
+    #OnEnd() {
+        let event = new Event("cl_end");
+        this.audio.dispatchEvent(event);
+    }
+
+
+
+
+
     #OnResume() {
         if(this.clone === null) {
             return;
         }
 
-        let fadeTime = (this.audio.duration - this.audio.currentTime) * 1000;
+        // let fadeTime = (this.audio.duration - this.audio.currentTime) * 1000;
 
-        this.#IntroduceClone(fadeTime);
-        this.#GentlyGo(fadeTime);
+        // this.#IntroduceClone(fadeTime);
+        // this.#GentlyGo(fadeTime);
     }
     
 
@@ -215,6 +200,10 @@ export class CleanLoop {
         if(this.urls.length === 0) {
             return;
         }
+
+        let event = new Event("cl_transition");
+        this.audio.dispatchEvent(event);
+
 
         let currentUrl = this.playlist[0];
 
