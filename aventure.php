@@ -167,10 +167,10 @@
 
             <output id="musicOutput" class="row"></output>
 
-            <div id="musicAudios">
+            <!-- <div id="musicAudios">
                 <audio data-volume="musique" preload="metadata" src=""></audio>
                 <audio data-volume="musique" preload="metadata" src=""></audio>
-            </div>
+            </div> -->
         </article>
     </section>
 </div>

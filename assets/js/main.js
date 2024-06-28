@@ -21,7 +21,7 @@ async function LoadAdventure(id_aventure) {
 
 
 InitVolume();
-InitMusic();
+// InitMusic();
 
 if(params.has("id_aventure")) {
     LoadAdventure(params.get("id_aventure"));

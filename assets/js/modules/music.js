@@ -1,19 +1,6 @@
 import * as GLOBALS from "../globals/const.js";
 import * as FUNC from "../globals/func.js";
-import { MUSIC_AUDIOS } from "./../globals/elements.js";
 import { CleanLoop } from "./cleanloop.js"
-
-let CURRENT_MUSIC = null;
-
-
-
-export default function InitMusic(){
-    $(MUSIC_AUDIOS).children().each(function() {
-        $(this).prop("volume", 0);
-        $(this).on("timeupdate", FadeTransition);    
-        $(this).on("loadedmetadata", InitAudioPlay)
-    })
-}
 
 
 
@@ -93,10 +80,45 @@ export class Playlist {
         let article = document.createElement("article");
         $(article).addClass("col-4 mb-3");
         this.element = article
+        $(article).data("playlist", this);
 
         let card = document.createElement("div");
         $(card).addClass("card");
         article.appendChild(card);
+
+        let audios = document.createElement("output");
+        $(audios).addClass("music__audios d-none");
+        article.appendChild(audios);
+
+
+
+        // Initial Audio
+        // Séparation des urls
+        let urls = [];
+
+        $(this.musics).each(function() {
+            urls.push(this.url);
+        })
+
+        // Constitution de la data
+        let data = {
+            "urls": urls,
+            "fadeTime": GLOBALS.MUSIC_FADE_TIME,
+            "isLoop": this.isLoop,
+            "isShuffle": this.isShuffled
+        }
+
+        // Création de la CleanLoop
+        let cleanLoop = new CleanLoop(data);
+        let initialAudio = cleanLoop.audio;
+
+        let volume = $("#MusicVolume").val() / 100;
+        $(initialAudio)
+            .prop("volume", volume)
+            .attr("data-volume", "musique");
+        audios.appendChild(initialAudio);
+
+
 
         // HEADER
         let categoryHeader = document.createElement("div");
@@ -127,14 +149,23 @@ export class Playlist {
         toggleButton.appendChild(toggleIcon);
 
         // SHUFFLE BUTTON
-        let shuffleButton = document.createElement("button");
-        $(shuffleButton).addClass("music__shuffle btn");
+        let shuffleButton = document.createElement("input");
+        $(shuffleButton)
+            .prop("type", "checkbox")
+            .prop("id", `playlist_${this.id_playlist}`)
+            .prop("checked", this.isShuffled)
+            .addClass("btn-check");
         songControls.appendChild(shuffleButton);
+
+        let shuffleLabel = document.createElement("label");
+        $(shuffleLabel)
+            .addClass("btn btn-outline-primary")
+            .prop("for", `playlist_${this.id_playlist}`);
+        songControls.appendChild(shuffleLabel);
 
         let shuffleIcon = document.createElement("i");
         $(shuffleIcon).addClass("fa-solid fa-shuffle");
-        shuffleButton.appendChild(shuffleIcon);
-
+        shuffleLabel.appendChild(shuffleIcon);
 
         // CURRENT SONG
         let currentSong = document.createElement("div");
@@ -146,108 +177,23 @@ export class Playlist {
         $(songTitle).addClass("music__songTitle");
         currentSong.appendChild(songTitle);
 
-
-
-
-
-        // ================================================= \\
-        let newProgress = document.createElement("div");
-        $(newProgress).addClass("progress").prop("role", "progressbar")
-
-        let newProgressBar = document.createElement("div");
-        $(newProgressBar).addClass("progress-bar progress-bar-striped bg-danger progress-bar-animated").css("width", "0%");
-        newProgress.appendChild(newProgressBar);
-
-        let audioTest = document.createElement("audio");
-        $(audioTest).addClass("w-100").prop("controls", true)
-        article.appendChild(audioTest);
-
-
-        // Séparation des urls
-        let urls = [];
-
-        $(this.musics).each(function() {
-            urls.push(this.url);
-        })
-
-        // Constitution de la data
-        let data = {
-            "urls": urls,
-            "fadeTime": GLOBALS.MUSIC_FADE_TIME,
-            "isLoop": this.isLoop,
-            "isShuffle": this.isShuffled,
-            "audio": audioTest
-        }
-
-        // Création de la CleanLoop
-        let cleanLoop = new CleanLoop(data);
-
-
-        // Ajout de l'audio au DOM
-        article.appendChild(cleanLoop.audio);
-        $(cleanLoop.audio).prop("controls", true);
-        $(cleanLoop.audio).attr("data-volume", "musique");
-
-        // Event de début pour changer le nom de la musique affichée
-        $(cleanLoop.audio).on("cl_start", function() {
-            let thisCleanLoop = $(this).data("cleanloop");
-
-            let currentMusic = thisCleanLoop.playlist[0];
-            let name = null;
-
-            $(this.musics).each(function() {
-                if(this.url === currentMusic) {
-                    name = this.name;
-                    return false;
-                }
-            });
-
-            if(name === null) {
-                name = "Musique sans nom";
-            }
-            
-            $(songTitle).text(name);
-
-        })
-
-        // Event de remplissage de la barre de progrès
-        $(cleanLoop.audio).on("timeupdate", function() {
-            let thisCleanLoop = $(this).data("cleanloop");
-
-            if(thisCleanLoop.clone !== null) {
-                return;
-            }
-
-            let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
-            $(newProgressBar).css("width", `${percent}%`);
-
-        })
-        
-
-        article.appendChild(newProgress);
-        // ================================================= \\
-
-
-
-        
+        let timeContainer = document.createElement("div");
+        currentSong.appendChild(timeContainer)
 
         let progressBarContainer = document.createElement("div");
-        $(progressBarContainer).addClass("progressbar");
-        currentSong.appendChild(progressBarContainer);
+        $(progressBarContainer).addClass("progress").prop("role", "progressbar");
+        timeContainer.appendChild(progressBarContainer);
 
-        let progressbar = document.createElement("input");
+        let progressbar = document.createElement("div");
         $(progressbar)
-            .prop("type", "range")
-            .val("0")
-            .prop("min", "0")
-            .prop("max", "100")
-            .prop("step", "any")
-            .addClass("w-100");
+            .addClass("progress-bar progress-bar-striped bg-danger progress-bar-animated")
+            .css("width", "0%");
         progressBarContainer.appendChild(progressbar);
+
 
         let timestamps = document.createElement("div");
         $(timestamps).addClass("timestamp d-flex justify-content-between");
-        progressBarContainer.appendChild(timestamps);
+        timeContainer.appendChild(timestamps);
 
         let timestampCurrent = document.createElement("p");
         $(timestampCurrent).addClass("timestamp__current m-0");
@@ -263,24 +209,28 @@ export class Playlist {
         // Toggle
         // let that = this;
         $(toggleButton).on("click", function() {
-            let icon = $(this).children("i");
-            if(CURRENT_MUSIC === that) {
-                that.stop();
-                $(this).addClass("btn-success").removeClass("btn-danger");
-                $(icon).addClass("fa-play").removeClass("fa-stop");
+            let playingAudios = $(audios).children("audio").filter(function() {
+                return !this.paused;
+            });
+            
+            // Des audios sont en train d'être joués, il faut faire pause
+            if(playingAudios.length > 0) {
+                that.Pause();
             }
-            // If this is not the current music
+            // Tous les audios sont en pause, il faut mettre play
             else {
-                that.start();
-                $(this).addClass("btn-danger").removeClass("btn-success");
-                $(icon).addClass("fa-stop").removeClass("fa-play");
+                that.Play();
             }
         });
 
 
         // Shuffle
-        $(shuffleButton).on("click", function() {
-            that.isShuffled = !that.isShuffled;
+        $(shuffleButton).on("change", function() {
+            that.isShuffled = this.checked;
+
+            $(audios).children("audio").each(function() {
+                $(this).data("cleanloop").isShuffle = that.isShuffled;
+            })
 
             if(that.isShuffled) {
                 $(this).addClass("btn-info").removeClass("btn-outline-info");
@@ -289,168 +239,104 @@ export class Playlist {
                 $(this).addClass("btn-outline-info").removeClass("btn-info");
             }
         });
-    }
 
 
 
 
 
-    static isMusicPlaying() {
-        let isPlaying = false;
+        // At the start of each audio, change the displayed name to the music currently playing's name
+        $(cleanLoop.audio).on("cl_start", function() {
+            let thisCleanLoop = $(this).data("cleanloop");
 
-        $(MUSIC_AUDIOS).children().each(function() {
-            if(!this.paused)
-            {
-                isPlaying = true;
-                // Break the each function
-                return false;
-            } 
-        })
+            let currentMusic = thisCleanLoop.playlist[0];
+            let name = null;
 
-        return isPlaying
-    }
+            // Find a music using the current url
+            $(that.musics).each(function() {
+                if(this.url === currentMusic) {
+                    name = this.name;
+                    return false;
+                }
+            });
 
-
-
-
-
-    getNextSong() {
-        if(this.musics.length === 1) {
-            return this.musics[0];
-        }
-
-        // Si la playlist est en mode shuffle et doit choisir une musique aléatoire à chaque fois
-        if(this.isShuffled)
-        {
-            let remainingSongs = []
-
-            // Si toutes les musiques ont été jouées
-            if(this.musics.length === this.playedMusics.length)
-            {
-                this.playedMusics = [];
-                remainingSongs = [...this.musics];
-
-                // On retire la musique qui est actuellement jouée pour ne pas répéter deux fois la même musique
-                remainingSongs.splice(this.index, 1);
-            }
-            // S'il reste encore des musiques à jouer
-            else
-            {
-                let that = this;
-
-                remainingSongs = [...this.musics].filter(function(item)
-                {
-                    return !that.playedMusics.includes(item);
-                })
-                
-            }
-
-            let length = remainingSongs.length;
-            let randomIndex = Math.floor(Math.random() * length);
-
-            return remainingSongs[randomIndex];
-        }
-        // Si la musique est en mode normal et choisit la musique suivante à chaque fois
-        else
-        {
-            let nextIndex = this.index + 1;
-
-            // Si la dernière musique vient d'être jouée
-            if(nextIndex === this.musics.length)
-            {
-                nextIndex = 0;
+            // If no name was found, use "Musique sans nom"
+            if(name === null) {
+                name = "Musique sans nom";
             }
             
-            return this.musics[nextIndex];
-        }
-    }
+            $(songTitle).text(name);
+
+            // Définition de la durée de l'audio
+            $(timestampEnd).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.duration));
+        })
 
 
 
 
-    start() {
-        CURRENT_MUSIC = this;
-        let songPlayed = this.musics[0];
 
-        if(this.isShuffled)
-        {
-            let length = this.musics.length;
-            let randomIndex = Math.floor(Math.random() * length);
-            songPlayed = this.musics[randomIndex];
-        }
+        $(cleanLoop.audio).on("timeupdate", function() {
 
-        this.play(songPlayed);
-    }
+            let thisCleanLoop = $(this).data("cleanloop");
 
+            if(thisCleanLoop.clone !== null) {
+                return;
+            }
 
+            // Avancé du timestamp actuel
+            $(timestampCurrent).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.currentTime));
 
-    static pause() {
-        let playingAudio = $(MUSIC_AUDIOS).children(".active")[0] ?? $(MUSIC_AUDIOS).children()[0];
-        
-        $(playingAudio).removeClass("active");
-
-
-        if(!playingAudio.paused)
-        {
-            $(playingAudio).animate({volume: 0}, GLOBALS.MUSIC_FADE_TIME, function()
-            {
-                playingAudio.pause();
-                playingAudio.currentTime = 0;
-            });
-        }
-    }
-
-
-
-
-    stop() {
-        this.index = 0;
-        this.playedMusics = [];
-        Playlist.pause();
-        CURRENT_MUSIC = null;
-    }
-
-
-
-
-    next() {
-        let nextSong = this.getNextSong();
-        this.play(nextSong);
+            // Event de remplissage de la barre de progrès
+            let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
+            $(progressbar).css("width", `${percent}%`);
+        })
     }
 
 
 
 
 
-    play(music) {
-        this.index = this.musics.indexOf(music);
-        this.playedMusics.push(music);
+    Play() {
+        let thatElement = this.element;
 
-        let playingAudio = $(MUSIC_AUDIOS).children(".active")[0] ?? $(MUSIC_AUDIOS).children()[0];
-        let pausedAudio = $(MUSIC_AUDIOS).children().filter(function() { return this !== playingAudio})[0];
+        $(this.element).siblings("article").each(function() {
+            if(thatElement === this) {
+                // continue
+                return true;
+            }
 
+            let thisPlaylist = $(this).data("playlist");
+            thisPlaylist.Pause();
+        });
 
-        if(Playlist.isMusicPlaying()){
-            Playlist.pause();
-        }
-        
-        $(pausedAudio).addClass("active");
-        $(pausedAudio).prop("src", music.url);
-        
+        let button = $(this.element).find(".music__toggle");
+        let icon = $(button).children("i");
 
-        pausedAudio.play();
-        let volume = $("#MusicVolume").val() / 100;
-        $(pausedAudio).animate({volume: volume}, GLOBALS.MUSIC_FADE_TIME);
-        
-        let title = $(this.element).find(".music__songTitle");
-        $(title).text(music.name);
-
-        console.log(`${music.name} en cours d'écoute.`);
+        $(button).addClass("btn-danger").removeClass("btn-success");
+        $(icon).addClass("fa-pause").removeClass("fa-play");
+        $(this.element).find(".music__audios").children("audio").each(function() {
+            this.play();
+        });
     }
 
 
 
 
+
+    Pause() {
+        let button = $(this.element).find(".music__toggle");
+        let icon = $(button).children("i");
+
+        $(button).addClass("btn-success").removeClass("btn-danger");
+        $(icon).addClass("fa-play").removeClass("fa-pause");
+        $(this.element).find(".music__audios").children("audio").each(function() {
+            this.pause();
+        });
+    }
+
+
+
+
+    
     CreateFormCard(adventure) {
         let that = this;
 
@@ -506,61 +392,4 @@ export class Playlist {
 
         return article;
     }
-}
-
-
-
-
-
-
-
-
-
-function InitAudioPlay() {
-    let timestampEnd = $(CURRENT_MUSIC.element).find(".timestamp__end");
-    $(timestampEnd).text(FUNC.SecondsToMinutes(this.duration));
-}
-
-
-
-
-
-function FadeTransition() {
-    if(CURRENT_MUSIC === null)
-    {
-        return;
-    }
-
-    if(this.paused)
-    {
-        return;
-    }
-
-    if(isNaN(this.duration))
-    {
-        return;
-    }
-
-    if(!$(this).hasClass("active"))
-    {
-        return;
-    }
-
-    // Update timestamp from modals
-    let timestamp = $(CURRENT_MUSIC.element).find(".timestamp__current");
-    timestamp.text(FUNC.SecondsToMinutes(this.currentTime));
-
-    let range = $(CURRENT_MUSIC.element).find(".progressbar input[type='range']");
-    let relativeVal = (this.currentTime / this.duration) * 100;
-    $(range).val(relativeVal);
-    //
-
-    let buffer = GLOBALS.MUSIC_FADE_TIME / 1000;
-
-    if(this.currentTime <= this.duration - buffer)
-    {
-        return;
-    }
-        
-    CURRENT_MUSIC.next();
 }
