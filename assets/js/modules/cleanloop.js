@@ -165,10 +165,14 @@ export class CleanLoop {
             return;
         }
 
-        // let fadeTime = (this.audio.duration - this.audio.currentTime) * 1000;
+        if($(this.audio).is(":animated")) {
+            return;
+        }
 
-        // this.#IntroduceClone(fadeTime);
-        // this.#GentlyGo(fadeTime);
+        // Dans le cas où l'utilisateur met pause pendant la transition puis relance
+        let fadeTime = (this.audio.duration - this.audio.currentTime) * 1000;
+        this.#IntroduceClone(fadeTime);
+        this.#GentlyGo(fadeTime);
     }
     
 
@@ -187,7 +191,10 @@ export class CleanLoop {
 
 
     #IntroduceClone(fadeTime) {
-        this.targetVolume = this.audio.volume;
+        if(this.targetVolume === null) {
+            this.targetVolume = this.audio.volume;
+        }
+
         this.clone.audio.play();
         $(this.clone.audio).animate({volume: this.targetVolume}, fadeTime)
     }

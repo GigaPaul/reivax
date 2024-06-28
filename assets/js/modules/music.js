@@ -147,7 +147,10 @@ export class Playlist {
         currentSong.appendChild(songTitle);
 
 
-        //
+
+
+
+        // ================================================= \\
         let newProgress = document.createElement("div");
         $(newProgress).addClass("progress").prop("role", "progressbar")
 
@@ -210,6 +213,11 @@ export class Playlist {
         // Event de remplissage de la barre de progrès
         $(cleanLoop.audio).on("timeupdate", function() {
             let thisCleanLoop = $(this).data("cleanloop");
+
+            if(thisCleanLoop.clone !== null) {
+                return;
+            }
+
             let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
             $(newProgressBar).css("width", `${percent}%`);
 
@@ -217,8 +225,11 @@ export class Playlist {
         
 
         article.appendChild(newProgress);
-        //
+        // ================================================= \\
 
+
+
+        
 
         let progressBarContainer = document.createElement("div");
         $(progressBarContainer).addClass("progressbar");
