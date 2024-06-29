@@ -119,7 +119,7 @@ export class Playlist {
 
         $(initialAudio)
             .prop("preload", "metadata")
-            // .prop("controls", true)
+            .prop("controls", true)
             .attr("data-volume", "musique");
         audios.appendChild(initialAudio);
 
@@ -189,7 +189,7 @@ export class Playlist {
         categoryBody.appendChild(currentSong);
 
         let songTitle = document.createElement("h5");
-        $(songTitle).text(this.musics[0].name);
+        // $(songTitle).text(this.musics[0].name);
         $(songTitle).addClass("music__songTitle");
         currentSong.appendChild(songTitle);
 
@@ -270,10 +270,8 @@ export class Playlist {
 
 
 
-
-
-        // At the start of each audio, change the displayed name to the music currently playing's name
-        $(cleanLoop.audio).on("cl_start", function() {
+        // When the audio metadata is loaded, display the informations about the current music
+        $(cleanLoop.audio).on("loadedmetadata", function() {
             let thisCleanLoop = $(this).data("cleanloop");
 
             let currentMusic = thisCleanLoop.playlist[0];
@@ -293,8 +291,6 @@ export class Playlist {
             }
             
             $(songTitle).text(name);
-
-            // Définition de la durée de l'audio
             $(timestampCurrent).text(FUNC.SecondsToMinutes(0));
             $(timestampEnd).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.duration));
         })

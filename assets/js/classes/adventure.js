@@ -1,5 +1,5 @@
 import { Ambience } from "../modules/ambience.js";
-import { Playlist } from "../modules/music.js";
+import { Playlist } from "../modules/playlist.js";
 import { Landscape } from "../modules/landscape.js";
 import { SoundFamily } from "../modules/sound.js";
 

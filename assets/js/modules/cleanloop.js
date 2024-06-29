@@ -46,6 +46,7 @@ export class CleanLoop {
         // Simpler init
         this.clone = null;
         this.#InitPlaylist();
+        $(this.audio).off(".cl");
         this.#AddEvents();
         $(this.audio).data("cleanloop", this);
     }
@@ -72,11 +73,11 @@ export class CleanLoop {
     #AddEvents() {
         let that = this;
 
-        $(this.audio).on("timeupdate", function(event) {
+        $(this.audio).on("timeupdate.cl", function(event) {
             that.#OnTimeupdate();
         });
         
-        $(this.audio).on("pause", function() {
+        $(this.audio).on("pause.cl", function(e) {
             // Prevent trigger on end of audio
             if(that.audio.currentTime === that.audio.duration) {
                 that.#OnEnd();
@@ -85,7 +86,7 @@ export class CleanLoop {
             that.#OnPause();
         });
 
-        $(this.audio).on("play", function() {
+        $(this.audio).on("play.cl", function() {
             that.#OnPlay();
 
             // Prevent trigger on initial play
@@ -372,9 +373,9 @@ export class CleanLoop {
             "fadeTime": this.fadeTime
         }
 
-        this.clone = new CleanLoop(cloneData)
+        this.clone = new CleanLoop(cloneData);
 
-        let event = new Event("cl_clone")
+        let event = new Event("cl_clone");
         this.audio.dispatchEvent(event);
     }
 
