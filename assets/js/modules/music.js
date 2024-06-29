@@ -119,7 +119,7 @@ export class Playlist {
 
         $(initialAudio)
             .prop("preload", "metadata")
-            .prop("controls", true)
+            // .prop("controls", true)
             .attr("data-volume", "musique");
         audios.appendChild(initialAudio);
 
@@ -163,14 +163,6 @@ export class Playlist {
         let toggleIcon = document.createElement("i");
         $(toggleIcon).addClass("fa-solid fa-play");
         toggleLabel.appendChild(toggleIcon);
-
-        // let toggleButton = document.createElement("button");
-        // $(toggleButton).addClass("music__toggle btn btn-success mb-1");
-        // songControls.appendChild(toggleButton);
-
-        // let toggleIcon = document.createElement("i");
-        // $(toggleIcon).addClass("fa-solid fa-play");
-        // toggleButton.appendChild(toggleIcon);
 
         // SHUFFLE BUTTON
         let shuffleButton = document.createElement("input");
@@ -244,18 +236,17 @@ export class Playlist {
                     }
                 });
 
-                that.Play();
+                that.VisualPlay();
+                that.PlayAudios();
             }
             // Si la checkbox est maintenant décochée (Mettre la musique en pause)
             else {
-                that.Pause();
+                that.VisualPause();
 
-                if(e.isTrigger) {
-                    console.log("Is trigger");
-                }
-                else {
-                    console.log("Is NOT trigger");
-                    
+                // If the pause is triggered by clicking on the pause button directly
+                // (Audios will be automatically paused if it's a transition from a playlist to another)
+                if(!e.isTrigger) {
+                    that.PauseAudios();
                 }
             }
         });
@@ -333,7 +324,7 @@ export class Playlist {
 
 
 
-    Play() {
+    VisualPlay() {
         let button = $(this.element).find(".music__toggle");
         let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
         let icon = $(label).children("i");
@@ -341,6 +332,13 @@ export class Playlist {
         $(label).addClass("btn-danger").removeClass("btn-success");
         $(icon).addClass("fa-pause").removeClass("fa-play");
 
+
+    }
+
+
+
+
+    PlayAudios() {
         $(this.element).find(".music__audios").children("audio").each(function() {
             this.play();
         });
@@ -350,13 +348,23 @@ export class Playlist {
 
 
 
-    Pause() {
+    VisualPause() {
         let button = $(this.element).find(".music__toggle");
         let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
         let icon = $(label).children("i");
 
         $(label).addClass("btn-success").removeClass("btn-danger");
         $(icon).addClass("fa-play").removeClass("fa-pause");
+    }
+
+
+
+
+
+    PauseAudios() {
+        $(this.element).find(".music__audios").children("audio").each(function() {
+            this.pause();
+        });
     }
 
 

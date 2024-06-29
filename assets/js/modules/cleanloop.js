@@ -96,10 +96,6 @@ export class CleanLoop {
 
             that.#OnResume();
         });
-
-        // $(this.audio).on("volumechange", function(e) {
-        //     console.log(e);
-        // })
     }
     
 
@@ -181,7 +177,6 @@ export class CleanLoop {
         let thatCleanLoop = this;
 
 
-        console.log(`${$("audio").length} audios à itérer`);
         let toStop = [];
 
         $("audio").each(function() {
@@ -216,20 +211,15 @@ export class CleanLoop {
                 return true;
             }
 
-            console.log("Exclusivité détectée");
 
 
 
             mustTransition = true;
-            console.log("Cet audio sera mis en pause");
             toStop.push(this);
         });
 
         if(mustTransition) {
-            console.log("Transition en cours")
             let targetVolume = this.volume;
-            console.log(this.audio)
-            console.log(this.volume)
             this.audio.volume = 0;
 
             $(this.audio).animate({volume: targetVolume}, this.fadeTime);
@@ -328,7 +318,6 @@ export class CleanLoop {
 
         // Suppression du premier élément
         this.playlist.shift();
-        console.log(!this.isLoop);
         
         if(this.playlist.length === 0) {
             if(!this.isLoop) {
