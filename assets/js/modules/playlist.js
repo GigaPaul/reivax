@@ -119,7 +119,7 @@ export class Playlist {
 
         $(initialAudio)
             .prop("preload", "metadata")
-            .prop("controls", true)
+            // .prop("controls", true)
             .attr("data-volume", "musique");
         audios.appendChild(initialAudio);
 
@@ -153,16 +153,27 @@ export class Playlist {
             .val(this.id_playlist);
         songControls.appendChild(toggleCheckbox);
             
-        let toggleLabel = document.createElement("label");
-        $(toggleLabel)
+        let togglePlayLabel = document.createElement("label");
+        $(togglePlayLabel)
             .addClass("btn btn-success mb-1")
             .prop("for", `togglePlaylist-${this.id_playlist}`);
-        songControls.appendChild(toggleLabel);
+        songControls.appendChild(togglePlayLabel);
+
+        let togglePlayIcon = document.createElement("i");
+        $(togglePlayIcon).addClass("fa-solid fa-play");
+        togglePlayLabel.appendChild(togglePlayIcon);
+            
+        let togglePauseLabel = document.createElement("label");
+        $(togglePauseLabel)
+            .addClass("btn btn-danger mb-1")
+            .prop("for", `togglePlaylist-${this.id_playlist}`);
+        songControls.appendChild(togglePauseLabel);
+        
+        let togglePauseIcon = document.createElement("i");
+        $(togglePauseIcon).addClass("fa-solid fa-pause");
+        togglePauseLabel.appendChild(togglePauseIcon);
         
 
-        let toggleIcon = document.createElement("i");
-        $(toggleIcon).addClass("fa-solid fa-play");
-        toggleLabel.appendChild(toggleIcon);
 
         // SHUFFLE BUTTON
         let shuffleButton = document.createElement("input");
@@ -189,7 +200,6 @@ export class Playlist {
         categoryBody.appendChild(currentSong);
 
         let songTitle = document.createElement("h5");
-        // $(songTitle).text(this.musics[0].name);
         $(songTitle).addClass("music__songTitle");
         currentSong.appendChild(songTitle);
 
@@ -236,12 +246,12 @@ export class Playlist {
                     }
                 });
 
-                that.VisualPlay();
+                // that.VisualPlay();
                 that.PlayAudios();
             }
             // Si la checkbox est maintenant décochée (Mettre la musique en pause)
             else {
-                that.VisualPause();
+                // that.VisualPause();
 
                 // If the pause is triggered by clicking on the pause button directly
                 // (Audios will be automatically paused if it's a transition from a playlist to another)
@@ -320,16 +330,14 @@ export class Playlist {
 
 
 
-    VisualPlay() {
-        let button = $(this.element).find(".music__toggle");
-        let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
-        let icon = $(label).children("i");
+    // VisualPlay() {
+    //     let button = $(this.element).find(".music__toggle");
+    //     let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
+    //     let icon = $(label).children("i");
 
-        $(label).addClass("btn-danger").removeClass("btn-success");
-        $(icon).addClass("fa-pause").removeClass("fa-play");
-
-
-    }
+    //     $(label).addClass("btn-danger").removeClass("btn-success");
+    //     $(icon).addClass("fa-pause").removeClass("fa-play");
+    // }
 
 
 
@@ -344,14 +352,14 @@ export class Playlist {
 
 
 
-    VisualPause() {
-        let button = $(this.element).find(".music__toggle");
-        let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
-        let icon = $(label).children("i");
+    // VisualPause() {
+    //     let button = $(this.element).find(".music__toggle");
+    //     let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
+    //     let icon = $(label).children("i");
 
-        $(label).addClass("btn-success").removeClass("btn-danger");
-        $(icon).addClass("fa-play").removeClass("fa-pause");
-    }
+    //     $(label).addClass("btn-success").removeClass("btn-danger");
+    //     $(icon).addClass("fa-play").removeClass("fa-pause");
+    // }
 
 
 
