@@ -7,6 +7,12 @@ export class CleanLoop {
             this.audio = args.audio : 
             this.audio = document.createElement("audio");
 
+        // VOLUME
+        let volumeIsValid = args.volume !== undefined && typeof args.volume === "number";
+        volumeIsValid ? 
+            this.volume = args.volume : 
+            this.volume = this.audio.volume;        
+
         // URLS
         let urlsIsValid = args.urls !== undefined && Array.isArray(args.urls);
         urlsIsValid ? 
@@ -39,11 +45,25 @@ export class CleanLoop {
 
         // Simpler init
         this.clone = null;
-        this.targetVolume = null;
         this.#InitPlaylist();
         this.#AddEvents();
         $(this.audio).data("cleanloop", this);
     }
+
+    #volumeTarget = 0;
+
+    /**
+     * @param {number} value
+     */
+    set volume(value) {
+        this.#volumeTarget = value;
+        this.audio.volume = value;
+    }
+
+    get volume() {
+        return this.#volumeTarget;
+    }
+
 
 
 
@@ -76,6 +96,10 @@ export class CleanLoop {
 
             that.#OnResume();
         });
+
+        // $(this.audio).on("volumechange", function(e) {
+        //     console.log(e);
+        // })
     }
     
 
@@ -203,9 +227,9 @@ export class CleanLoop {
 
         if(mustTransition) {
             console.log("Transition en cours")
-            let targetVolume = this.audio.volume;
+            let targetVolume = this.volume;
             console.log(this.audio)
-            console.log(this.audio.volume)
+            console.log(this.volume)
             this.audio.volume = 0;
 
             $(this.audio).animate({volume: targetVolume}, this.fadeTime);
@@ -279,12 +303,12 @@ export class CleanLoop {
 
 
     #IntroduceClone(fadeTime) {
-        if(this.targetVolume === null) {
-            this.targetVolume = this.audio.volume;
-        }
+        // if(this.targetVolume === null) {
+        //     this.targetVolume = this.audio.volume;
+        // }
 
         this.clone.audio.play();
-        $(this.clone.audio).animate({volume: this.targetVolume}, fadeTime)
+        $(this.clone.audio).animate({volume: this.volume}, fadeTime)
     }
 
 

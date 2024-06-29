@@ -123,7 +123,14 @@ function ManageAudioVolume(rangeInput) {
 
 
     $(audios).each(function() {
-        $(this).prop("volume", normalizedValue);
+        if($(this).data("cleanloop") === undefined) {
+            $(this).prop("volume", normalizedValue);
+        }
+        else {
+            let cleanLoop = $(this).data("cleanloop");
+            cleanLoop.volume = normalizedValue;
+        }
+        
     })
 }
 

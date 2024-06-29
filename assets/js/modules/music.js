@@ -108,7 +108,8 @@ export class Playlist {
             "urls": urls,
             "fadeTime": GLOBALS.MUSIC_FADE_TIME,
             "isLoop": this.isLoop,
-            "isShuffle": this.isShuffled
+            "isShuffle": this.isShuffled,
+            "volume": $("#MusicVolume").val() / 100
         }
 
         // Création de la CleanLoop
@@ -116,9 +117,7 @@ export class Playlist {
         cleanLoop.exclusivityId = "Ceciestuntest";
         let initialAudio = cleanLoop.audio;
 
-        let volume = $("#MusicVolume").val() / 100;
         $(initialAudio)
-            .prop("volume", volume)
             .prop("preload", "metadata")
             .prop("controls", true)
             .attr("data-volume", "musique");
@@ -232,7 +231,7 @@ export class Playlist {
 
         // EVENTS
         // Toggle
-        $(toggleCheckbox).on("change", function() {
+        $(toggleCheckbox).on("change", function(e) {
             // Si la checkbox est maintenant coché (Jouer la musique)
             if(this.checked) {
                 let name = $(this).prop("name");
@@ -250,6 +249,14 @@ export class Playlist {
             // Si la checkbox est maintenant décochée (Mettre la musique en pause)
             else {
                 that.Pause();
+
+                if(e.isTrigger) {
+                    console.log("Is trigger");
+                }
+                else {
+                    console.log("Is NOT trigger");
+                    
+                }
             }
         });
 
