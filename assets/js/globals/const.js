@@ -12,7 +12,8 @@ export const AMBIENCE_URL = "./assets/audio/ambiance/";
 export const LANDSCAPE_TRANSITION_TIME = 1000;
 export const LANDSCAPE_PATH = "./assets/landscapes/";
 
-export const MUSIC_FADE_TIME = 3000;
+// export const MUSIC_FADE_TIME = 3000;
+export const MUSIC_FADE_TIME = 1000;
 export const MUSIC_URL = "./assets/audio/musics/";
 
 export const SOUND_FADE_TIME = 1000;

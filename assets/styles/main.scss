@@ -145,13 +145,25 @@
 }
 
 
-input[name="activePlaylist"]:not(:checked) ~ label.btn-danger{
-    display: none;
+
+
+input[name="activePlaylist"] {
+    &:not(:checked) {
+        &~label.btn-danger {
+            display: none;
+        }
+    }
+
+    &:checked {
+        &~label.btn-success {
+            display: none;
+        }
+    }
 }
 
-input[name="activePlaylist"]:checked ~ label.btn-success{
-    display: none;
-}
+// .progress-bar {
+//     background-color: purple!important;
+// }
 
 
 

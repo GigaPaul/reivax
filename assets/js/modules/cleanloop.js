@@ -1,4 +1,8 @@
 export class CleanLoop {
+
+
+    #volumeTarget = 0;
+
     constructor(args = {}) {
 
         // AUDIO
@@ -50,8 +54,6 @@ export class CleanLoop {
         $(this.audio).data("cleanloop", this);
     }
 
-    #volumeTarget = 0;
-
     /**
      * @param {number} value
      */
@@ -82,7 +84,7 @@ export class CleanLoop {
         $(this.audio).on("pause.cl", function(e) {
             // Prevent trigger on end of audio
             if(that.audio.currentTime === that.audio.duration) {
-                that.#OnEnd();
+                // that.#OnEnd();
                 return;
             }
             that.#OnPause();
@@ -93,7 +95,7 @@ export class CleanLoop {
 
             // Prevent trigger on initial play
             if(that.audio.currentTime === 0) {
-                that.#OnStart();
+                // that.#OnStart();
                 return;
             }
 
@@ -247,20 +249,19 @@ export class CleanLoop {
 
 
 
-    #OnStart() {
-        let event = new Event("cl_start");
-        this.audio.dispatchEvent(event);
-    }
+    // #OnStart() {
+    //     let event = new Event("cl_start");
+    //     this.audio.dispatchEvent(event);
+    // }
 
 
 
 
 
-    #OnEnd() {
-        let event = new Event("cl_end");
-        this.audio.dispatchEvent(event);
-        console.log("Fin")
-    }
+    // #OnEnd() {
+    //     let event = new Event("cl_end");
+    //     this.audio.dispatchEvent(event);
+    // }
 
 
 
@@ -300,12 +301,12 @@ export class CleanLoop {
 
 
     #IntroduceClone(fadeTime) {
-        // if(this.targetVolume === null) {
-        //     this.targetVolume = this.audio.volume;
-        // }
-
+        let that = this;
         this.clone.audio.play();
-        $(this.clone.audio).animate({volume: this.volume}, fadeTime)
+
+        $(this.clone.audio).animate({volume: this.volume}, fadeTime, function() {
+            that.clone.volume = that.volume;
+        })
     }
 
 
