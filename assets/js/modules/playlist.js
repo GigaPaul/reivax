@@ -222,11 +222,11 @@ export class Playlist {
         timeContainer.appendChild(timestamps);
 
         let timestampCurrent = document.createElement("p");
-        $(timestampCurrent).addClass("timestamp__current m-0");
+        $(timestampCurrent).addClass("timestamp__current user-select-none m-0");
         timestamps.appendChild(timestampCurrent);
 
         let timestampEnd = document.createElement("p");
-        $(timestampEnd).addClass("timestamp__end m-0");
+        $(timestampEnd).addClass("timestamp__end user-select-none m-0");
         timestamps.appendChild(timestampEnd);
 
 
