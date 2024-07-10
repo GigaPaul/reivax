@@ -6,12 +6,13 @@ import InitDisplayView from "./modules/main/display.js";
 let pageName = window.location.pathname.split("/").pop();
 
 switch(pageName) {
-    case "aventure.php":
-        InitAventureView();
+    case "index.php":
+    case "":
+        InitIndexView();
         break;
 
-    case "index.php":
-        InitIndexView();
+    case "aventure.php":
+        InitAventureView();
         break;
 
     case "display.php":

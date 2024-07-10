@@ -462,31 +462,3 @@ export class CleanLoop {
         this.playlist = [...this.urls];
     }
 }
-
-
-
-
-// let audio = $("audio")[0];
-// let displayer = $("p")[0];
-// let sounds = [
-//     "assets/upload/audios/AMB_Drustvar_Crickets_Loop_FlavorKit_01_7T7GVrPdAOJghCy.ogg",
-//     "assets/upload/audios/FX_PA_Fire_Small_Loop_h0h2ICr1wVvi6sT.ogg",
-//     "assets/upload/audios/GilneasStageCoach_WheelsOS_01_k4ETt7vQKtHL1Zo.ogg",
-//     "assets/upload/audios/fx_fw_wolfhowl_dry_07_Ai1wVIs9r58dmC1.ogg",
-// ];
-
-// let names = [
-//     "Criquets",
-//     "Feu",
-//     "Chariot",
-//     "Loup"
-// ]
-
-// let data = {
-//     "audio": audio,
-//     "displayer": displayer,
-//     "urls": sounds,
-//     "names": names
-// };
-
-// new CleanLoop(data);

@@ -1,8 +1,8 @@
 import { Adventure } from "./../../classes/adventure.js";
 import { Landscape } from "./../../modules/landscape.js";
-import { Ambience } from "./../../modules/ambience.js";
-import { SoundFamily } from "./../../modules/sound.js";
-import { Playlist } from "./../../modules/playlist.js";
+import { Ambience } from "../../classes/ambience.js";
+import { SoundFamily } from "../../classes/sound.js";
+import { Playlist } from "../../classes/playlist.js";
 import { ADVENTURE_LIST } from "./../../globals/elements.js";
 import * as FUNC from './../../globals/func.js';
 
