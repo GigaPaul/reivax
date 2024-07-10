@@ -1,26 +1,25 @@
-import InitVolume from "./modules/volume.js";
-import { Adventure } from "./classes/adventure.js";
-import { LANDSCAPE_OUTPUT, AMBIENCE_OUTPUT, MUSIC_OUTPUT, SOUND_OUTPUT } from "./globals/elements.js";
-
-let params = new URL(document.location.toString()).searchParams;
+import InitIndexView from "./modules/main/index.js";
+import InitAventureView from "./modules/main/aventure.js";
+import InitDisplayView from "./modules/main/display.js";
 
 
-async function LoadAdventure(id_aventure) {
-    let adventure = new Adventure();
-    await adventure.Fetch(id_aventure);
+let pageName = window.location.pathname.split("/").pop();
 
-    adventure.LoadAmbiences(AMBIENCE_OUTPUT);
-    adventure.LoadLandscapes(LANDSCAPE_OUTPUT);
-    adventure.LoadPlaylists(MUSIC_OUTPUT);
-    adventure.LoadSounds(SOUND_OUTPUT);
-}
+switch(pageName) {
+    case "aventure.php":
+        InitAventureView();
+        break;
 
+    case "index.php":
+        InitIndexView();
+        break;
 
+    case "display.php":
+        InitDisplayView();
+        console.log("display");
+        break;
 
-
-
-InitVolume();
-
-if(params.has("id_aventure")) {
-    LoadAdventure(params.get("id_aventure"));
+    default:
+        console.log(`${pageName} n'est pas présente dans le main switch.`);
+        break;
 }

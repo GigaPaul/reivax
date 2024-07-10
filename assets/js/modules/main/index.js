@@ -1,246 +1,15 @@
-import { Adventure } from "../classes/adventure.js";
-import { Landscape } from "../modules/landscape.js";
-import { Ambience } from "../modules/ambience.js";
-import { SoundFamily } from "../modules/sound.js";
-import { Playlist } from "../modules/playlist.js";
-import { ADVENTURE_LIST } from "../globals/elements.js";
-import * as FUNC from '../globals/func.js';
-
-
-
-
-RetrieveAdventures();
-
-
-$(".modal-form").on("show.bs.modal", function() {
-    this.reset();
-})
-
-// FORMULAIRE AVENTURE
-$("#editAdventureForm").on("show.bs.modal", function() {
-    $(this).find("output").html("");
-})
+import { Adventure } from "./../../classes/adventure.js";
+import { Landscape } from "./../../modules/landscape.js";
+import { Ambience } from "./../../modules/ambience.js";
+import { SoundFamily } from "./../../modules/sound.js";
+import { Playlist } from "./../../modules/playlist.js";
+import { ADVENTURE_LIST } from "./../../globals/elements.js";
+import * as FUNC from './../../globals/func.js';
 
 
 
 
 
-
-// FORMULAIRE DÉCOR
-$("#landscapeForm").on("submit", function(e) {
-    e.preventDefault();
-    
-    let formData = new FormData(this);
-    
-    $.ajax({
-        type: "POST",
-        url: "controller.php",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            try {
-                let result = jQuery.parseJSON(data);
-
-                let newLandscape = new Landscape();
-                newLandscape.name = formData.get("name");
-                newLandscape.url = result[0];
-
-                newLandscape.Push();
-            } catch(error) {
-                console.log("Erreur détectée");
-                console.log(data);
-                console.log(error);
-            }
-        }
-    })
-    
-    $(this).modal("hide");
-})
-
-
-
-
-
-// FORMULAIRE AMBIANCE
-$("#ambienceForm").on("submit", function(e) {
-    e.preventDefault();
-    
-    let formData = new FormData(this);
-    
-    $.ajax({
-        type: "POST",
-        url: "controller.php",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            try {
-                let result = jQuery.parseJSON(data);
-
-                let newAmbience = new Ambience();
-                newAmbience.name = formData.get("name");
-                newAmbience.url = result[0];
-
-                newAmbience.Push();
-            } catch(error) {
-                console.log("Erreur détectée");
-                console.log(data);
-                console.log(error);
-            }
-        }
-    })
-    
-    $(this).modal("hide");
-})
-
-
-
-
-
-// FORMULAIRE SOUND
-$("#soundForm").on("submit", function(e) {
-    e.preventDefault();
-    
-    let formData = new FormData(this);
-
-    
-    $.ajax({
-        type: "POST",
-        url: "controller.php",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            try {
-                let result = jQuery.parseJSON(data);
-
-                let obj = {
-                    "name": formData.get("name"),
-                    "frequency": formData.get("frequency"),
-                    "is_loop": formData.get("is_loop") === "on",
-                    "sounds": []
-                }
-
-
-                $(result).each(function() {
-                    obj.sounds.push({"url": this});
-                });
-
-                let newSoundFamily = new SoundFamily(obj);
-
-                newSoundFamily.Push();
-            } catch(error) {
-                console.log("Erreur détectée");
-                console.log(data);
-                console.log(error);
-            }
-        }
-    })
-    
-    $(this).modal("hide");
-})
-
-
-
-
-
-$("#playlistForm").find("input[name='url[]']").on("change", function(e) {
-    let output = $(this).siblings("output")[0];
-    $(output).html("");
-
-    let ul = document.createElement("ul");
-    $(ul).addClass("list-group");
-    output.appendChild(ul);
-
-    if(e.target.files.length > 0) {
-        $(e.target.files).each(function() {
-            let li = document.createElement("li");
-            $(li).addClass("list-group-item list-group-item-action");
-            ul.appendChild(li);
-
-            let row = document.createElement("div");
-            $(row).addClass("row");
-            li.appendChild(row);
-
-            let leftCol = document.createElement("col");
-            $(leftCol).addClass("col-6");
-            row.appendChild(leftCol);
-            
-            let urlInput = document.createElement("input");
-            $(urlInput)
-                .addClass("form-control form-control-plaintext")
-                .prop("type", "text")
-                .prop("name", "musicUrl[]")
-                .prop("readonly", true)
-                .val(this.name);
-            leftCol.appendChild(urlInput);
-
-            let rightCol = document.createElement("col");
-            $(rightCol).addClass("col-6");
-            row.appendChild(rightCol);
-            
-            let nameInput = document.createElement("input");
-            $(nameInput)
-                .addClass("form-control")
-                .prop("type", "text")
-                .prop("name", "musicName[]")
-                .prop("placeholder", "Nom de la musique")
-                .prop("autocomplete", "off")
-                .prop("required", true);
-            rightCol.appendChild(nameInput);
-        });
-    }
-});
-
-// FORMULAIRE MUSIC
-$("#playlistForm").on("submit", function(e) {
-    e.preventDefault();
-    
-    let formData = new FormData(this);
-
-
-    
-    $.ajax({
-        type: "POST",
-        url: "controller.php",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            try {
-                let urls = jQuery.parseJSON(data);
-                let names = formData.getAll("musicName[]");
-
-                let musics = [];
-                for(let i = 0; i < urls.length; i++) {
-                    let thisMusic = {
-                        "name": names[i],
-                        "url": urls[i]
-                    }
-
-                    musics.push(thisMusic);
-                }
-                
-                let obj = {
-                    "name": formData.get("name"),
-                    "musics": musics,
-                    "is_shuffle": formData.get("isShuffled") === "on"
-                }
-
-                let newPlaylist = new Playlist(obj);
-                newPlaylist.Push();
-
-            } catch(error) {
-                console.log("Erreur détectée");
-                console.log(data);
-                console.log(error);
-            }
-        }
-    })
-    
-    $(this).modal("hide");
-})
 
 
 
@@ -254,6 +23,7 @@ $("#playlistForm").on("submit", function(e) {
 class AdventureForm {
     constructor(element) {
         this.element = element;
+        $(this.element).data("adventureform", this);
         this.adventure = new Adventure();
 
         let that = this;
@@ -683,11 +453,11 @@ class AdventureForm {
 
 
 
-let FORM = new AdventureForm($("#editAdventureForm")[0]);
-FORM.Init();
-$("#NewAdventureBtn").on("click", function() {
-    FORM.Load();
-})
+// let FORM = new AdventureForm($("#editAdventureForm")[0]);
+// FORM.Init();
+// $("#NewAdventureBtn").on("click", function() {
+//     FORM.Load();
+// })
 
 
 
@@ -766,7 +536,7 @@ function CreateAdventureCard(adventure) {
 
     // Open edit form
     $(editBtn).on("click", function() {
-        FORM.Load(adventure);
+        $("#editAdventureForm").data("adventureform").Load(adventure);
     })
     //
 
@@ -778,3 +548,254 @@ function CreateAdventureCard(adventure) {
 
     return article;
 }
+
+
+
+
+
+
+export default function InitIndexView() {
+    RetrieveAdventures();
+
+
+    $(".modal-form").on("show.bs.modal", function() {
+        this.reset();
+    })
+    
+    // FORMULAIRE AVENTURE
+    $("#editAdventureForm").on("show.bs.modal", function() {
+        $(this).find("output").html("");
+    })
+    
+    
+    
+    
+    
+    
+    // FORMULAIRE DÉCOR
+    $("#landscapeForm").on("submit", function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+        
+        $.ajax({
+            type: "POST",
+            url: "controller.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                try {
+                    let result = jQuery.parseJSON(data);
+    
+                    let newLandscape = new Landscape();
+                    newLandscape.name = formData.get("name");
+                    newLandscape.url = result[0];
+    
+                    newLandscape.Push();
+                } catch(error) {
+                    console.log("Erreur détectée");
+                    console.log(data);
+                    console.log(error);
+                }
+            }
+        })
+        
+        $(this).modal("hide");
+    })
+    
+    
+    
+    
+    
+    // FORMULAIRE AMBIANCE
+    $("#ambienceForm").on("submit", function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+        
+        $.ajax({
+            type: "POST",
+            url: "controller.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                try {
+                    let result = jQuery.parseJSON(data);
+    
+                    let newAmbience = new Ambience();
+                    newAmbience.name = formData.get("name");
+                    newAmbience.url = result[0];
+    
+                    newAmbience.Push();
+                } catch(error) {
+                    console.log("Erreur détectée");
+                    console.log(data);
+                    console.log(error);
+                }
+            }
+        })
+        
+        $(this).modal("hide");
+    })
+    
+    
+    
+    
+    
+    // FORMULAIRE SOUND
+    $("#soundForm").on("submit", function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+    
+        
+        $.ajax({
+            type: "POST",
+            url: "controller.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                try {
+                    let result = jQuery.parseJSON(data);
+    
+                    let obj = {
+                        "name": formData.get("name"),
+                        "frequency": formData.get("frequency"),
+                        "is_loop": formData.get("is_loop") === "on",
+                        "sounds": []
+                    }
+    
+    
+                    $(result).each(function() {
+                        obj.sounds.push({"url": this});
+                    });
+    
+                    let newSoundFamily = new SoundFamily(obj);
+    
+                    newSoundFamily.Push();
+                } catch(error) {
+                    console.log("Erreur détectée");
+                    console.log(data);
+                    console.log(error);
+                }
+            }
+        })
+        
+        $(this).modal("hide");
+    })
+    
+    
+    
+    
+    
+    $("#playlistForm").find("input[name='url[]']").on("change", function(e) {
+        let output = $(this).siblings("output")[0];
+        $(output).html("");
+    
+        let ul = document.createElement("ul");
+        $(ul).addClass("list-group");
+        output.appendChild(ul);
+    
+        if(e.target.files.length > 0) {
+            $(e.target.files).each(function() {
+                let li = document.createElement("li");
+                $(li).addClass("list-group-item list-group-item-action");
+                ul.appendChild(li);
+    
+                let row = document.createElement("div");
+                $(row).addClass("row");
+                li.appendChild(row);
+    
+                let leftCol = document.createElement("col");
+                $(leftCol).addClass("col-6");
+                row.appendChild(leftCol);
+                
+                let urlInput = document.createElement("input");
+                $(urlInput)
+                    .addClass("form-control form-control-plaintext")
+                    .prop("type", "text")
+                    .prop("name", "musicUrl[]")
+                    .prop("readonly", true)
+                    .val(this.name);
+                leftCol.appendChild(urlInput);
+    
+                let rightCol = document.createElement("col");
+                $(rightCol).addClass("col-6");
+                row.appendChild(rightCol);
+                
+                let nameInput = document.createElement("input");
+                $(nameInput)
+                    .addClass("form-control")
+                    .prop("type", "text")
+                    .prop("name", "musicName[]")
+                    .prop("placeholder", "Nom de la musique")
+                    .prop("autocomplete", "off")
+                    .prop("required", true);
+                rightCol.appendChild(nameInput);
+            });
+        }
+    });
+    
+    // FORMULAIRE MUSIC
+    $("#playlistForm").on("submit", function(e) {
+        e.preventDefault();
+        
+        let formData = new FormData(this);
+    
+    
+        
+        $.ajax({
+            type: "POST",
+            url: "controller.php",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                try {
+                    let urls = jQuery.parseJSON(data);
+                    let names = formData.getAll("musicName[]");
+    
+                    let musics = [];
+                    for(let i = 0; i < urls.length; i++) {
+                        let thisMusic = {
+                            "name": names[i],
+                            "url": urls[i]
+                        }
+    
+                        musics.push(thisMusic);
+                    }
+                    
+                    let obj = {
+                        "name": formData.get("name"),
+                        "musics": musics,
+                        "is_shuffle": formData.get("isShuffled") === "on"
+                    }
+    
+                    let newPlaylist = new Playlist(obj);
+                    newPlaylist.Push();
+    
+                } catch(error) {
+                    console.log("Erreur détectée");
+                    console.log(data);
+                    console.log(error);
+                }
+            }
+        })
+        
+        $(this).modal("hide");
+    })
+
+
+
+
+    let FORM = new AdventureForm($("#editAdventureForm")[0]);
+    FORM.Init();
+    $("#NewAdventureBtn").on("click", function() {
+        FORM.Load();
+    })
+}
+
+// InitIndexView();

@@ -18,3 +18,5 @@ export const MUSIC_URL = "./assets/audio/musics/";
 
 export const SOUND_FADE_TIME = 1000;
 export const SOUND_URL = "./assets/audio/sounds/";
+
+export const CURRENT_LANDSCAPE = { url:null };

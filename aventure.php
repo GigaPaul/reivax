@@ -118,7 +118,7 @@
         <div>
             <h1 class="text-center">Reivax</h1>
             <p class="text-center">
-                <a href="display.html" target="_blank" class="text-center">Ouvrir le display</a>
+                <a href="display.php" target="_blank" class="text-center">Ouvrir le display</a>
             </p>
             
         </div>
@@ -166,11 +166,6 @@
             <h2 class="text-center">Musique</h2>
 
             <output id="musicOutput" class="row"></output>
-
-            <!-- <div id="musicAudios">
-                <audio data-volume="musique" preload="metadata" src=""></audio>
-                <audio data-volume="musique" preload="metadata" src=""></audio>
-            </div> -->
         </article>
     </section>
 </div>

@@ -1,11 +1,12 @@
-import {LANDSCAPE_TRANSITION_TIME} from './globals/const.js';
-import * as FUNC from './globals/func.js';
+import {LANDSCAPE_TRANSITION_TIME, CURRENT_LANDSCAPE} from './../../globals/const.js';
+import * as FUNC from './../../globals/func.js';
 
-const CURRENTSCENE = {
-    background_url: null
-};
 
-const INTERVAL = window.setInterval(Update, 1000);
+export default function InitDisplayView() {
+    window.setInterval(Update, 1000);
+}
+
+
 
 
 
@@ -31,19 +32,19 @@ function BackgroundUpdate()
     {
         let result = jQuery.parseJSON(data)[0];
 
-        if(result.background_url !== CURRENTSCENE.background_url)
+        if(result.background_url !== CURRENT_LANDSCAPE.url)
         {
             console.log(`Changement du background vers ${result.background_url}`);
 
-            CURRENTSCENE.background_url = result.background_url;
+            CURRENT_LANDSCAPE.url = result.background_url;
 
-            if(CURRENTSCENE.background_url == "")
+            if(CURRENT_LANDSCAPE.url == "")
             {
                 ResetBackground();
             }
             else
             {
-                SetBackgroundAs(CURRENTSCENE.background_url);
+                SetBackgroundAs(CURRENT_LANDSCAPE.url);
             }
         }        
     })
