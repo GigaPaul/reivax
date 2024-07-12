@@ -36,5 +36,3 @@
         </div>
 
     </header>
-
-    <body>
