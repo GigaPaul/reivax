@@ -1,9 +1,9 @@
 export const XHTTP = new XMLHttpRequest();
 
 export const GENERAL_VOLUME = 1;
-export const AMBIENCE_REL_VOL = 0.1;
-export const SOUND_REL_VOL = 0.1;
-export const MUSIC_REL_VOL = 0.1;
+export const AMBIENCE_REL_VOL = 0.25;
+export const SOUND_REL_VOL = 0.25;
+export const MUSIC_REL_VOL = 0.25;
 
 
 export const AMBIENCE_FADE_TIME = 5000;

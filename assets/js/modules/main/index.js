@@ -19,7 +19,6 @@ import * as FUNC from './../../globals/func.js';
 
 
 
-
 class AdventureForm {
     constructor(element) {
         this.element = element;

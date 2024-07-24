@@ -250,12 +250,6 @@
 
 </section>
 
-<!-- </body>
-<script src="assets/js/src/jquery.js" type="module"></script>
-<script src="assets/js/src/bootstrap.min.js" type="module"></script>
-<script src="assets/js/modules/form.js" type="module"></script>
-</html> -->
-
 <?php
     include "./footer.php";
 ?>
