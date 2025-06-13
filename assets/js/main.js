@@ -1,7 +1,6 @@
 import InitIndexView from "./modules/main/index.js";
 import InitAventureView from "./modules/main/aventure.js";
 import InitDisplayView from "./modules/main/display.js";
-import InitCardsView from "./modules/main/cards.js";
 
 
 let pageName = window.location.pathname.split("/").pop();
@@ -27,10 +26,6 @@ switch(pageName) {
 
     case "display.php":
         InitDisplayView();
-        break;
-
-    case "cards.php":
-        InitCardsView();
         break;
 
     default:

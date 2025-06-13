@@ -17,9 +17,6 @@
             <nav class="navbar-collapse collapse show">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="headerNavbar">
                     <li class="nav-item">
-                        <a href="./cards.php" aria-current="page" type="button" class="btn-link nav-link" >Cartes de PNJ</a>
-                    </li>
-                    <li class="nav-item">
                         <button type="button" id="addLandscapeButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#landscapeForm">Décors</button>
                     </li>
 
@@ -39,3 +36,7 @@
         </div>
 
     </header>
+
+    <?php
+    include "./forms.php";
+    ?>
