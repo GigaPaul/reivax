@@ -249,24 +249,6 @@ export class CleanLoop {
 
 
 
-    // #OnStart() {
-    //     let event = new Event("cl_start");
-    //     this.audio.dispatchEvent(event);
-    // }
-
-
-
-
-
-    // #OnEnd() {
-    //     let event = new Event("cl_end");
-    //     this.audio.dispatchEvent(event);
-    // }
-
-
-
-
-
     #OnResume() {
         if(this.clone === null) {
             return;

@@ -135,7 +135,7 @@
 
         <article id="ambienceSelector" class="mb-5 container">
             <h2 class="text-center">Ambiance</h2>
-            <output id="ambienceOutput" class="d-flex justify-content-center overflow-x-scroll"></output>
+            <output id="ambienceOutput" class="d-flex overflow-x-scroll"></output>
         </article>
 
 
@@ -169,14 +169,14 @@
             </output>
 
 
-            <article class="container fixed-bottom bg-danger text-white d-flex align-items-center justify-content-between py-2">
+            <article id="currentPlayedSong" class="container fixed-bottom bg-danger text-white d-flex align-items-center justify-content-between py-2">
                 <div class="d-flex align-items-center">
                     <div class="me-2">
                         <label class="btn text-white" for="togglePlaylist-8"><i class="fa-solid fa-play"></i></label>
                     </div>    
                     <div>
-                        <p class="m-0">Chant de l'Elfe</p>
-                        <p class="opacity-50 m-0">Elfsong tavern Dark Alliance</p>                    
+                        <p id="currentPlayedSong_playlistName" class="m-0">Chant de l'Elfe</p>
+                        <p id="currentPlayedSong_songName" class="opacity-50 m-0">Elfsong tavern Dark Alliance</p>                    
                     </div>                
                 </div>
 

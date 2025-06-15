@@ -9,7 +9,6 @@ import { CleanLoop } from "./cleanloop.js"
 export class Playlist {
     constructor(obj = null)
     {
-        this.index = 0;
         this.element;
         this.playedMusics = [];
 
@@ -328,8 +327,37 @@ export class Playlist {
 
 
 
+    static GetCurrentSongPlaylist() {
+        const checkedCheckbox = $("input[name='playlistRadio']:checked")[0];
+
+        if(!checkedCheckbox) {
+            return null;
+        }
+
+        const playlistElt = $(checkedCheckbox).closest(".playlist")[0];
+
+        if(!playlistElt) {
+            return null;
+        }
+
+        const playlist = $(playlistElt).data("playlist");
+        const audio = $(playlistElt).find("audio")[0];
+
+        if(!audio) {
+            return null;
+        }
+
+        const cleanLoop = $(audio).data("cleanloop");
+        const song = playlist.musics.find((i) => i.url === cleanLoop.playlist[0]);
+        
+        return { "playlist": playlist, "song": song }
+    }
+
+
+
 
     Load() {
+
         //
         if(this.musics.length === 0) {
             return;
@@ -394,6 +422,25 @@ export class Playlist {
             .attr("data-volume", "musique");
         audios.appendChild(initialAudio);
 
+        $(initialAudio).on("play", function() {
+            const currentSongPlaylist = Playlist.GetCurrentSongPlaylist();
+
+            if(!currentSongPlaylist) {
+                return;
+            }
+            
+            const currentPlayedSong = $("#currentPlayedSong")[0];
+
+            if(currentPlayedSong) {
+                const playlistTitle = $("#currentPlayedSong_playlistName")[0];
+                const songTitle = $("#currentPlayedSong_songName")[0];
+                console.log(currentSongPlaylist)
+                
+                $(playlistTitle).text(currentSongPlaylist.playlist.name);
+                $(songTitle).text(currentSongPlaylist.song.name);
+            }
+        })
+
 
 
         $(songCheckbox).on("change", function(e) {
@@ -416,7 +463,6 @@ export class Playlist {
                 // If the pause is triggered by clicking on the pause button directly
                 // (Audios will be automatically paused if it's a transition from a playlist to another)
                 if(!e.isTrigger) {
-                    console.log(this);
                     that.PauseAudios();
                 }
             }
@@ -563,27 +609,7 @@ export class Playlist {
 
         // When the audio metadata is loaded, display the informations about the current music
         $(cleanLoop.audio).on("loadedmetadata", function() {
-            let thisCleanLoop = $(this).data("cleanloop");
 
-            let currentMusic = thisCleanLoop.playlist[0];
-            let name = null;
-
-            // Find a music using the current url
-            $(that.musics).each(function() {
-                if(this.url === currentMusic) {
-                    name = this.name;
-                    return false;
-                }
-            });
-
-            // If no name was found, use "Musique sans nom"
-            if(name === null) {
-                name = "Musique sans nom";
-            }
-            
-            $(songTitle).text(name);
-            $(timestampCurrent).text(FUNC.SecondsToMinutes(0));
-            $(timestampEnd).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.duration));
         })
 
 

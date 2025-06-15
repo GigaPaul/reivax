@@ -32,7 +32,7 @@ export class Ambience {
     
         let button = document.createElement("button");
         $(button).text(this.name);
-        $(button).addClass("btn btn-primary");
+        $(button).addClass("btn btn-primary").css("width", "max-content");
         article.appendChild(button);
 
         let nbOfAudios = 2;

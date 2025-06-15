@@ -1,5 +1,6 @@
 import InitVolume from "./../../modules/volume.js";
 import { Adventure } from "./../../classes/adventure.js";
+import { Playlist } from "./../../classes/playlist.js";
 import { LANDSCAPE_OUTPUT, AMBIENCE_OUTPUT, MUSIC_OUTPUT, SOUND_OUTPUT } from "./../../globals/elements.js";
 
 export default function InitAventureView() {
