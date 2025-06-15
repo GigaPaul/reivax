@@ -427,7 +427,6 @@ export class Adventure {
 
     LoadPlaylists(parent) {
         $(this.playlists).each(function() {
-            // let playlist = new Playlist(this);
             this.Load();
             parent.appendChild(this.element);
         });

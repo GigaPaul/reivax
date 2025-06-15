@@ -70,7 +70,7 @@ export class Landscape {
         }
 
         let container = document.createElement("div");
-        $(container).addClass("col-2 mb-3");
+        $(container).addClass("me-3");
         this.element = container;
 
 
@@ -119,7 +119,7 @@ export class Landscape {
         let checkbox = document.createElement("input");
         $(checkbox)
             .prop("type", "checkbox")
-            .addClass("d-none")
+            // .addClass("d-none")
             .prop("name", "landscapes[]")
             .prop("checked", isActive)
             .val(this.id_landscape);

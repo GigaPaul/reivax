@@ -34,7 +34,7 @@
   overflow: hidden;
   padding: 0;
   position: relative;
-  width: 100%;
+  width: 100px;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -48,6 +48,9 @@
 }
 
 .background__button video {
+  -o-object-fit: cover;
+     object-fit: cover;
+  height: 100%;
   width: 100%;
   position: absolute;
   top: 50%;
@@ -63,8 +66,10 @@
   opacity: 1;
 }
 
-.background__button:hover {
-  opacity: 1;
+@media (min-width: 576px) {
+  .background__button:hover {
+    opacity: 1;
+  }
 }
 
 .test__container {
@@ -115,6 +120,10 @@
 
 .progressbar input[type="range"] {
   pointer-events: none;
+}
+
+.playlist:has(input[name="playlistRadio"]:checked) {
+  --bs-bg-opacity: .5;
 }
 
 input[name="activePlaylist"]:not(:checked) ~ label.btn-danger {

@@ -73,7 +73,7 @@ export class Playlist {
 
 
 
-    Load() {
+    Load_old() {
         if(this.musics.length === 0) {
             return;
         }
@@ -259,6 +259,287 @@ export class Playlist {
                     that.PauseAudios();
                 }
             }
+        });
+
+
+        // Shuffle
+        $(shuffleButton).on("change", function() {
+            that.isShuffled = this.checked;
+
+            $(audios).children("audio").each(function() {
+                $(this).data("cleanloop").isShuffle = that.isShuffled;
+            })
+
+            if(that.isShuffled) {
+                $(this).addClass("btn-info").removeClass("btn-outline-info");
+            }
+            else {
+                $(this).addClass("btn-outline-info").removeClass("btn-info");
+            }
+        });
+
+
+
+        // When the audio metadata is loaded, display the informations about the current music
+        $(cleanLoop.audio).on("loadedmetadata", function() {
+            let thisCleanLoop = $(this).data("cleanloop");
+
+            let currentMusic = thisCleanLoop.playlist[0];
+            let name = null;
+
+            // Find a music using the current url
+            $(that.musics).each(function() {
+                if(this.url === currentMusic) {
+                    name = this.name;
+                    return false;
+                }
+            });
+
+            // If no name was found, use "Musique sans nom"
+            if(name === null) {
+                name = "Musique sans nom";
+            }
+            
+            $(songTitle).text(name);
+            $(timestampCurrent).text(FUNC.SecondsToMinutes(0));
+            $(timestampEnd).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.duration));
+        })
+
+
+
+
+
+        $(cleanLoop.audio).on("timeupdate", function() {
+
+            let thisCleanLoop = $(this).data("cleanloop");
+
+            if(thisCleanLoop.clone !== null) {
+                return;
+            }
+
+            // Avancé du timestamp actuel
+            $(timestampCurrent).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.currentTime));
+
+            // Event de remplissage de la barre de progrès
+            let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
+            $(progressbar).css("width", `${percent}%`);
+        })
+    }
+
+
+
+
+    Load() {
+        //
+        if(this.musics.length === 0) {
+            return;
+        }
+        
+        let that = this;
+        let radioId = `playlist_radio_${this.id_playlist}`;
+
+        let article = document.createElement("article");
+        $(article).addClass("bg-black playlist");
+        this.element = article
+        $(article).data("playlist", this);
+
+        let label = document.createElement("label");
+        $(label).prop("for", radioId).addClass("container py-3");
+        article.appendChild(label);
+
+        let playlistName = document.createElement("p");
+        $(playlistName).text(this.name).addClass("m-0");
+        label.appendChild(playlistName);
+
+        let songNames = document.createElement("p");
+        $(songNames).text(this.musics.map(i => i.name).join(", ")).addClass("opacity-50 m-0 text-truncate");
+        label.appendChild(songNames);
+
+        let songCheckbox = document.createElement("input");
+        $(songCheckbox)
+            .prop("type", "checkbox")
+            .prop("name", "playlistRadio")
+            .prop("id", radioId)
+            .addClass("d-none");
+        article.appendChild(songCheckbox);
+
+        
+
+        let audios = document.createElement("output");
+        $(audios).addClass("music__audios");
+        article.appendChild(audios);
+
+
+
+        // Initial Audio
+        // Séparation des urls
+        let urls = this.musics.map(i => i.url);
+
+        // Constitution de la data
+        let data = {
+            "urls": urls,
+            "fadeTime": GLOBALS.MUSIC_FADE_TIME,
+            "isLoop": this.isLoop,
+            "isShuffle": this.isShuffled,
+            "volume": $("#MusicVolume").val() / 100
+        }
+
+        // Création de la CleanLoop
+        let cleanLoop = new CleanLoop(data);
+        cleanLoop.exclusivityId = "Ceciestuntest";
+        let initialAudio = cleanLoop.audio;
+
+        $(initialAudio)
+            .prop("preload", "metadata")
+            .attr("data-volume", "musique");
+        audios.appendChild(initialAudio);
+
+
+
+        $(songCheckbox).on("change", function(e) {
+            // Si la checkbox est maintenant coché (Jouer la musique)
+            if(this.checked) {
+                let name = $(this).prop("name");
+                let inputs = $(`input[name='${name}']`).not(this);
+
+                $(inputs).each(function() {
+                    if(this.checked) {
+                        this.checked = false;
+                        $(this).trigger("change");
+                    }
+                });
+
+                that.PlayAudios();
+            }
+            // Si la checkbox est maintenant décochée (Mettre la musique en pause)
+            else {
+                // If the pause is triggered by clicking on the pause button directly
+                // (Audios will be automatically paused if it's a transition from a playlist to another)
+                if(!e.isTrigger) {
+                    console.log(this);
+                    that.PauseAudios();
+                }
+            }
+        })
+        return;
+        //
+
+
+        let card = document.createElement("div");
+        $(card).addClass("card");
+        article.appendChild(card);
+
+
+        // HEADER
+        let categoryHeader = document.createElement("div");
+        $(categoryHeader).addClass("card-header");
+        card.appendChild(categoryHeader);
+
+        let categoryTitle = document.createElement("h4");
+        $(categoryTitle).addClass("m-0");
+        $(categoryTitle).text(this.name);
+        categoryHeader.appendChild(categoryTitle);
+
+        // BODY
+        let categoryBody = document.createElement("div");
+        $(categoryBody).addClass("card-body d-flex");
+        card.appendChild(categoryBody);
+
+        let songControls = document.createElement("div");
+        $(songControls).addClass("d-flex flex-column justify-content-between me-3");
+        categoryBody.appendChild(songControls);
+
+        // TOGGLE BUTTON
+        let toggleCheckbox = document.createElement("input");
+        $(toggleCheckbox)
+            .addClass("music__toggle btn-check")
+            .prop("id", `togglePlaylist-${this.id_playlist}`)
+            .prop("name", "activePlaylist")
+            .prop("type", "checkbox")
+            .val(this.id_playlist);
+        songControls.appendChild(toggleCheckbox);
+            
+        let togglePlayLabel = document.createElement("label");
+        $(togglePlayLabel)
+            .addClass("btn btn-success mb-1")
+            .prop("for", `togglePlaylist-${this.id_playlist}`);
+        songControls.appendChild(togglePlayLabel);
+
+        let togglePlayIcon = document.createElement("i");
+        $(togglePlayIcon).addClass("fa-solid fa-play");
+        togglePlayLabel.appendChild(togglePlayIcon);
+            
+        let togglePauseLabel = document.createElement("label");
+        $(togglePauseLabel)
+            .addClass("btn btn-danger mb-1")
+            .prop("for", `togglePlaylist-${this.id_playlist}`);
+        songControls.appendChild(togglePauseLabel);
+        
+        let togglePauseIcon = document.createElement("i");
+        $(togglePauseIcon).addClass("fa-solid fa-pause");
+        togglePauseLabel.appendChild(togglePauseIcon);
+        
+
+
+        // SHUFFLE BUTTON
+        let shuffleButton = document.createElement("input");
+        $(shuffleButton)
+            .prop("type", "checkbox")
+            .prop("id", `playlist_${this.id_playlist}`)
+            .prop("checked", this.isShuffled)
+            .addClass("btn-check");
+        songControls.appendChild(shuffleButton);
+
+        let shuffleLabel = document.createElement("label");
+        $(shuffleLabel)
+            .addClass("btn btn-outline-primary")
+            .prop("for", `playlist_${this.id_playlist}`);
+        songControls.appendChild(shuffleLabel);
+
+        let shuffleIcon = document.createElement("i");
+        $(shuffleIcon).addClass("fa-solid fa-shuffle");
+        shuffleLabel.appendChild(shuffleIcon);
+
+        // CURRENT SONG
+        let currentSong = document.createElement("div");
+        $(currentSong).addClass("w-100")
+        categoryBody.appendChild(currentSong);
+
+        let songTitle = document.createElement("h5");
+        $(songTitle).addClass("music__songTitle");
+        currentSong.appendChild(songTitle);
+
+        let timeContainer = document.createElement("div");
+        currentSong.appendChild(timeContainer)
+
+        let progressBarContainer = document.createElement("div");
+        $(progressBarContainer).addClass("progress").prop("role", "progressbar");
+        timeContainer.appendChild(progressBarContainer);
+
+        let progressbar = document.createElement("div");
+        $(progressbar)
+            .addClass("progress-bar progress-bar-striped bg-danger progress-bar-animated")
+            .css("width", "0%");
+        progressBarContainer.appendChild(progressbar);
+
+
+        let timestamps = document.createElement("div");
+        $(timestamps).addClass("timestamp d-flex justify-content-between");
+        timeContainer.appendChild(timestamps);
+
+        let timestampCurrent = document.createElement("p");
+        $(timestampCurrent).addClass("timestamp__current user-select-none m-0");
+        timestamps.appendChild(timestampCurrent);
+
+        let timestampEnd = document.createElement("p");
+        $(timestampEnd).addClass("timestamp__end user-select-none m-0");
+        timestamps.appendChild(timestampEnd);
+
+
+
+        // EVENTS
+        // Toggle
+        $(toggleCheckbox).on("change", function(e) {
         });
 
 

@@ -8,7 +8,7 @@
 
 
 <!-- Button trigger modal -->
-<div class="fixed-bottom mb-3 ms-3 w-max-content">
+<div class="fixed-bottom mb-3 ms-3 w-max-content d-none">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#volumeModal">
         <i class="fa-solid fa-volume-high"></i>
     </button>        
@@ -111,11 +111,11 @@
 
 
 
-<div class="container position-relative">
+<div class="position-relative">
 
 
     <section>
-        <div>
+        <div class="d-none d-md-block">
             <h1 class="text-center">Reivax</h1>
             <p class="text-center">
                 <a href="display.php" target="_blank" class="text-center">Ouvrir le display</a>
@@ -124,25 +124,25 @@
         </div>
 
 
-        <article class="mb-5">
+        <article class="mb-5 container">
             <h2 class="text-center">Landscapes</h2>
-            <div class="row" id="landscapeOutput"></div>
+            <div class="d-flex overflow-x-scroll" id="landscapeOutput"></div>
         </article>
 
 
 
 
 
-        <article id="ambienceSelector" class="mb-5">
+        <article id="ambienceSelector" class="mb-5 container">
             <h2 class="text-center">Ambiance</h2>
-            <output id="ambienceOutput" class="d-flex justify-content-center"></output>
+            <output id="ambienceOutput" class="d-flex justify-content-center overflow-x-scroll"></output>
         </article>
 
 
 
 
 
-        <article class="mb-5">
+        <!-- <article class="mb-5">
             <div class="container">
                 <div class="row">
                     <h2 class="text-center">Sons</h2>
@@ -155,7 +155,7 @@
             </div>
 
 
-        </article>
+        </article> -->
 
     
 
@@ -165,11 +165,29 @@
         <article class="mb-5">
             <h2 class="text-center">Musique</h2>
 
-            <output id="musicOutput" class="row"></output>
+            <output id="musicOutput" class="w-100">
+            </output>
+
+
+            <article class="container fixed-bottom bg-danger text-white d-flex align-items-center justify-content-between py-2">
+                <div class="d-flex align-items-center">
+                    <div class="me-2">
+                        <label class="btn text-white" for="togglePlaylist-8"><i class="fa-solid fa-play"></i></label>
+                    </div>    
+                    <div>
+                        <p class="m-0">Chant de l'Elfe</p>
+                        <p class="opacity-50 m-0">Elfsong tavern Dark Alliance</p>                    
+                    </div>                
+                </div>
+
+                <div>
+                    <label class="btn btn-outline-light" for="playlist_23"><i class="fa-solid fa-shuffle"></i></label>
+                </div>
+
+            </article>
         </article>
     </section>
 </div>
-
 
 <?php
     include "./footer.php";

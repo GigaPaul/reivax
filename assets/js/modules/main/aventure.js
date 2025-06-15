@@ -13,7 +13,9 @@ export default function InitAventureView() {
         adventure.LoadAmbiences(AMBIENCE_OUTPUT);
         adventure.LoadLandscapes(LANDSCAPE_OUTPUT);
         adventure.LoadPlaylists(MUSIC_OUTPUT);
-        adventure.LoadSounds(SOUND_OUTPUT);
+        if(SOUND_OUTPUT) {
+            adventure.LoadSounds(SOUND_OUTPUT);
+        }
     }
 
 

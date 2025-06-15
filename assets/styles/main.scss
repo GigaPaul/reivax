@@ -46,9 +46,11 @@
         overflow: hidden;
         padding: 0;
         position: relative;
-        width: 100%;
+        width: 100px;
 
         & video {
+            object-fit: cover;
+            height: 100%;
             width: 100%;
             position: absolute;
             top: 50%;
@@ -65,10 +67,6 @@
             opacity: 1;
         }
 
-        &:hover
-        {
-            opacity: 1;
-        }
         border-radius: 10px;
         -webkit-border-radius: 10px;
         -moz-border-radius: 10px;
@@ -79,6 +77,18 @@
         -moz-transition: opacity 250ms ease-in-out;
         -ms-transition: opacity 250ms ease-in-out;
         -o-transition: opacity 250ms ease-in-out;
+    }
+}
+
+
+@include media-breakpoint-up(sm) {
+    .background {
+        &__button {
+            &:hover
+            {
+                opacity: 1;
+            }
+        }        
     }
 }
 
@@ -145,7 +155,9 @@
 }
 
 
-
+.playlist:has(input[name="playlistRadio"]:checked){
+    --bs-bg-opacity: .5;
+}
 
 input[name="activePlaylist"] {
     &:not(:checked) {
@@ -160,10 +172,6 @@ input[name="activePlaylist"] {
         }
     }
 }
-
-// .progress-bar {
-//     background-color: purple!important;
-// }
 
 
 

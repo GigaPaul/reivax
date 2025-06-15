@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="./assets/styles/main.css">
 </head>
 <body class="text-bg-dark">
-    <header class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+
+    <header class="navbar navbar-expand-lg bg-dark border-bottom border-body d-none d-md-block" data-bs-theme="dark">
         <div class="container">
             <a href="index.php" class="navbar-brand">Reivax</a>
 
             <nav class="navbar-collapse collapse show">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="headerNavbar">
+                <ul class="d-flex navbar-nav me-auto mb-2 mb-lg-0" id="headerNavbar">
                     <li class="nav-item">
                         <button type="button" id="addLandscapeButton" class="btn-link nav-link" data-bs-toggle="modal" data-bs-target="#landscapeForm">Décors</button>
                     </li>
@@ -36,6 +37,8 @@
         </div>
 
     </header>
+
+
 
     <?php
     include "./forms.php";
