@@ -261,3 +261,10 @@ input[name="activePlaylist"] {
         }
     }
 }
+
+.playlist {
+    &__current {
+        position: sticky;
+        bottom: 0;
+    }
+}

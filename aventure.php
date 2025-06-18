@@ -162,18 +162,18 @@
 
 
 
-        <article class="mb-5">
+        <article>
             <h2 class="text-center">Musique</h2>
 
             <output id="musicOutput" class="w-100">
             </output>
 
 
-            <article id="currentPlayedSong" class="container fixed-bottom bg-danger text-white d-flex align-items-center justify-content-between py-2">
+            <article id="currentPlayedSong" class="playlist__current container bg-danger text-white d-flex align-items-center justify-content-between py-2 d-none">
                 <div class="d-flex align-items-center">
-                    <div class="me-2">
-                        <label class="btn text-white" for="togglePlaylist-8"><i class="fa-solid fa-play"></i></label>
-                    </div>    
+                    <button id="currentPlayedButton" type="button" class="me-2 btn text-white">
+                        <i id="currentPlayedIcon" class="fa-solid"></i>
+                    </button>
                     <div>
                         <p id="currentPlayedSong_playlistName" class="m-0">Chant de l'Elfe</p>
                         <p id="currentPlayedSong_songName" class="opacity-50 m-0">Elfsong tavern Dark Alliance</p>                    

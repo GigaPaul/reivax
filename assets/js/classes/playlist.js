@@ -357,8 +357,6 @@ export class Playlist {
 
 
     Load() {
-
-        //
         if(this.musics.length === 0) {
             return;
         }
@@ -434,7 +432,6 @@ export class Playlist {
             if(currentPlayedSong) {
                 const playlistTitle = $("#currentPlayedSong_playlistName")[0];
                 const songTitle = $("#currentPlayedSong_songName")[0];
-                console.log(currentSongPlaylist)
                 
                 $(playlistTitle).text(currentSongPlaylist.playlist.name);
                 $(songTitle).text(currentSongPlaylist.song.name);
@@ -444,6 +441,8 @@ export class Playlist {
 
 
         $(songCheckbox).on("change", function(e) {
+            Playlist.HandleCurrentPlaylistBanner();
+
             // Si la checkbox est maintenant coché (Jouer la musique)
             if(this.checked) {
                 let name = $(this).prop("name");
@@ -467,184 +466,26 @@ export class Playlist {
                 }
             }
         })
-        return;
-        //
-
-
-        let card = document.createElement("div");
-        $(card).addClass("card");
-        article.appendChild(card);
-
-
-        // HEADER
-        let categoryHeader = document.createElement("div");
-        $(categoryHeader).addClass("card-header");
-        card.appendChild(categoryHeader);
-
-        let categoryTitle = document.createElement("h4");
-        $(categoryTitle).addClass("m-0");
-        $(categoryTitle).text(this.name);
-        categoryHeader.appendChild(categoryTitle);
-
-        // BODY
-        let categoryBody = document.createElement("div");
-        $(categoryBody).addClass("card-body d-flex");
-        card.appendChild(categoryBody);
-
-        let songControls = document.createElement("div");
-        $(songControls).addClass("d-flex flex-column justify-content-between me-3");
-        categoryBody.appendChild(songControls);
-
-        // TOGGLE BUTTON
-        let toggleCheckbox = document.createElement("input");
-        $(toggleCheckbox)
-            .addClass("music__toggle btn-check")
-            .prop("id", `togglePlaylist-${this.id_playlist}`)
-            .prop("name", "activePlaylist")
-            .prop("type", "checkbox")
-            .val(this.id_playlist);
-        songControls.appendChild(toggleCheckbox);
-            
-        let togglePlayLabel = document.createElement("label");
-        $(togglePlayLabel)
-            .addClass("btn btn-success mb-1")
-            .prop("for", `togglePlaylist-${this.id_playlist}`);
-        songControls.appendChild(togglePlayLabel);
-
-        let togglePlayIcon = document.createElement("i");
-        $(togglePlayIcon).addClass("fa-solid fa-play");
-        togglePlayLabel.appendChild(togglePlayIcon);
-            
-        let togglePauseLabel = document.createElement("label");
-        $(togglePauseLabel)
-            .addClass("btn btn-danger mb-1")
-            .prop("for", `togglePlaylist-${this.id_playlist}`);
-        songControls.appendChild(togglePauseLabel);
-        
-        let togglePauseIcon = document.createElement("i");
-        $(togglePauseIcon).addClass("fa-solid fa-pause");
-        togglePauseLabel.appendChild(togglePauseIcon);
-        
-
-
-        // SHUFFLE BUTTON
-        let shuffleButton = document.createElement("input");
-        $(shuffleButton)
-            .prop("type", "checkbox")
-            .prop("id", `playlist_${this.id_playlist}`)
-            .prop("checked", this.isShuffled)
-            .addClass("btn-check");
-        songControls.appendChild(shuffleButton);
-
-        let shuffleLabel = document.createElement("label");
-        $(shuffleLabel)
-            .addClass("btn btn-outline-primary")
-            .prop("for", `playlist_${this.id_playlist}`);
-        songControls.appendChild(shuffleLabel);
-
-        let shuffleIcon = document.createElement("i");
-        $(shuffleIcon).addClass("fa-solid fa-shuffle");
-        shuffleLabel.appendChild(shuffleIcon);
-
-        // CURRENT SONG
-        let currentSong = document.createElement("div");
-        $(currentSong).addClass("w-100")
-        categoryBody.appendChild(currentSong);
-
-        let songTitle = document.createElement("h5");
-        $(songTitle).addClass("music__songTitle");
-        currentSong.appendChild(songTitle);
-
-        let timeContainer = document.createElement("div");
-        currentSong.appendChild(timeContainer)
-
-        let progressBarContainer = document.createElement("div");
-        $(progressBarContainer).addClass("progress").prop("role", "progressbar");
-        timeContainer.appendChild(progressBarContainer);
-
-        let progressbar = document.createElement("div");
-        $(progressbar)
-            .addClass("progress-bar progress-bar-striped bg-danger progress-bar-animated")
-            .css("width", "0%");
-        progressBarContainer.appendChild(progressbar);
-
-
-        let timestamps = document.createElement("div");
-        $(timestamps).addClass("timestamp d-flex justify-content-between");
-        timeContainer.appendChild(timestamps);
-
-        let timestampCurrent = document.createElement("p");
-        $(timestampCurrent).addClass("timestamp__current user-select-none m-0");
-        timestamps.appendChild(timestampCurrent);
-
-        let timestampEnd = document.createElement("p");
-        $(timestampEnd).addClass("timestamp__end user-select-none m-0");
-        timestamps.appendChild(timestampEnd);
-
-
-
-        // EVENTS
-        // Toggle
-        $(toggleCheckbox).on("change", function(e) {
-        });
-
-
-        // Shuffle
-        $(shuffleButton).on("change", function() {
-            that.isShuffled = this.checked;
-
-            $(audios).children("audio").each(function() {
-                $(this).data("cleanloop").isShuffle = that.isShuffled;
-            })
-
-            if(that.isShuffled) {
-                $(this).addClass("btn-info").removeClass("btn-outline-info");
-            }
-            else {
-                $(this).addClass("btn-outline-info").removeClass("btn-info");
-            }
-        });
-
-
-
-        // When the audio metadata is loaded, display the informations about the current music
-        $(cleanLoop.audio).on("loadedmetadata", function() {
-
-        })
-
-
-
-
-
-        $(cleanLoop.audio).on("timeupdate", function() {
-
-            let thisCleanLoop = $(this).data("cleanloop");
-
-            if(thisCleanLoop.clone !== null) {
-                return;
-            }
-
-            // Avancé du timestamp actuel
-            $(timestampCurrent).text(FUNC.SecondsToMinutes(thisCleanLoop.audio.currentTime));
-
-            // Event de remplissage de la barre de progrès
-            let percent = ( thisCleanLoop.audio.currentTime / thisCleanLoop.audio.duration ) * 100;
-            $(progressbar).css("width", `${percent}%`);
-        })
     }
 
 
 
 
 
-    // VisualPlay() {
-    //     let button = $(this.element).find(".music__toggle");
-    //     let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
-    //     let icon = $(label).children("i");
+    static HandleCurrentPlaylistBanner() {
+        const currentSongPlaylist = Playlist.GetCurrentSongPlaylist();
+        const icon = $("#currentPlayedIcon");
 
-    //     $(label).addClass("btn-danger").removeClass("btn-success");
-    //     $(icon).addClass("fa-pause").removeClass("fa-play");
-    // }
+        // Make the container appear if it's the first time
+        $("#currentPlayedSong").removeClass("d-none");
+
+        if(currentSongPlaylist) {
+            $(icon).addClass("fa-play").removeClass("fa-pause");
+        }
+        else {
+            $(icon).addClass("fa-pause").removeClass("fa-play");
+        }
+    }
 
 
 
@@ -654,19 +495,6 @@ export class Playlist {
             this.play();
         });
     }
-
-
-
-
-
-    // VisualPause() {
-    //     let button = $(this.element).find(".music__toggle");
-    //     let label = $(button).siblings(`label[for='${$(button).prop("id")}']`);
-    //     let icon = $(label).children("i");
-
-    //     $(label).addClass("btn-success").removeClass("btn-danger");
-    //     $(icon).addClass("fa-play").removeClass("fa-pause");
-    // }
 
 
 

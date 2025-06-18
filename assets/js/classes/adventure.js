@@ -430,6 +430,17 @@ export class Adventure {
             this.Load();
             parent.appendChild(this.element);
         });
+
+        $("#currentPlayedButton").on("click", function() {
+            const CurrentSongPlaylist = Playlist.GetCurrentSongPlaylist();
+
+            if(!CurrentSongPlaylist) {
+                return;
+            }
+
+            console.log(CurrentSongPlaylist);
+            CurrentSongPlaylist.playlist.PauseAudios();
+        })
     }
 
 
