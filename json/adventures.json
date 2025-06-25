@@ -1,0 +1,89 @@
+[
+    {
+        "Id": 0,
+        "Name": "Adventure1",
+        "Background": "background.jpg",
+        "Ambiences": [],
+        "Landscapes": [],
+        "Playlists": [
+            {
+                "Id": 0,
+                "Name": "Playlist1",
+                "IsLoop": true,
+                "IsShuffled": true,
+                "Songs": [
+                    {
+                        "Id": 0,
+                        "Name": "Song1",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 1,
+                        "Name": "Song2",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 2,
+                        "Name": "Song3",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    }
+                ]
+            },
+            {
+                "Id": 1,
+                "Name": "Playlist2",
+                "IsLoop": true,
+                "IsShuffled": true,
+                "Songs": [
+                    {
+                        "Id": 0,
+                        "Name": "Song1",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 1,
+                        "Name": "Song2",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 2,
+                        "Name": "Song3",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Id": 1,
+        "Name": "Adventure2",
+        "Background": "background.jpg",
+        "Ambiences": [],
+        "Landscapes": [],
+        "Playlists": [
+            {
+                "Id": 2,
+                "Name": "Playlist3",
+                "IsLoop": true,
+                "IsShuffled": true,
+                "Songs": [
+                    {
+                        "Id": 0,
+                        "Name": "Song1",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 1,
+                        "Name": "Song2",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    },
+                    {
+                        "Id": 2,
+                        "Name": "Song3",
+                        "Url": "2-minutes-and-30-seconds-of-silence.mp3"
+                    }
+                ]
+            }
+        ]
+    }
+]
