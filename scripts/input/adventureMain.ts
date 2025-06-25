@@ -2,6 +2,7 @@ import Adventure from "./models/adventure.js";
 import Playlist from "./models/playlist.js";
 import Song from "./models/song.js";
 import Supabase from './models/supabase.js';
+import Globals from './globals.js';
 
 const redirectUrl: string = "index.php";
 
@@ -26,26 +27,10 @@ async function StartAventure():Promise<void> {
     const AdventureId: number = parseInt(idParam);
 
     const supabase:Supabase = await Supabase.CreateClient();
-    const { data, error } = await supabase.Client.from("Adventures").select().eq("id", AdventureId).maybeSingle();
 
-    if(!data) {
-        window.location.replace(redirectUrl);
-        return;
-    }
-
-    console.log(data);
-
-
-    // $.getJSON("/json/adventures.json", function(data) {
-    //     const object = data.find((i:any) => i.hasOwnProperty("Id") && i.Id === AdventureId);
-
-    //     if(!object){
-    //         return;
-    //     }
-
-    //     const newAdventure: Adventure | undefined = Adventure.Load(object);
-    //     console.log(newAdventure)
-    // });
+    const newAdventure: Adventure = new Adventure(AdventureId);
+    await newAdventure.Fetch(supabase);
+    // console.log(newAdventure);
 }
 
 

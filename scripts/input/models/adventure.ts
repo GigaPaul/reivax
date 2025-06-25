@@ -7,9 +7,10 @@ import Globals from "../globals.js";
 export default class Adventure extends Fetchable {
     //#region Fields
     Ambiences: Song[] = [];
-    Background: string;
+    Background: string | null = null;
+    Description: string | null = null;
     Landscapes: Landscape[] = [];
-    Name: string;
+    Name: string = "Unnamed Adventure";
     Playlists: Playlist[] = [];
 
     TableLabel: string = Globals.AdventureTableLabel;
@@ -29,11 +30,8 @@ export default class Adventure extends Fetchable {
 
 
     //#region Constructors
-    constructor(name: string, background: string) {
-        super();
-
-        this.Name = name;
-        this.Background = background;
+    constructor(id: number | null = null) {
+        super(id);
     }
     //#endregion
 
@@ -65,18 +63,8 @@ export default class Adventure extends Fetchable {
 
 
 
-    static Load(object: any): Adventure | undefined {
-        if(!object.hasOwnProperty("Name")) {
-            return;
-        }
-
-        if(!object.hasOwnProperty("Background")) {
-            return;
-        }
-
-        const toLoad: Adventure = new Adventure(object.Name, object.Background);
-        Object.assign(toLoad, object);
-        return toLoad;
+    Load(object: any): void {
+        super.Load(object);
     }
     //#endregion
 }

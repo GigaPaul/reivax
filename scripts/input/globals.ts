@@ -3,10 +3,10 @@ export default class Globals {
     static LandscapeOutputId: string = "LandscapeOutput";
     static PlaylistOutputId: string = "PlaylistOutput";
 
-    static AdventureTableLabel: string = "Adventure";
-    static LandscapeTableLabel: string = "Landscape";
-    static PlaylistTableLabel: string = "Playlist";
-    static SongTableLabel: string = "Song";
+    static AdventureTableLabel: string = "Adventures";
+    static LandscapeTableLabel: string = "Landscapes";
+    static PlaylistTableLabel: string = "Playlists";
+    static SongTableLabel: string = "Songs";
 
     static ConfigPath: string = "./json/config.json";
 }

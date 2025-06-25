@@ -1,3 +1,5 @@
 php -S localhost:8000
 npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
-tsc --watch
+npx tsc --watch
+
+npm install
