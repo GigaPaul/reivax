@@ -7,4 +7,6 @@ export default class Globals {
     static LandscapeTableLabel: string = "Landscape";
     static PlaylistTableLabel: string = "Playlist";
     static SongTableLabel: string = "Song";
+
+    static ConfigPath: string = "./json/config.json";
 }

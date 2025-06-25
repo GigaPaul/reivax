@@ -1,8 +1,11 @@
 import Adventure from "./models/adventure.js";
 import Playlist from "./models/playlist.js";
 import Song from "./models/song.js";
+import Supabase from './models/supabase.js';
 
-function StartAventure():void {
+const redirectUrl: string = "index.php";
+
+async function StartAventure():Promise<void> {
     const adventure: Adventure = new Adventure("Aventure", "rien.jpg");
     const playlist: Playlist = new Playlist("Bidule");
     const song1: Song = new Song("Silence1", "2-minutes-and-30-seconds-of-silence.mp3");
@@ -16,23 +19,33 @@ function StartAventure():void {
     const idParam: string | null = params.get("id");
 
     if(!idParam) {
+        window.location.replace(redirectUrl);
         return;
     }
 
     const AdventureId: number = parseInt(idParam);
 
+    const supabase:Supabase = await Supabase.CreateClient();
+    const { data, error } = await supabase.Client.from("Adventures").select().eq("id", AdventureId).maybeSingle();
+
+    if(!data) {
+        window.location.replace(redirectUrl);
+        return;
+    }
+
+    console.log(data);
 
 
-    $.getJSON("/json/adventures.json", function(data) {
-        const object = data.find((i:any) => i.hasOwnProperty("Id") && i.Id === AdventureId);
+    // $.getJSON("/json/adventures.json", function(data) {
+    //     const object = data.find((i:any) => i.hasOwnProperty("Id") && i.Id === AdventureId);
 
-        if(!object){
-            return;
-        }
+    //     if(!object){
+    //         return;
+    //     }
 
-        const newAdventure: Adventure | undefined = Adventure.Load(object);
-        console.log(newAdventure)
-    });
+    //     const newAdventure: Adventure | undefined = Adventure.Load(object);
+    //     console.log(newAdventure)
+    // });
 }
 
 
