@@ -1,7 +1,18 @@
 {
+  "name": "package.json",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "php -S localhost:8000 && npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch && tsc --watch"
+  },
   "devDependencies": {
     "@types/jquery": "^3.5.32",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
