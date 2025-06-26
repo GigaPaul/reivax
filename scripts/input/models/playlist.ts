@@ -9,7 +9,7 @@ export default class Playlist extends Fetchable {
     Intro: Song | null = null;
     IsLoop: boolean = true;
     IsShuffled: boolean = true;
-    Name: string;
+    Name: string = "Unnamed Playlist";
     Outro: Song | null = null;
     PlayedSongs: Song[] = [];
     Songs: Song[] = [];
@@ -25,23 +25,17 @@ export default class Playlist extends Fetchable {
     }
 
     get CurrentSong(): Song | undefined {
-        return this.Songs.find(i => !i.Element.paused);
+        return this.Songs.find(i => i.Element && !i.Element.paused);
     }
     //#endregion
 
 
 
     //#region Constructors
-    constructor(name: string, isShuffled: boolean = true, isLoop: boolean = true, intro: Song | null = null, outro: Song | null = null) {
-        super();
-        this.Name = name;
-        this.IsShuffled = isShuffled;
-        this.IsLoop = isLoop;
-        this.Intro = intro;
-        this.Outro = outro;
+    constructor(id: number | null = null) {
+        super(id);
 
-        this.Element = this.CreateElement();
-        $(`#${Globals.PlaylistOutputId}`).append(this.Element);
+        this.Joints.push(Globals.SongTableLabel);
     }
     //#endregion
 
@@ -93,10 +87,12 @@ export default class Playlist extends Fetchable {
         nextSong.Play();
 
         const that = this;
-        $(nextSong.Element).on("ended", function() {
-            that.PlayNextSong();
-            $(this).off("ended");
-        })
+        if(nextSong.Element) {
+            $(nextSong.Element).on("ended", function() {
+                that.PlayNextSong();
+                $(this).off("ended");
+            })            
+        }
     }
 
 
@@ -111,8 +107,44 @@ export default class Playlist extends Fetchable {
 
     CreateElement(): HTMLElement {
         const container: HTMLElement = document.createElement("article");
+        for(let i = 0; i < this.Songs.length; i++) {
+            const song: Song = this.Songs[i];
+            song.CreateElement();
 
+            if(!song.Element) {
+                continue;
+            }
+
+            container.appendChild(song.Element);
+        }
         return container;
+    }
+    
+    
+    
+    async Load(object: any): Promise<void> {
+        super.Load(object);
+        const that = this;
+
+        for(const joint of this.Joints) {
+            if(object.hasOwnProperty(joint)) {
+                const jointObjectArray: any[] = (object as any)[joint];
+
+                for(const jointObject of jointObjectArray) {
+                    switch(joint) {
+                        case Globals.SongTableLabel:
+                            const newSong: Song = new Song(jointObject.id)
+                            await newSong.Fetch();
+                            that.Songs.push(newSong);
+                            break;
+                    }
+                }
+            }
+        }
+
+        
+        this.Element = this.CreateElement();
+        $(`#${Globals.PlaylistOutputId}`).append(this.Element);
     }
     //#endregion
 }

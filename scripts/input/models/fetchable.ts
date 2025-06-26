@@ -1,10 +1,9 @@
 import Supabase from './supabase.js';
-import Globals from './../globals.js';
-import Adventure from './adventure.js';
 
 export default abstract class Fetchable {
     abstract TableLabel: string;
     Id: number | null = null;
+    Joints: string[] = [];
 
 
 
@@ -25,23 +24,31 @@ export default abstract class Fetchable {
 
 
 
-    async Fetch(supabase: Supabase, id:number | null = null): Promise<void> {
+    async Fetch(id:number | null = null): Promise<void> {
         if(id) {
             this.Id = id;
         }
 
         if(!this.Id) {
+            console.log("Aucun Id renseigné.")
             return;
         }
 
-        const { data } = await supabase.Client
+        let select = "*";
+
+        this.Joints.forEach(joint => {
+            select += `, ${joint}(*)`;
+        });
+
+        const client = await Supabase.GetClient();
+        const { data } = await client
             .from(this.TableLabel)
-            .select("*, Landscapes(*)")
+            .select(select)
             .eq("id", this.Id)
             .maybeSingle();
 
-        console.log(data);
         if(!data){
+            console.log("Aucune donnée renvoyée par Supabase.")
             return;
         }
 
@@ -51,12 +58,20 @@ export default abstract class Fetchable {
 
 
     Load(object: any): void {
-        Object.keys(this).forEach(classKey => {
+        const objectKeys: string[] = Object.keys(this);
+        for(let i = 0; i < objectKeys.length; i++) {
+            const classKey: string = objectKeys[i];
             const matchingKey: string | undefined = Object.keys(object).find((objectKey) => objectKey.toLowerCase() === classKey.toLowerCase());
 
-            if(matchingKey) {
-                (this as any)[classKey] = object[matchingKey];
+            if(!matchingKey) {
+                continue;
             }
-        });
+
+            if(Array.isArray(object[matchingKey])) {
+                continue;
+            }
+
+            (this as any)[classKey] = object[matchingKey];
+        }
     };
 }

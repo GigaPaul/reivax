@@ -1,12 +1,12 @@
-import Globals from "../globals";
-import Fetchable from "./fetchable";
+import Globals from "../globals.js";
+import Fetchable from "./fetchable.js";
 
 // Image or video being displayed on the display page
 export default class Landscape extends Fetchable {
     //#region Fields
     Element: HTMLDivElement | null = null;
-    Name: string;
-    Url: string;
+    Name: string = "Unnamed Landscape";
+    Url: string = "nothing.jpg";
 
     TableLabel: string = Globals.LandscapeTableLabel;
     //#endregion
@@ -14,11 +14,8 @@ export default class Landscape extends Fetchable {
     
     
     //#region Constructors
-    constructor(name: string, url: string) {
-        super();
-
-        this.Name = name;
-        this.Url = url;
+    constructor(id: number | null = null) {
+        super(id);
     }
     //#endregion
 }

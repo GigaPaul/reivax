@@ -1,3 +1,5 @@
+import Supabase from './models/supabase.js';
+
 export default class Globals {
     static AmbienceOutputId: string = "AmbienceOutput";
     static LandscapeOutputId: string = "LandscapeOutput";
