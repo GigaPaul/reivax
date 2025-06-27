@@ -155,6 +155,7 @@ export default class Playlist extends Fetchable {
         }
 
         const button: HTMLButtonElement = document.createElement("button");
+        $(button).addClass("w-full appearance-none bg-transparent border-none p-0 text-left");
         $(button).text(`Toggle ${this.Name}`).on("click", () => {
             that.Toggle();
         })

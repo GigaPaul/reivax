@@ -91,11 +91,14 @@ export default class Song extends Fetchable {
         let audio: HTMLAudioElement = document.createElement("audio");
         $(audio)
             .prop("src", Song.Path + this.Url)
-            .prop("controls", true);
+            // .prop("controls", true);
         this.Element.appendChild(audio);
 
         let checkbox: HTMLInputElement = document.createElement("input");
-        $(checkbox).prop("type", "checkbox").prop("name", Globals.SongCheckboxInputName);
+        $(checkbox)
+            .prop("type", "checkbox")
+            .prop("name", Globals.SongCheckboxInputName)
+            .addClass("hidden");
         this.Element.appendChild(checkbox);
 
 

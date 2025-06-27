@@ -1,5 +1,6 @@
 import Adventure from "./models/adventure.js";
 import Globals from "./globals.js";
+import Landscape from "./models/landscape.js";
 
 const redirectUrl: string = "index.php";
 
