@@ -1,4 +1,5 @@
 import Adventure from "./models/adventure.js";
+import Globals from "./globals.js";
 
 const redirectUrl: string = "index.php";
 
@@ -13,11 +14,22 @@ async function StartAventure():Promise<void> {
 
     const AdventureId: number = parseInt(idParam);
 
-    const newAdventure: Adventure = new Adventure(AdventureId);
-    await newAdventure.Fetch();
-    console.log(newAdventure);
-    newAdventure.Playlists[0].Start();
-    // playlist.Start();
+    Globals.CurrentAdventure = new Adventure(AdventureId);
+    await Globals.CurrentAdventure.Fetch();
+
+    ManageEventListeners();
+}
+
+function ManageEventListeners() {
+    $(`#${Globals.PlaylistToggleId}`).on("click", () => {
+
+        if(!Globals.CurrentAdventure?.CurrentPlaylist) {
+            console.log("No current playlist found.");
+            return;
+        }
+
+        Globals.CurrentAdventure.CurrentPlaylist.Toggle()
+    });
 }
 
 

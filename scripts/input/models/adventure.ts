@@ -65,9 +65,10 @@ export default class Adventure extends Fetchable {
 
 
 
-    Load(object: any): void {
+    async Load(object: any): Promise<void> {
         super.Load(object);
         const that = this;
+        const promises: Promise<any>[] = [];
 
         this.Joints.forEach(joint => {
             if(object.hasOwnProperty(joint)) {
@@ -76,25 +77,27 @@ export default class Adventure extends Fetchable {
                     switch(joint) {
                         case Globals.LandscapeTableLabel:
                             const newLandscape: Landscape = new Landscape(jointObject.id)
-                            newLandscape.Fetch();
+                            promises.push(newLandscape.Fetch());
                             that.Landscapes.push(newLandscape);
                             break;
                             
                         case Globals.PlaylistTableLabel:
                             const newPlaylist: Playlist = new Playlist(jointObject.id);
-                            newPlaylist.Fetch();
+                            promises.push(newPlaylist.Fetch());
                             that.Playlists.push(newPlaylist);
                             break;
 
                         case Globals.SongTableLabel:
                             const newAmbience: Song = new Song(jointObject.id);
-                            newAmbience.Fetch();
+                            promises.push(newAmbience.Fetch());
                             that.Ambiences.push(newAmbience);
                             break;
                     }
                 });
             }
         });
+
+        await Promise.all(promises);
     }
 
     static async FetchAll(): Promise<Adventure[]> {

@@ -25,7 +25,13 @@ export default class Playlist extends Fetchable {
     }
 
     get CurrentSong(): Song | undefined {
-        return this.Songs.find(i => i.Element && !i.Element.paused);
+        let currentSong: Song | undefined = this.Songs.find(i => i.AudioElement && !i.AudioElement.paused);
+
+        if(currentSong) {
+            return currentSong;
+        }
+
+        return this.Songs.find(i => i.Element && $(i.Element).find(`input[name='${Globals.SongCheckboxInputName}']:checked`)[0]);
     }
     //#endregion
 
@@ -77,7 +83,7 @@ export default class Playlist extends Fetchable {
                 // Avoid selecting the song played last in the previous loop as the first song played in the current loop
                 songsToPickFrom.splice(songsToPickFrom.indexOf(lastPlayedSong), 1);
             }
-
+ 
             nextSongIndex = Math.floor(Math.random() * songsToPickFrom.length);
         }
 
@@ -87,11 +93,22 @@ export default class Playlist extends Fetchable {
         nextSong.Play();
 
         const that = this;
-        if(nextSong.Element) {
-            $(nextSong.Element).on("ended", function() {
+        if(nextSong.AudioElement) {
+            $(nextSong.AudioElement).on("ended", function() {
                 that.PlayNextSong();
                 $(this).off("ended");
             })            
+        }
+    }
+
+
+
+    Play(): void {
+        if(this.CurrentSong) {
+            this.CurrentSong.Play();
+        }
+        else {
+            this.Start();
         }
     }
 
@@ -105,7 +122,26 @@ export default class Playlist extends Fetchable {
 
 
 
+    Toggle(): void {
+        let isPaused = !this.CurrentSong;
+
+        if(!isPaused && this.CurrentSong?.AudioElement) {
+            isPaused = $(this.CurrentSong.AudioElement).prop("paused");
+        }
+        
+        console.log(this.CurrentSong);
+        if(isPaused) {
+            this.Play();
+        }
+        else {
+            this.Stop();
+        }
+    }
+
+
+
     CreateElement(): HTMLElement {
+        const that = this;
         const container: HTMLElement = document.createElement("article");
         for(let i = 0; i < this.Songs.length; i++) {
             const song: Song = this.Songs[i];
@@ -117,13 +153,20 @@ export default class Playlist extends Fetchable {
 
             container.appendChild(song.Element);
         }
+
+        const button: HTMLButtonElement = document.createElement("button");
+        $(button).text(`Toggle ${this.Name}`).on("click", () => {
+            that.Toggle();
+        })
+        container.appendChild(button);
+
         return container;
     }
     
     
     
     async Load(object: any): Promise<void> {
-        super.Load(object);
+        await super.Load(object);
         const that = this;
 
         for(const joint of this.Joints) {

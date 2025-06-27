@@ -52,12 +52,12 @@ export default abstract class Fetchable {
             return;
         }
 
-        this.Load(data);
+        await this.Load(data);
     }
 
 
 
-    Load(object: any): void {
+    async Load(object: any): Promise<void> {
         const objectKeys: string[] = Object.keys(this);
         for(let i = 0; i < objectKeys.length; i++) {
             const classKey: string = objectKeys[i];
